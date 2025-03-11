@@ -21,7 +21,7 @@ import com.sgp.erp.model.Attendance;
 // import com.sgp.erp.repository.AttendanceRepository;
 import com.sgp.erp.service.AttendanceService;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = { "http://localhost:3000", "http://103.44.2.245:3000" })
 @RestController
 @RequestMapping("/students")
 public class AttendanceController {
