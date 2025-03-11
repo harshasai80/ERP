@@ -11,6 +11,7 @@ import com.sgp.erp.service.IAMarksService;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/iamarks")
 public class IAMarksController {
 
@@ -18,7 +19,8 @@ public class IAMarksController {
     private IAMarksService iaMarksService;
 
     @GetMapping("/student/{registrationNumber}")
-    public ResponseEntity<ResponseStructure<List<IAMarks>>> getByRegistrationNumber(@PathVariable String registrationNumber) {
+    public ResponseEntity<ResponseStructure<List<IAMarks>>> getByRegistrationNumber(
+            @PathVariable String registrationNumber) {
         return iaMarksService.getByRegistrationNumber(registrationNumber);
     }
 

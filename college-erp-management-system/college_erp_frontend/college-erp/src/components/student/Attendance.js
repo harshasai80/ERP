@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { format } from "date-fns";
 import { DatePicker } from "./Date-picker";
 import { useLocation } from "react-router-dom";
-import axios from "axios";
 import { AttendanceTable, AttendanceRangeTable } from "./AttendanceRangeTable";
+import Api from "../../Api";
 
 const Attendance = () => {
   const [mode, setMode] = useState("single");
@@ -32,7 +32,7 @@ const Attendance = () => {
 
     try {
       if (mode === "range") {
-        const response = await axios.get(`/students/${registerNo}/range`, {
+        const response = await Api.get(`/students/${registerNo}/range`, {
           params: {
             startDate: format(dateRange.start, "yyyy-MM-dd"),
             endDate: format(dateRange.end, "yyyy-MM-dd"),
@@ -50,7 +50,7 @@ const Attendance = () => {
 
         setAttendanceData(fetchedAttendanceData);
       } else {
-        const response = await axios.get(`/students/${registerNo}/date`, {
+        const response = await Api.get(`/students/${registerNo}/date`, {
           params: { date: format(date, "yyyy-MM-dd") },
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
         });

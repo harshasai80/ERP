@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useLocation } from "react-router-dom";
+import Api from "../../Api";
 
 const IAMarks = () => {
   const [iaMarks, setIaMarks] = useState(null);
@@ -12,7 +12,7 @@ const IAMarks = () => {
   useEffect(() => {
     const fetchResults = async () => {
       try {
-        const response = await axios.get(`/iamarks/student/${registerNo}`);
+        const response = await Api.get(`/iamarks/student/${registerNo}`);
         console.log("Full API Response:", response.data);
 
         const data = response.data?.data;
