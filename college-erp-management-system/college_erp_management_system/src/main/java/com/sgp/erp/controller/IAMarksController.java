@@ -11,7 +11,7 @@ import com.sgp.erp.service.IAMarksService;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = { "http://localhost:3000", "http://103.44.2.245:3000" })
 @RequestMapping("/iamarks")
 public class IAMarksController {
 
