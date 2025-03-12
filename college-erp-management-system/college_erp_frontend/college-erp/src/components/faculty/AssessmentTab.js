@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { students } from "../Data/demoData";
+import { students } from "./Data/demoData";
 import Alert from "./Alert";
 
 function AssessmentTab() {

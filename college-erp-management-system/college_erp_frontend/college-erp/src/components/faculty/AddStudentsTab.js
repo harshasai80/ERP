@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Api from "../../Api";
 
 const AddStudentsTab = () => {
   const [student, setStudent] = useState({
     name: "",
-    registerNumber: "",
+    registrationNumber: "",
     department: "",
-    semester: "",
+    sem: 0,
   });
   const navigate = useNavigate();
 
@@ -15,12 +16,18 @@ const AddStudentsTab = () => {
     setStudent((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Student Data Submitted:", student);
-    // You can add API call logic here to store student data
+    try{
+      const response=await Api.post(
+        "/student/add",student
+      )
+    }
+    catch(error){
+      console.log("unsuccesfull",error)
+    }
     alert("Student added successfully!");
-    navigate("/faculty-dashboard");
   };
 
   return (
@@ -43,8 +50,8 @@ const AddStudentsTab = () => {
             <label className="block text-gray-700">Register Number</label>
             <input
               type="text"
-              name="registerNumber"
-              value={student.registerNumber}
+              name="registrationNumber"
+              value={student.registrationNumber}
               onChange={handleChange}
               required
               className="w-full p-2 border rounded mt-1"
@@ -52,21 +59,27 @@ const AddStudentsTab = () => {
           </div>
           <div>
             <label className="block text-gray-700">Department</label>
-            <input
-              type="text"
+            <select
               name="department"
               value={student.department}
               onChange={handleChange}
               required
               className="w-full p-2 border rounded mt-1"
-            />
+            >
+              <option value="">Select Department</option>
+              <option value="DCS">Computer Science</option>
+              <option value="DCE">Civil Engineering</option>
+              <option value="DEEE">Electrical and electronics Engineering</option>
+              <option value="DME">Mechanical Engineering</option>
+              <option value="DMT">Metallurgy</option>
+            </select>
           </div>
           <div>
             <label className="block text-gray-700">Semester</label>
             <input
               type="number"
-              name="semester"
-              value={student.semester}
+              name="sem"
+              value={student.sem}
               onChange={handleChange}
               required
               className="w-full p-2 border rounded mt-1"
