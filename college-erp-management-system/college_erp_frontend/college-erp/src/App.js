@@ -4,7 +4,7 @@ import Login from "./components/student/Login";
 import DashBoard from "./components/dashboard/DashBoard";
 import Home from "./components/Home";
 import "./App.css";
-import RoleBasedLogin from "./components/faculty/RoleBasedLogin";
+import RoleBasedLogin from "./components/RoleBasedLogin";
 import HodDashboard from "./components/dashboard/HodDashboard";
 import FacultyDashboard from "./components/dashboard/FacultyDashboard";
 
