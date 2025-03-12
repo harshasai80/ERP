@@ -1,5 +1,6 @@
 package com.sgp.erp.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,21 @@ public class StudentService {
             structure.setStatus(HttpStatus.CREATED.value());
             return new ResponseEntity<ResponseStructure<Student>>(structure, HttpStatus.CREATED);
         }
+
         throw new StudentDoesExistException();
+    }
+
+    public ResponseEntity<ResponseStructure<List<Student>>> findAllStudentsByDepartmentAndSemester(String department,
+            Byte semester) {
+        ResponseStructure<List<Student>> structure = new ResponseStructure<List<Student>>();
+        List<Student> students = studentDao.findAllStudentsByDepartmentAndSemester(department, semester);
+        if (!students.isEmpty()) {
+            structure.setData(students);
+            structure.setMessage("Students found");
+            structure.setStatus(HttpStatus.OK.value());
+            return new ResponseEntity<ResponseStructure<List<Student>>>(structure, HttpStatus.OK);
+        }
+        throw new StudentNotFoundException();
     }
 
 }

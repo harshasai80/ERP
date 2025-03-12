@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Api from "../../Api";
 
 const AddStudentsTab = () => {
@@ -9,7 +8,6 @@ const AddStudentsTab = () => {
     department: "",
     sem: 0,
   });
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -18,18 +16,28 @@ const AddStudentsTab = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const confirm = window.confirm(`Are you sure you want to add: \nName: ${student.name},\nRegister Number: ${student.registrationNumber},\nDepartment: ${student.department},\nSemester: ${student.sem}\n?`)
     console.log("Student Data Submitted:", student);
     try{
-      const response=await Api.post(
-        "/student/add",student
-      )
+      if (confirm) {
+        const response=await Api.post(
+          "/student/add",student
+        )
+        alert("Student added successfully!");
+        console.log(JSON.stringify(response.data));
+
+      }
+      
     }
     catch(error){
-      console.log("unsuccesfull",error)
-    }
-    alert("Student added successfully!");
-  };
-
+      if (error.response) {
+        // ✅ Check HTTP status from error response
+        alert(`Error ${error.response.status}: ${error.response.statusText}`);
+      } else {
+        alert("Network error or server not responding.");
+      }
+    };
+  }
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 shadow-lg rounded-lg w-96">

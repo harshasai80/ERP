@@ -8,9 +8,12 @@ import com.sgp.erp.dto.ResponseStructure;
 import com.sgp.erp.model.Student;
 import com.sgp.erp.service.StudentService;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -32,6 +35,13 @@ public class StudentController {
     public ResponseEntity<ResponseStructure<Student>> addStudent(@RequestBody Student student) {
         System.out.println("student added: " + student.getName());
         return studentService.addStudent(student);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<ResponseStructure<List<Student>>> findAllStudentsByDepartmentAndSemester(
+            @RequestParam String department,
+            @RequestParam Byte semester) {
+        return studentService.findAllStudentsByDepartmentAndSemester(department, semester);
     }
 
 }

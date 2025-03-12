@@ -1,5 +1,6 @@
 package com.sgp.erp.dao;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +20,15 @@ public class StudentDao {
 
     public boolean addStudent(Student student) {
         Optional<Student> stu = findByRegistrationNumber(student.getRegistrationNumber());
-        if(stu.isPresent()){
+        if (stu.isPresent()) {
             return false;
         }
         studentRepository.save(student);
         return true;
+    }
+
+    public List<Student> findAllStudentsByDepartmentAndSemester(String department, Byte semester) {
+        return studentRepository.findAllStudentsByDepartmentAndSem(department, semester);
     }
 
 }
