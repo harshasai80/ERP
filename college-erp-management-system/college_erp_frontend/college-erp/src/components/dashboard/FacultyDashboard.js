@@ -1,4 +1,5 @@
 import { useState } from "react";
+import AddStudentsTab from "../faculty/AddStudentsTab";
 import AttendanceTab from "../faculty/AttendanceTab";
 import AssessmentTab from "../faculty/AssessmentTab";
 import SyllabusTab from "../faculty/SyllabusTab";
@@ -27,8 +28,8 @@ const FacultyDashboard = () => {
       </header>
 
       {/* Navigation Tabs */}
-      <nav className="bg-[#3D3A63] py-3 shadow-lg">
-        <ul className="flex justify-center space-x-6">
+      <nav className="bg-[#3D3A63] py-3 shadow-lg flex justify-center items-center px-6 relative">
+        <ul className="flex space-x-6">
           {["attendance", "assessment", "syllabus"].map((tab) => (
             <li key={tab}>
               <a
@@ -50,6 +51,15 @@ const FacultyDashboard = () => {
             </li>
           ))}
         </ul>
+        <button
+          className="bg-[#9569D8] hover:bg-[#6f48a3] px-4 py-2 rounded text-white font-medium text-sm absolute right-6"
+          onClick={(e) => {
+            e.preventDefault();
+            setActiveTab("add-students");
+          }}
+        >
+          Add Students
+        </button>
       </nav>
 
       {/* Main Content */}
@@ -57,6 +67,7 @@ const FacultyDashboard = () => {
         {activeTab === "attendance" && <AttendanceTab />}
         {activeTab === "assessment" && <AssessmentTab />}
         {activeTab === "syllabus" && <SyllabusTab />}
+        {activeTab === "add-students" && <AddStudentsTab />}
       </div>
     </div>
   );
