@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.sgp.erp.dao.StudentDao;
 import com.sgp.erp.dto.ResponseStructure;
+import com.sgp.erp.exception.StudentDoesExistException;
 import com.sgp.erp.exception.StudentNotFoundException;
 import com.sgp.erp.model.Student;
 
@@ -17,10 +18,11 @@ public class StudentService {
 
     @Autowired
     private StudentDao studentDao;
+    private ResponseStructure<Student> structure;
 
     public ResponseEntity<ResponseStructure<Student>> findByRegistrationNumber(String registrationNumber) {
         Optional<Student> student = studentDao.findByRegistrationNumber(registrationNumber);
-        ResponseStructure<Student> structure = new ResponseStructure<Student>();
+        structure = new ResponseStructure<Student>();
         if (student.isPresent()) {
             structure.setData(student.get());
             structure.setMessage("Student found");
@@ -29,6 +31,18 @@ public class StudentService {
                     HttpStatus.OK);
         }
         throw new StudentNotFoundException();
+    }
+
+    public ResponseEntity<ResponseStructure<Student>> addStudent(Student student) {
+        structure = new ResponseStructure<Student>();
+        boolean res = studentDao.addStudent(student);
+        if (res) {
+            structure.setData(student);
+            structure.setMessage("Student added successfully");
+            structure.setStatus(HttpStatus.CREATED.value());
+            return new ResponseEntity<ResponseStructure<Student>>(structure, HttpStatus.CREATED);
+        }
+        throw new StudentDoesExistException();
     }
 
 }

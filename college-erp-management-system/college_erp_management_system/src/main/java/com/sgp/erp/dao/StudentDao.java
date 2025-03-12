@@ -16,4 +16,14 @@ public class StudentDao {
     public Optional<Student> findByRegistrationNumber(String registrationNumber) {
         return studentRepository.findByRegistrationNumber(registrationNumber);
     }
+
+    public boolean addStudent(Student student) {
+        Optional<Student> stu = findByRegistrationNumber(student.getRegistrationNumber());
+        if(stu.isPresent()){
+            return false;
+        }
+        studentRepository.save(student);
+        return true;
+    }
+
 }

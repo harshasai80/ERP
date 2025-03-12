@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/student")
@@ -25,6 +26,12 @@ public class StudentController {
     public ResponseEntity<ResponseStructure<Student>> studentLogin(@RequestParam String registrationNumber) {
         System.out.println("Got it! Registration Number: " + registrationNumber);
         return studentService.findByRegistrationNumber(registrationNumber);
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<ResponseStructure<Student>> addStudent(@RequestBody Student student) {
+        System.out.println("student added: " + student.getName());
+        return studentService.addStudent(student);
     }
 
 }
