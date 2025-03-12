@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { syllabusData } from "./Data/demoData";
+import { syllabusData } from "../Data/demoData";
 import Alert from "./Alert";
 
 function SyllabusTab() {
