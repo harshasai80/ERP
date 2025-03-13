@@ -3,11 +3,20 @@ import AddStudentsTab from "../faculty/AddStudentsTab";
 import AttendanceTab from "../faculty/AttendanceTab";
 import AssessmentTab from "../faculty/AssessmentTab";
 import SyllabusTab from "../faculty/SyllabusTab";
+import ViewStudentsTab from "../faculty/ViewStudentsTab"; // New Component
 import { useNavigate } from "react-router-dom";
 
 const FacultyDashboard = () => {
   const [activeTab, setActiveTab] = useState("attendance");
   const navigate = useNavigate();
+
+  const tabs = [
+    { id: "attendance", label: "Attendance" },
+    { id: "assessment", label: "Internal Assessment" },
+    { id: "syllabus", label: "Syllabus Management" },
+    { id: "add-students", label: "Add Students" },
+    { id: "view-students", label: "View Students" }, // New Tab
+  ];
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 font-sans">
@@ -28,38 +37,27 @@ const FacultyDashboard = () => {
       </header>
 
       {/* Navigation Tabs */}
-      <nav className="bg-[#3D3A63] py-3 shadow-lg flex justify-center items-center px-6 relative">
+      <nav className="bg-[#3D3A63] py-3 shadow-lg flex justify-center items-center px-6">
         <ul className="flex space-x-6">
-          {["attendance", "assessment", "syllabus"].map((tab) => (
-            <li key={tab}>
+          {tabs.map((tab) => (
+            <li key={tab.id}>
               <a
                 href="#"
                 className={`px-6 py-2 rounded-lg text-white font-medium transition ${
-                  activeTab === tab
+                  activeTab === tab.id
                     ? "bg-[#9569D8] shadow-md"
                     : "hover:bg-gray-600"
                 }`}
                 onClick={(e) => {
                   e.preventDefault();
-                  setActiveTab(tab);
+                  setActiveTab(tab.id);
                 }}
               >
-                {tab === "attendance" && "Attendance"}
-                {tab === "assessment" && "Internal Assessment"}
-                {tab === "syllabus" && "Syllabus Management"}
+                {tab.label}
               </a>
             </li>
           ))}
         </ul>
-        <button
-          className="bg-[#9569D8] hover:bg-[#6f48a3] px-4 py-2 rounded text-white font-medium text-sm absolute right-6"
-          onClick={(e) => {
-            e.preventDefault();
-            setActiveTab("add-students");
-          }}
-        >
-          Add Students
-        </button>
       </nav>
 
       {/* Main Content */}
@@ -68,6 +66,7 @@ const FacultyDashboard = () => {
         {activeTab === "assessment" && <AssessmentTab />}
         {activeTab === "syllabus" && <SyllabusTab />}
         {activeTab === "add-students" && <AddStudentsTab />}
+        {activeTab === "view-students" && <ViewStudentsTab />} {/* New Tab */}
       </div>
     </div>
   );
