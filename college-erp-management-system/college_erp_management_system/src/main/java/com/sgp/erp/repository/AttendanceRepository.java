@@ -4,9 +4,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.sgp.erp.model.Attendance;
+import com.sgp.erp.model.Student;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
@@ -18,4 +20,6 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
     @Query("SELECT a FROM Attendance a WHERE a.student.registrationNumber = ?1 AND a.attendanceDate BETWEEN ?2 AND ?3")
     List<Attendance> findAttendanceByRegistrationNumberAndDateRange(String registrationNumber, LocalDate startDate,
             LocalDate endDate);
+
+    Optional<Attendance> findByStudentAndAttendanceDate(Student student, LocalDate date);
 }

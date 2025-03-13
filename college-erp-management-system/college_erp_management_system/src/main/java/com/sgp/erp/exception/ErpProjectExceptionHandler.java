@@ -19,6 +19,7 @@ public class ErpProjectExceptionHandler extends ResponseEntityExceptionHandler {
         structure.setStatus(HttpStatus.NOT_FOUND.value());
         return new ResponseEntity<>(structure, HttpStatus.NOT_FOUND);
     }
+
     @ExceptionHandler(StudentDoesExistException.class)
     public ResponseEntity<ResponseStructure<String>> handleSDEE(Exception ex) {
         ResponseStructure<String> structure = new ResponseStructure<>();
@@ -26,5 +27,14 @@ public class ErpProjectExceptionHandler extends ResponseEntityExceptionHandler {
         structure.setMessage(ex.getMessage());
         structure.setStatus(HttpStatus.FORBIDDEN.value());
         return new ResponseEntity<>(structure, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(DataNotSavedException.class)
+    public ResponseEntity<ResponseStructure<String>> handleDNS(Exception ex) {
+        ResponseStructure<String> structure = new ResponseStructure<>();
+        structure.setData(null);
+        structure.setMessage(ex.getMessage());
+        structure.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        return new ResponseEntity<>(structure, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
