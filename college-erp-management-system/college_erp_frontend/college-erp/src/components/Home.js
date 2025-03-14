@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate,Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 const Home = () => {
   const navigate = useNavigate();
 
@@ -27,12 +27,14 @@ const Home = () => {
             </div>
           </div>
           <div className="flex items-center space-x-6">
-            <Link to="/role-based-login"
+            <Link
+              to="/role-based-login"
               className="hover:text-purple-300 transition duration-300 font-medium px-4 py-2 rounded-lg hover:bg-[#3D3A63]"
             >
               Login
             </Link>
-            <Link to="/login/student"
+            <Link
+              to="/login/student"
               className="hover:text-purple-300 transition duration-300 font-medium px-4 py-2 rounded-lg hover:bg-[#3D3A63]"
             >
               Student Search
@@ -77,9 +79,10 @@ const Home = () => {
               <p className="text-gray-300 mb-6">
                 Access and manage student records efficiently.
               </p>
-              <button 
-              onClick={() => navigate("/role-based-login")}
-              className="bg-[#9569D8] hover:bg-purple-700 text-white py-2 px-6 rounded-lg transition duration-300 shadow-md hover:shadow-lg font-medium">
+              <button
+                onClick={() => navigate("/role-based-login")}
+                className="bg-[#9569D8] hover:bg-purple-700 text-white py-2 px-6 rounded-lg transition duration-300 shadow-md hover:shadow-lg font-medium"
+              >
                 Access
               </button>
             </div>
@@ -107,9 +110,10 @@ const Home = () => {
               <p className="text-gray-300 mb-6">
                 Monitor and record student attendance easily.
               </p>
-              <button 
-              onClick={() => navigate("/login/student")}
-              className="bg-[#9569D8] hover:bg-purple-700 text-white py-2 px-6 rounded-lg transition duration-300 shadow-md hover:shadow-lg font-medium">
+              <button
+                onClick={() => navigate("/login/student")}
+                className="bg-[#9569D8] hover:bg-purple-700 text-white py-2 px-6 rounded-lg transition duration-300 shadow-md hover:shadow-lg font-medium"
+              >
                 Track
               </button>
             </div>
@@ -137,9 +141,10 @@ const Home = () => {
               <p className="text-gray-300 mb-6">
                 Manage and publish examination results.
               </p>
-              <button 
-              onClick={() => navigate("/login/student")}
-              className="bg-[#9569D8] hover:bg-purple-700 text-white py-2 px-6 rounded-lg transition duration-300 shadow-md hover:shadow-lg font-medium">
+              <button
+                onClick={() => navigate("/login/student")}
+                className="bg-[#9569D8] hover:bg-purple-700 text-white py-2 px-6 rounded-lg transition duration-300 shadow-md hover:shadow-lg font-medium"
+              >
                 Results
               </button>
             </div>
@@ -164,12 +169,13 @@ const Home = () => {
               </svg>
               Student Login
             </button>
-            <button 
-            onClick={() => navigate("/role-based-login")}
-            className="bg-gradient-to-r from-[#9569D8] to-[#8559C8] hover:from-[#8559C8] hover:to-[#7549B8] text-white py-3 px-8 rounded-lg font-semibold transition duration-300 shadow-lg flex items-center">
+            <button
+              onClick={() => navigate("/role-based-login")}
+              className="bg-gradient-to-r from-[#9569D8] to-[#8559C8] hover:from-[#8559C8] hover:to-[#7549B8] text-white py-3 px-8 rounded-lg font-semibold transition duration-300 shadow-lg flex items-center"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 mr-2"               
+                className="h-5 w-5 mr-2"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
@@ -177,9 +183,10 @@ const Home = () => {
               </svg>
               Faculty Login
             </button>
-            <button 
-            onClick={() => navigate("/role-based-login")}
-            className="bg-gradient-to-r from-[#9569D8] to-[#8559C8] hover:from-[#8559C8] hover:to-[#7549B8] text-white py-3 px-8 rounded-lg font-semibold transition duration-300 shadow-lg flex items-center">
+            <button
+              onClick={() => navigate("/role-based-login")}
+              className="bg-gradient-to-r from-[#9569D8] to-[#8559C8] hover:from-[#8559C8] hover:to-[#7549B8] text-white py-3 px-8 rounded-lg font-semibold transition duration-300 shadow-lg flex items-center"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5 mr-2"
