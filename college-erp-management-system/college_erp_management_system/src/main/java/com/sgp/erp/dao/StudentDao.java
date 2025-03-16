@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.sgp.erp.model.Section;
 import com.sgp.erp.model.Student;
 import com.sgp.erp.repository.StudentRepository;
 
@@ -27,8 +28,9 @@ public class StudentDao {
         return true;
     }
 
-    public List<Student> findAllStudentsByDepartmentAndSemester(String department, Byte semester) {
-        return studentRepository.findAllStudentsByDepartmentAndSem(department, semester);
+    public List<Student> findAllStudentsByDepartmentAndSemesterAndSection(String department, Byte semester,
+            Section section) {
+        return studentRepository.findAllStudentsByDepartmentAndSemAndSection(department, semester, section);
     }
 
 }

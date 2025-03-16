@@ -24,9 +24,9 @@ public class Subject {
     @Column(name = "subject_code", nullable = false)
     private String subjectCode;
 
-    // @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     @Column(name = "subject_type", nullable = false)
-    private String subjectType;
+    private SubjectType subjectType;
 
 }
 

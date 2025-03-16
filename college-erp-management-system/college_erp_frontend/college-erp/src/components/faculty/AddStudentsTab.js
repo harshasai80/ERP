@@ -5,39 +5,43 @@ const AddStudentsTab = () => {
   const [student, setStudent] = useState({
     name: "",
     registrationNumber: "",
+    section: "",
     department: "",
     sem: 0,
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setStudent((prev) => ({ ...prev, [name]: value }));
+    setStudent((prev) => ({
+      ...prev,
+      [name]: name === "sem" ? Number(value) : value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const confirm = window.confirm(`Are you sure you want to add: \nName: ${student.name},\nRegister Number: ${student.registrationNumber},\nDepartment: ${student.department},\nSemester: ${student.sem}\n?`)
+    const confirm = window.confirm(
+      `Are you sure you want to add: \nName: ${student.name},\nRegister Number: ${student.registrationNumber},\nDepartment: ${student.department},\nSemester: ${student.sem}\n?`
+    );
     console.log("Student Data Submitted:", student);
-    try{
+    try {
       if (confirm) {
-        const response=await Api.post(
-          "/student/add",student
-        )
+        const response = await Api.post("/student/add", student);
         alert("Student added successfully!");
         console.log(JSON.stringify(response.data));
-
       }
-      
-    }
-    catch(error){
+    } catch (error) {
       if (error.response) {
         // ✅ Check HTTP status from error response
-        alert(`Error ${error.response.status}: ${error.response.statusText}`);
+        console.log(
+          `Error ${error.response.status}: ${error.response.data.message}`
+        );
+        alert(`Error ${error.response.status}: ${error.response.data.message}`);
       } else {
         alert("Network error or server not responding.");
       }
-    };
-  }
+    }
+  };
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 shadow-lg rounded-lg w-96">
@@ -66,6 +70,22 @@ const AddStudentsTab = () => {
             />
           </div>
           <div>
+            <label className="block text-gray-700">Section</label>
+            <select
+              name="section"
+              value={student.section}
+              onChange={handleChange}
+              required
+              className="w-full p-2 border rounded mt-1"
+            >
+              <option value="">Select Section</option>
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+            </select>
+          </div>
+          <div>
             <label className="block text-gray-700">Department</label>
             <select
               name="department"
@@ -77,21 +97,30 @@ const AddStudentsTab = () => {
               <option value="">Select Department</option>
               <option value="DCS">Computer Science</option>
               <option value="DCE">Civil Engineering</option>
-              <option value="DEEE">Electrical and electronics Engineering</option>
+              <option value="DEEE">
+                Electrical and electronics Engineering
+              </option>
               <option value="DME">Mechanical Engineering</option>
               <option value="DMT">Metallurgy</option>
             </select>
           </div>
           <div>
             <label className="block text-gray-700">Semester</label>
-            <input
-              type="number"
+            <select
               name="sem"
               value={student.sem}
               onChange={handleChange}
               required
               className="w-full p-2 border rounded mt-1"
-            />
+            >
+              <option value="">Select Semester</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+            </select>
           </div>
           <button
             type="submit"

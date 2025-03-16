@@ -42,15 +42,11 @@ public class AttendanceController {
         return attendanceService.getAttendanceByRegisterNoAndDateRange(registerNo, startDate, endDate);
     }
 
-<<<<<<< HEAD
-    
-=======
     // Add attendance records
     @PostMapping("/add-attendance")
     public ResponseEntity<ResponseStructure<List<Attendance>>> addAttendanceRecords(
             @RequestBody List<Map<String, Object>> attendanceData) {
         return attendanceService.addAttendanceRecords(attendanceData);
     }
->>>>>>> d39f7d5a13bd237545378a47fe35e2c65d44b91b
 
 }

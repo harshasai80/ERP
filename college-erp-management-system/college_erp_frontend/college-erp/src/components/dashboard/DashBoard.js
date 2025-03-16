@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
-import BottomNavbar from "./BottomNavBar"; // Import Bottom Navbar
+import BottomNavbar from "./BottomNavBar";
 import Attendance from "../student/Attendance";
 import IAMarks from "../student/IAMarks";
 
@@ -10,7 +10,9 @@ export default function Dashboard() {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const student = location.state?.student.data;
+
+  // Improved Student Data Handling
+  const student = location.state?.student?.data || location.state?.student;
 
   return (
     <div className="h-screen w-full bg-gray-300 flex flex-col">
@@ -28,15 +30,16 @@ export default function Dashboard() {
         </div>
 
         <div className="flex items-center gap-4 md:gap-6">
-          <div className="flex items-center gap-2 md:gap-4">
+          <div className="flex items-center gap-2 md:gap-6 px-10">
             <FaUserCircle className="text-gray-300 text-2xl md:text-3xl" />
             <div className="text-white text-xs md:text-sm">
               <p className="font-semibold">
-                {String(student.name).toUpperCase()}
+                {student?.name?.toUpperCase() || "N/A"}
               </p>
               <p className="text-gray-300">
-                Reg: {String(student.registrationNumber).toUpperCase()} |{" "}
-                {student.sem} Sem
+                Reg: {student?.registrationNumber?.toUpperCase() || "N/A"}{" "}
+                <br /> {student?.sem || "N/A"} Sem | {student?.section || "N/A"}{" "}
+                Sec
               </p>
             </div>
           </div>
@@ -61,12 +64,13 @@ export default function Dashboard() {
             </div>
             <div className="w-full bg-[#c4c3ce] p-4 md:p-6 rounded-lg text-center shadow-md">
               <h2 className="text-lg md:text-xl font-semibold text-black">
-                Name: {String(student.name).toUpperCase()}
+                Name: {student?.name?.toUpperCase() || "N/A"}
               </h2>
               <p className="text-black mt-1 md:mt-2">
-                Reg: {String(student.registrationNumber).toUpperCase()}
+                Reg: {student?.registrationNumber?.toUpperCase() || "N/A"}
               </p>
-              <p className="text-black">Sem: {student.sem} Sem</p>
+              <p className="text-black">Sem: {student?.sem || "N/A"} Sem</p>
+              <p className="text-black">Sec: {student?.section || "N/A"} Sec</p>
             </div>
           </div>
         )}

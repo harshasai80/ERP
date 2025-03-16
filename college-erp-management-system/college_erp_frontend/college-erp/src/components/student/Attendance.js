@@ -14,8 +14,11 @@ const Attendance = () => {
   });
   const [attendanceData, setAttendanceData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const location = useLocation();
 
-  const registerNo = useLocation().state?.student?.data?.registrationNumber;
+  const registerNo =
+    location.state?.student?.data?.registrationNumber ||
+    location.state?.student?.registrationNumber;
 
   const handleDateChange = (date) => setDate(date);
   const handleStartDateChange = (date) =>

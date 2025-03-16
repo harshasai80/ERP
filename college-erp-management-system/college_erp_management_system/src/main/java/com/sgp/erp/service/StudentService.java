@@ -12,6 +12,7 @@ import com.sgp.erp.dao.StudentDao;
 import com.sgp.erp.dto.ResponseStructure;
 import com.sgp.erp.exception.StudentDoesExistException;
 import com.sgp.erp.exception.StudentNotFoundException;
+import com.sgp.erp.model.Section;
 import com.sgp.erp.model.Student;
 
 @Service
@@ -47,10 +48,11 @@ public class StudentService {
         throw new StudentDoesExistException();
     }
 
-    public ResponseEntity<ResponseStructure<List<Student>>> findAllStudentsByDepartmentAndSemester(String department,
-            Byte semester) {
+    public ResponseEntity<ResponseStructure<List<Student>>> findAllStudentsByDepartmentAndSemesterAndSection(String department,
+            Byte semester, Section section) {
         ResponseStructure<List<Student>> structure = new ResponseStructure<List<Student>>();
-        List<Student> students = studentDao.findAllStudentsByDepartmentAndSemester(department, semester);
+        List<Student> students = studentDao.findAllStudentsByDepartmentAndSemesterAndSection(department, semester,
+                section);
         if (!students.isEmpty()) {
             structure.setData(students);
             structure.setMessage("Students found");

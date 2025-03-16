@@ -40,11 +40,12 @@ public class AttendanceDao {
         return attendanceRepository.findAttendanceByRegistrationNumberAndDateRange(registerNo, startDate, endDate);
     }
 
+    // Add attendance records
     public List<Attendance> addAttendanceRecords(List<Map<String, Object>> attendanceData) {
         List<Attendance> savedAttendances = new ArrayList<>();
 
         for (Map<String, Object> entry : attendanceData) {
-            String registerNo = entry.get("registerNo").toString();
+            String registerNo = entry.get("registrationNumber").toString();
             LocalDate date = LocalDate.parse(entry.get("date").toString());
             List<Map<String, Object>> sessions = (List<Map<String, Object>>) entry.get("sessions");
 

@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sgp.erp.dto.ResponseStructure;
+import com.sgp.erp.model.Section;
 import com.sgp.erp.model.Student;
 import com.sgp.erp.service.StudentService;
 
@@ -40,8 +41,9 @@ public class StudentController {
     @GetMapping("/all")
     public ResponseEntity<ResponseStructure<List<Student>>> findAllStudentsByDepartmentAndSemester(
             @RequestParam String department,
-            @RequestParam Byte semester) {
-        return studentService.findAllStudentsByDepartmentAndSemester(department, semester);
+            @RequestParam Byte semester,
+            @RequestParam Section section) {
+        return studentService.findAllStudentsByDepartmentAndSemesterAndSection(department, semester, section);
     }
 
 }
