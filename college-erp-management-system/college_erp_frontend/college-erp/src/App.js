@@ -8,8 +8,6 @@ import RoleBasedLogin from "./components/RoleBasedLogin";
 import HodDashboard from "./components/dashboard/HodDashboard";
 import FacultyDashboard from "./components/dashboard/FacultyDashboard";
 import PrincipalDashboard from "./components/dashboard/PrincipalDashboard";
-import FacultyList from './components/principal/pages/Faculty/FacultyList';
-import StudentList from './components/principal/pages/Students/StudentList';
 
 // import Admin from "./components/Admin";
 
