@@ -7,6 +7,9 @@ import "./App.css";
 import RoleBasedLogin from "./components/RoleBasedLogin";
 import HodDashboard from "./components/dashboard/HodDashboard";
 import FacultyDashboard from "./components/dashboard/FacultyDashboard";
+import PrincipalDashboard from "./components/dashboard/PrincipalDashboard";
+import FacultyList from './components/principal/pages/Faculty/FacultyList';
+import StudentList from './components/principal/pages/Students/StudentList';
 
 // import Admin from "./components/Admin";
 
@@ -20,7 +23,7 @@ const App = () => {
         <Route path="/role-based-login" element={<RoleBasedLogin />} />
         <Route path="/hod-dashboard" element={<HodDashboard />} />
         <Route path="/faculty-dashboard" element={<FacultyDashboard />} />
-
+        <Route path="/principal-dashboard" element={<PrincipalDashboard />} />
         {/* <Route path="/admin" element={<Admin />} /> */}
         {/* Add more routes here when needed */}
       </Routes>
