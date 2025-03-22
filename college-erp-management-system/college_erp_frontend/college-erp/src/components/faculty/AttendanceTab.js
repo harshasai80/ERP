@@ -110,7 +110,7 @@ function AttendanceTab() {
         });
       }
     });
-
+    console.log(selectedSessions);
     const attendanceData = students.map((student) => {
       const sessions = selectedSessions.map((session) => ({
         session: session.session,
