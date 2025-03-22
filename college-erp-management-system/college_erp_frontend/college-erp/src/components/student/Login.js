@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Api from "../../Api";
-import { FaUserCircle } from "react-icons/fa";
 
 const Login = () => {
   const [formData, setFormData] = useState("");

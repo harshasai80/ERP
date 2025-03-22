@@ -17,7 +17,7 @@ function AttendanceTab() {
     if (department && semester && section) {
       fetchStudents();
     }
-  }, [department, semester, section]);
+  },[department, semester, section]);
 
   const fetchStudents = async () => {
     try {
@@ -81,8 +81,8 @@ function AttendanceTab() {
     const lunchBreak = lunchBreaks[semester];
     const collegeEndTime = collegeEndTimes[semester];
 
-    const selectedStartTime = new Date(`${date}T${startTime}`);
-    const selectedEndTime = new Date(`${date}T${endTime}`);
+    const selectedStartTime = new Date(`${date}T${startTime.split(":")[0]}:00`);
+    const selectedEndTime = new Date(`${date}T${endTime.split(":")[0]}:00`);
 
     let selectedSessions = [];
 
@@ -100,6 +100,7 @@ function AttendanceTab() {
           return; // 🔥 Skip this session (does NOT affect numbering)
         }
       }
+      console.log(selectedStartTime, selectedEndTime);
 
       // Select sessions within the given time range
       if (sessionStart >= selectedStartTime && sessionEnd <= selectedEndTime) {

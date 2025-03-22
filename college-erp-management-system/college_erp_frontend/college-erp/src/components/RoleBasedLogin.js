@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaUserCircle } from "react-icons/fa";
 
 export default function RoleBasedLogin() {
   const [username, setUsername] = useState("");
@@ -22,7 +21,7 @@ export default function RoleBasedLogin() {
       if (role === "HOD") navigate("/hod-dashboard");
       else if (role === "FACULTY") navigate("/faculty-dashboard");
       else if (role === "PRINCIPAL") navigate("/principal-dashboard");
-      else navigate("/");
+      else alert("Invalid credentials");
     } catch (err) {
       setError("Invalid credentials");
     }
