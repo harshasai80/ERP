@@ -37,4 +37,13 @@ public class ErpProjectExceptionHandler extends ResponseEntityExceptionHandler {
         structure.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         return new ResponseEntity<>(structure, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(InvalidCredentials.class)
+    public ResponseEntity<ResponseStructure<String>> handleIC(Exception ex) {
+        ResponseStructure<String> structure = new ResponseStructure<>();
+        structure.setData(null);
+        structure.setMessage(ex.getMessage());
+        structure.setStatus(HttpStatus.UNAUTHORIZED.value());
+        return new ResponseEntity<>(structure, HttpStatus.UNAUTHORIZED);
+    }
 }
