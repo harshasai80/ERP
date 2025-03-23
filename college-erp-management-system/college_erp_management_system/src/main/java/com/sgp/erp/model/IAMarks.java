@@ -1,3 +1,4 @@
+
 package com.sgp.erp.model;
 
 import jakarta.persistence.Column;

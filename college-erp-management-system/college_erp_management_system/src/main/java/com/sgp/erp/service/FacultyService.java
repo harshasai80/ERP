@@ -16,6 +16,8 @@ import com.sgp.erp.dao.FacultyDao;
 import com.sgp.erp.model.Faculty;
 import com.sgp.erp.model.Roles;
 
+import jakarta.mail.MessagingException;
+
 @Service
 public class FacultyService {
 
@@ -27,7 +29,7 @@ public class FacultyService {
 
     public void uploadFacultyCSV(MultipartFile file) {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
-             CSVReader csvReader = new CSVReader(reader)) {
+                CSVReader csvReader = new CSVReader(reader)) {
 
             String[] nextRecord;
             csvReader.readNext(); // Skip header row
@@ -59,6 +61,8 @@ public class FacultyService {
 
         } catch (IOException | CsvValidationException e) {
             throw new RuntimeException("Failed to process CSV file.");
+        } catch (MessagingException e) {
+            throw new RuntimeException("Failed to send password reset email.");
         }
     }
 

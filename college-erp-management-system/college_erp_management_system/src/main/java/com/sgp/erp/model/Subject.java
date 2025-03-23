@@ -28,6 +28,19 @@ public class Subject {
     @Column(name = "subject_type", nullable = false)
     private SubjectType subjectType;
 
+    @Column(name = "department", nullable = false)
+    private String department;
+
+    @Column(name = "semester", nullable = false)
+    private Byte semester;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "section", nullable = false)
+    private Section section;
+
+    @Column(name = "subject_batches")
+    private String[] subjectBatches;
+
 }
 
 enum SubjectType {

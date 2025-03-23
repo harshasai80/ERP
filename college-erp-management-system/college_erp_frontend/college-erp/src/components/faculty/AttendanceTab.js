@@ -84,11 +84,15 @@ function AttendanceTab() {
     const selectedStartTime = new Date(`${date}T${startTime}`);
     const selectedEndTime = new Date(`${date}T${endTime}`);
 
+    // console.log(selectedStartTime, selectedEndTime);
+
     let selectedSessions = [];
 
     predefinedSessions.forEach((session, index) => {
       const sessionStart = new Date(`${date}T${session.start}`);
       const sessionEnd = new Date(`${date}T${session.end}`);
+
+      // console.log(sessionStart.getHours(), sessionEnd.getHours());
 
       if (sessionEnd > new Date(`${date}T${collegeEndTime}`)) return;
 
@@ -131,7 +135,7 @@ function AttendanceTab() {
 
     try {
       const response = await Api.post(
-        "/students/add-attendance",
+        "/students/add-attendanc",
         attendanceData
       );
       console.log(response.data);
