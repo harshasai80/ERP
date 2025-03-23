@@ -7,14 +7,22 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import com.sgp.erp.dao.FacultyDao;
+import com.sgp.erp.dto.ResponseStructure;
+import com.sgp.erp.exception.InvalidCredentials;
+import com.sgp.erp.exception.StudentDoesExistException;
 import com.sgp.erp.model.Faculty;
 import com.sgp.erp.model.Roles;
+import com.sgp.erp.model.Student;
 
 import jakarta.mail.MessagingException;
 
@@ -26,6 +34,11 @@ public class FacultyService {
 
     @Autowired
     private EmailService emailService;
+
+	@Autowired
+	private FacultyService facultyService;
+    
+
 
     public void uploadFacultyCSV(MultipartFile file) {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
@@ -66,7 +79,16 @@ public class FacultyService {
         }
     }
 
-    public Optional<Faculty> findByEmail(String email) {
-        return facultyDAO.findByEmail(email);
-    }
+    public ResponseEntity<ResponseStructure<Faculty>> login(String email, String password) {
+		ResponseStructure<Faculty> structure = new ResponseStructure<Faculty>();
+        boolean res = facultyDAO.login(email, password);
+        if (res) {
+            structure.setData(facultyDAO.findByEmail(email).get());
+            structure.setMessage("Login successfully");
+            structure.setStatus(HttpStatus.OK.value());
+            return new ResponseEntity<ResponseStructure<Faculty>>(structure, HttpStatus.OK);
+        }
+
+        throw new InvalidCredentials();
+	}
 }

@@ -139,12 +139,14 @@ export const AttendanceTable = ({ attendanceData }) => {
                     case "3":
                       return "11 AM - 12 PM";
                     case "4":
-                      return "1 PM - 2 PM";
+                      return "12 PM - 1 PM";
                     case "5":
-                      return "2 PM - 3 PM";
+                      return "1 PM - 2 PM";
                     case "6":
-                      return "3 PM - 4 PM";
+                      return "2 PM - 3 PM";
                     case "7":
+                      return "3 PM - 4 PM";
+                    case "8":
                       return "4 PM - 5 PM";
                     default:
                       return "Unknown Session";

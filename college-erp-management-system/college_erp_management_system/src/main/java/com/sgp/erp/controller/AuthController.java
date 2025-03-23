@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sgp.erp.config.JwtUtil;
 import com.sgp.erp.dto.AuthRequest;
 import com.sgp.erp.dto.AuthResponse;
+import com.sgp.erp.dto.ResponseStructure;
 import com.sgp.erp.model.Faculty;
 import com.sgp.erp.service.FacultyService;
 
@@ -58,13 +59,7 @@ public class AuthController {
 	// }
 
 	@PostMapping("/login")
-	public String login(@RequestParam String email, @RequestParam String password) {
-		Optional<Faculty> faculty = facultyService.findByEmail(email);
-
-		if (!passwordEncoder.matches(password, faculty.get().getPassword())) {
-			return "Invalid credentials";
-		}
-
-		return "Login successful for " + faculty.get().getName();
+	public ResponseEntity<ResponseStructure<Faculty>> login(@RequestParam String email, @RequestParam String password) {
+		return facultyService.login(email, password);
 	}
 }
