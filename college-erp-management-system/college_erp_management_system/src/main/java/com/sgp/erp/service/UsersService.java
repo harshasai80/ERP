@@ -16,13 +16,18 @@ import com.opencsv.exceptions.CsvValidationException;
 import com.sgp.erp.dao.UsersDAO;
 import com.sgp.erp.dto.ResponseStructure;
 import com.sgp.erp.exception.InvalidCredentials;
+import com.sgp.erp.model.Faculty;
 import com.sgp.erp.model.Roles;
 import com.sgp.erp.model.Users;
+import com.sgp.erp.repository.FacultyRepository;
 
 import jakarta.mail.MessagingException;
 
 @Service
 public class UsersService {
+
+    @Autowired
+    private FacultyRepository facultyRepository;
 
     @Autowired
     private UsersDAO usersDAO;
@@ -51,14 +56,19 @@ public class UsersService {
                 }
 
                 Users users = new Users();
-                users.setName(name);
                 users.setEmail(email);
-                users.setDepartment(department);
-                users.setRole(role);
                 users.setPassword(null);
                 users.setResetToken(UUID.randomUUID().toString());
 
                 usersDAO.save(users);
+
+                Faculty faculty = new Faculty();
+                faculty.setName(name);
+                faculty.setEmail(email);
+                faculty.setDepartment(department);
+                faculty.setRole(role);
+
+                facultyRepository.save(faculty);
                 emailService.sendPasswordResetEmail(users.getEmail(), users.getResetToken());
             }
 
@@ -69,14 +79,14 @@ public class UsersService {
         }
     }
 
-    public ResponseEntity<ResponseStructure<Users>> login(String email, String password) {
-        ResponseStructure<Users> structure = new ResponseStructure<Users>();
+    public ResponseEntity<ResponseStructure<Faculty>> login(String email, String password) {
+        ResponseStructure<Faculty> structure = new ResponseStructure<Faculty>();
         boolean res = usersDAO.login(email, password);
         if (res) {
-            structure.setData(usersDAO.findByEmail(email).get());
+            structure.setData(facultyRepository.findByEmail(email).get());
             structure.setMessage("Login successfully");
             structure.setStatus(HttpStatus.OK.value());
-            return new ResponseEntity<ResponseStructure<Users>>(structure, HttpStatus.OK);
+            return new ResponseEntity<ResponseStructure<Faculty>>(structure, HttpStatus.OK);
         }
 
         throw new InvalidCredentials();
