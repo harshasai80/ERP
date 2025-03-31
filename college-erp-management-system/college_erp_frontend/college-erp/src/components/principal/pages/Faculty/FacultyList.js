@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
+import Api from "../../../../Api";
 import DataTable from '../../components/tables/DataTable';
 
 const FacultyList = () => {
+  const [showUpload, setShowUpload] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+
   const handleView = (facultyId) => {
     alert(`View details for faculty ID: ${facultyId}`);
   };
@@ -38,7 +42,30 @@ const FacultyList = () => {
   ];
   
   const handleAddFaculty = () => {
-    alert('Add faculty form will appear here');
+    setShowUpload(true);
+  };
+
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
+
+  const handleUpload = async () => {
+    if (selectedFile) {
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+
+      try {
+        const response = await Api.post('/faculty/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+        console.log(response.data);
+        alert(`File uploaded successfully: ${response.data.message}`);
+      } catch (error) {
+        alert(`Upload failed: ${error.response?.data?.message || error.message}`);
+      }
+    }
   };
   
   return (
@@ -47,6 +74,16 @@ const FacultyList = () => {
         <h1 className="text-2xl font-bold text-gray-800">Faculty List</h1>
         <button className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700" onClick={handleAddFaculty}>Add New Faculty</button>
       </div>
+      
+      {showUpload && (
+        <div className="mb-5 p-4 border border-gray-300 rounded bg-white shadow-md">
+          <h2 className="text-lg font-semibold mb-2">Upload Faculty CSV</h2>
+          <input type="file" accept=".csv" className="p-2 border border-gray-300 rounded w-full" onChange={handleFileChange} />
+          {selectedFile && (
+            <button className="mt-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" onClick={handleUpload}>Upload</button>
+          )}
+        </div>
+      )}
       
       <div className="flex gap-3 mb-5">
         <input type="text" placeholder="Search faculty..." className="flex-1 p-2 border border-gray-300 rounded" />
