@@ -20,6 +20,10 @@ public class Attendance {
 	@Column(name = "attendance_date", nullable = false)
 	private LocalDate attendanceDate;
 
+	@ManyToOne
+	@JoinColumn(name = "subject_id", nullable = false)
+	private Subject subject;
+
 	@Column(columnDefinition = "JSON", nullable = false)
 	private String sessions;
 

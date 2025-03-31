@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import com.sgp.erp.model.Faculty;
-import com.sgp.erp.repository.FacultyRepository;
+import com.sgp.erp.model.Users;
+import com.sgp.erp.repository.UserRepository;
 
 import java.util.Optional;
 
@@ -14,22 +14,22 @@ import java.util.Optional;
 @RequestMapping("/auth")
 public class PasswordResetController {
     @Autowired
-    private FacultyRepository facultyRepository;
+    private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @PostMapping("/reset-password")
     public String resetPassword(@RequestParam String token, @RequestParam String newPassword) {
-        Optional<Faculty> facultyOptional = facultyRepository.findByResetToken(token);
+        Optional<Users> userOptional = userRepository.findByResetToken(token);
 
-        if (facultyOptional.isEmpty()) {
+        if (userOptional.isEmpty()) {
             return "Invalid or expired token.";
         }
 
-        Faculty faculty = facultyOptional.get();
-        faculty.setPassword(passwordEncoder.encode(newPassword)); // Encrypt password
-        faculty.setResetToken(null); // Clear reset token
-        facultyRepository.save(faculty);
+        Users user = userOptional.get();
+        user.setPassword(passwordEncoder.encode(newPassword)); // Encrypt password
+        user.setResetToken(null); // Clear reset token
+        userRepository.save(user);
 
         return "Password updated successfully.";
     }

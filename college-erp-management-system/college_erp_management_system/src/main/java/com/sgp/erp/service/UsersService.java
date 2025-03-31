@@ -22,7 +22,7 @@ import com.sgp.erp.model.Users;
 import jakarta.mail.MessagingException;
 
 @Service
-public class FacultyService {
+public class UsersService {
 
     @Autowired
     private UsersDAO usersDAO;
