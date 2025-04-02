@@ -1,11 +1,14 @@
 package com.sgp.erp.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.sgp.erp.dao.SubjectDao;
 import com.sgp.erp.dto.ResponseStructure;
+import com.sgp.erp.exception.DataNotFoundException;
 import com.sgp.erp.model.Subject;
 
 @Service
@@ -31,4 +34,22 @@ public class SubjectService {
         structure.setStatus(HttpStatus.OK.value());
         return new ResponseEntity<>(structure, HttpStatus.OK);
     }
+
+    public ResponseEntity<ResponseStructure<List<Subject>>> findByDepartmentAndSemester(String department,
+            Byte semester) {
+        List<Subject> subjects = subjectDao.findByDepartmentAndSemester(department, semester);
+        ResponseStructure<List<Subject>> structure = new ResponseStructure<List<Subject>>();
+
+        try {
+            structure.setData(subjects);
+            structure.setMessage("Subjects found");
+            structure.setStatus(HttpStatus.OK.value());
+            return new ResponseEntity<ResponseStructure<List<Subject>>>(structure, HttpStatus.OK);
+        } catch (Exception e) {
+            throw new DataNotFoundException(
+                    "No subjects found for department: " + department + " and semester: " + semester);
+        }
+
+    }
+
 }

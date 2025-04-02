@@ -1,12 +1,15 @@
 package com.sgp.erp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import com.sgp.erp.model.Users;
 import com.sgp.erp.repository.UserRepository;
 
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -19,11 +22,11 @@ public class PasswordResetController {
     private PasswordEncoder passwordEncoder;
 
     @PostMapping("/reset-password")
-    public String resetPassword(@RequestParam String token, @RequestParam String newPassword) {
+    public ResponseEntity<?> resetPassword(@RequestParam String token, @RequestParam String newPassword) {
         Optional<Users> userOptional = userRepository.findByResetToken(token);
 
         if (userOptional.isEmpty()) {
-            return "Invalid or expired token.";
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Invalid or expired token"));
         }
 
         Users user = userOptional.get();
@@ -31,6 +34,7 @@ public class PasswordResetController {
         user.setResetToken(null); // Clear reset token
         userRepository.save(user);
 
-        return "Password updated successfully.";
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "Password reset successful"));
     }
+
 }

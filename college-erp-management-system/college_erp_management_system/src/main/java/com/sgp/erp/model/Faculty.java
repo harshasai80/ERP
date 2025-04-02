@@ -30,6 +30,6 @@ public class Faculty {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Roles role; // "HOD" or "Faculty"
+    private Roles role;
 
 }

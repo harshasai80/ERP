@@ -13,7 +13,7 @@ public class EmailService {
     private JavaMailSender mailSender;
 
     public void sendPasswordResetEmail(String email, String resetToken) throws MessagingException {
-        String resetLink = "http://yourdomain.com/reset-password?token=" + resetToken;
+        String resetLink = "http://localhost:3000/reset-password?token=" + resetToken;
         String subject = "Set Your Account Password";
 
         // HTML message with button

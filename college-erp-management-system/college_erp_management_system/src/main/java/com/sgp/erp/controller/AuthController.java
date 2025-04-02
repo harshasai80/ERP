@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sgp.erp.dto.ResponseStructure;
 import com.sgp.erp.model.Faculty;
-import com.sgp.erp.model.Users;
 import com.sgp.erp.service.UsersService;
 
 @RestController
