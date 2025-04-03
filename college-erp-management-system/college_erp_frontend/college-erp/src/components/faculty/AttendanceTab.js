@@ -136,7 +136,7 @@ function AttendanceTab() {
 
     try {
       const response = await Api.post(
-        "/students/add-attendanc",
+        "/students/add-attendance",
         attendanceData
       );
       console.log(response.data);

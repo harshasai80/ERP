@@ -34,6 +34,7 @@ public class EmailService {
         // Use MimeMessage to send HTML email
         MimeMessage mailMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mailMessage, true);
+        helper.setFrom("rohansamuel0806@gmail.com"); 
         helper.setTo(email);
         helper.setSubject(subject);
         helper.setText(message, true); // Enable HTML content

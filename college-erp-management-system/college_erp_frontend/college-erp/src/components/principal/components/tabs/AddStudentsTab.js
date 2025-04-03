@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Api from "../../Api";
+import Api from "../../../../Api";
 
 const AddStudentsTab = () => {
   const [student, setStudent] = useState({
@@ -21,9 +21,8 @@ const AddStudentsTab = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const confirm = window.confirm(
-      `Are you sure you want to add: \nName: ${student.name},\nRegister Number: ${student.registrationNumber},\nDepartment: ${student.department},\nSemester: ${student.sem}\n?`
+      `Are you sure you want to add:\nName: ${student.name},\nRegister Number: ${student.registrationNumber},\nDepartment: ${student.department},\nSemester: ${student.sem}\n?`
     );
-    console.log("Student Data Submitted:", student);
     try {
       if (confirm) {
         const response = await Api.post("/student/add", student);
@@ -32,51 +31,50 @@ const AddStudentsTab = () => {
       }
     } catch (error) {
       if (error.response) {
-        // ✅ Check HTTP status from error response
-        console.log(
-          `Error ${error.response.status}: ${error.response.data.message}`
-        );
         alert(`Error ${error.response.status}: ${error.response.data.message}`);
       } else {
         alert("Network error or server not responding.");
       }
     }
   };
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 shadow-lg rounded-lg w-96">
-        <h2 className="text-2xl font-bold mb-6 text-center">Add Student</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
+      <div className="bg-white shadow-xl rounded-lg border border-gray-300 w-[500px]">
+        <h2 className="text-2xl font-bold text-center bg-[#9569D8] text-white p-3 rounded-t-lg">
+          Add Student
+        </h2>
+        <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
-            <label className="block text-gray-700">Name</label>
+            <label className="block text-gray-700 font-medium">Name</label>
             <input
               type="text"
               name="name"
               value={student.name}
               onChange={handleChange}
               required
-              className="w-full p-2 border rounded mt-1"
+              className="w-full p-2 border rounded mt-1 focus:ring focus:ring-[#9569D8]"
             />
           </div>
           <div>
-            <label className="block text-gray-700">Register Number</label>
+            <label className="block text-gray-700 font-medium">Register Number</label>
             <input
               type="text"
               name="registrationNumber"
               value={student.registrationNumber}
               onChange={handleChange}
               required
-              className="w-full p-2 border rounded mt-1"
+              className="w-full p-2 border rounded mt-1 focus:ring focus:ring-[#9569D8]"
             />
           </div>
           <div>
-            <label className="block text-gray-700">Section</label>
+            <label className="block text-gray-700 font-medium">Section</label>
             <select
               name="section"
               value={student.section}
               onChange={handleChange}
               required
-              className="w-full p-2 border rounded mt-1"
+              className="w-full p-2 border rounded mt-1 focus:ring focus:ring-[#9569D8]"
             >
               <option value="">Select Section</option>
               <option value="A">A</option>
@@ -86,45 +84,42 @@ const AddStudentsTab = () => {
             </select>
           </div>
           <div>
-            <label className="block text-gray-700">Department</label>
+            <label className="block text-gray-700 font-medium">Department</label>
             <select
               name="department"
               value={student.department}
               onChange={handleChange}
               required
-              className="w-full p-2 border rounded mt-1"
+              className="w-full p-2 border rounded mt-1 focus:ring focus:ring-[#9569D8]"
             >
               <option value="">Select Department</option>
               <option value="DCS">Computer Science</option>
               <option value="DCE">Civil Engineering</option>
-              <option value="DEEE">
-                Electrical and electronics Engineering
-              </option>
+              <option value="DEEE">Electrical and Electronics Engineering</option>
               <option value="DME">Mechanical Engineering</option>
               <option value="DMT">Metallurgy</option>
             </select>
           </div>
           <div>
-            <label className="block text-gray-700">Semester</label>
+            <label className="block text-gray-700 font-medium">Semester</label>
             <select
               name="sem"
               value={student.sem}
               onChange={handleChange}
               required
-              className="w-full p-2 border rounded mt-1"
+              className="w-full p-2 border rounded mt-1 focus:ring focus:ring-[#9569D8]"
             >
               <option value="">Select Semester</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
+              {[...Array(6).keys()].map((num) => (
+                <option key={num + 1} value={num + 1}>
+                  {num + 1}
+                </option>
+              ))}
             </select>
           </div>
           <button
             type="submit"
-            className="w-full bg-[#9569D8] hover:bg-[#6f48a3] text-white p-2 rounded mt-4"
+            className="w-full bg-[#9569D8] hover:bg-[#6f48a3] text-white p-2 rounded mt-4 transition"
           >
             Add Student
           </button>

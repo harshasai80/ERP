@@ -3,6 +3,7 @@ package com.sgp.erp.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sgp.erp.dto.ResponseStructure;
 import com.sgp.erp.model.Student;
@@ -44,6 +45,11 @@ public class StudentController {
             @RequestParam Byte semester,
             @RequestParam Section section) {
         return studentService.findAllStudentsByDepartmentAndSemesterAndSection(department, semester, section);
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<ResponseStructure<String>> uploadStudents(@RequestParam MultipartFile file) {
+        return studentService.uploadStudent(file);
     }
 
 }
