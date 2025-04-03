@@ -1,5 +1,7 @@
 package com.sgp.erp.model;
 
+import com.sgp.erp.model.enums.Roles;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

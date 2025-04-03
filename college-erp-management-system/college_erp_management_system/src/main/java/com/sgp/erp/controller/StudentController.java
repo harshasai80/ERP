@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sgp.erp.dto.ResponseStructure;
-import com.sgp.erp.model.Section;
 import com.sgp.erp.model.Student;
+import com.sgp.erp.model.enums.Section;
 import com.sgp.erp.service.StudentService;
 
 import java.util.List;

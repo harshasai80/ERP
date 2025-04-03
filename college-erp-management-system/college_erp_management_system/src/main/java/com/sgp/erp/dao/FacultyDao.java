@@ -1,11 +1,14 @@
 package com.sgp.erp.dao;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.sgp.erp.model.Faculty;
+import com.sgp.erp.model.FacultySubject;
+import com.sgp.erp.model.Subject;
 import com.sgp.erp.repository.FacultyRepository;
 import com.sgp.erp.repository.SubjectRepository;
 
@@ -22,8 +25,10 @@ public class FacultyDao {
         return facultyRepository.findByEmail(email);
     }
 
-    public void assignSubject(){
+    public void assignSubject(FacultySubject facultySubject) {
+
         
+
     }
 
 }

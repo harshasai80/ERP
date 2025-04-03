@@ -12,8 +12,8 @@ import com.sgp.erp.dao.StudentDao;
 import com.sgp.erp.dto.ResponseStructure;
 import com.sgp.erp.exception.StudentDoesExistException;
 import com.sgp.erp.exception.StudentNotFoundException;
-import com.sgp.erp.model.Section;
 import com.sgp.erp.model.Student;
+import com.sgp.erp.model.enums.Section;
 
 @Service
 public class StudentService {
