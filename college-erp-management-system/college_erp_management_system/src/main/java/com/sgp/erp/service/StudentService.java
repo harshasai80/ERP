@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sgp.erp.dao.StudentDao;
 import com.sgp.erp.dto.ResponseStructure;
@@ -60,6 +61,18 @@ public class StudentService {
             return new ResponseEntity<ResponseStructure<List<Student>>>(structure, HttpStatus.OK);
         }
         throw new StudentNotFoundException();
+    }
+
+    public ResponseEntity<ResponseStructure<String>> uploadStudent(MultipartFile file) {
+        ResponseStructure<String> structure = new ResponseStructure<String>();
+        Boolean res = studentDao.uploadStudents(file);
+        if (res) {
+            structure.setData("File uploaded successfully");
+            structure.setMessage("File uploaded successfully");
+            structure.setStatus(HttpStatus.CREATED.value());
+            return new ResponseEntity<ResponseStructure<String>>(structure, HttpStatus.CREATED);
+        }
+        throw new StudentDoesExistException();
     }
 
 }

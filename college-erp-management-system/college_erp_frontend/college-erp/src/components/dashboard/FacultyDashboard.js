@@ -1,5 +1,4 @@
 import { useState } from "react";
-import AddStudentsTab from "../faculty/AddStudentsTab";
 import AttendanceTab from "../faculty/AttendanceTab";
 import AssessmentTab from "../faculty/AssessmentTab";
 import SyllabusTab from "../faculty/SyllabusTab";
@@ -14,7 +13,6 @@ const FacultyDashboard = () => {
     { id: "attendance", label: "Attendance" },
     { id: "assessment", label: "Internal Assessment" },
     { id: "syllabus", label: "Syllabus Management" },
-    { id: "add-students", label: "Add Students" },
     { id: "view-students", label: "View Students" }, // New Tab
   ];
 
@@ -65,7 +63,6 @@ const FacultyDashboard = () => {
         {activeTab === "attendance" && <AttendanceTab />}
         {activeTab === "assessment" && <AssessmentTab />}
         {activeTab === "syllabus" && <SyllabusTab />}
-        {activeTab === "add-students" && <AddStudentsTab />}
         {activeTab === "view-students" && <ViewStudentsTab />} {/* New Tab */}
       </div>
     </div>
