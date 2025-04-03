@@ -24,14 +24,17 @@ export default function RoleBasedLogin() {
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
         }
       );
-      const data = await response.data;
-      console.log(JSON.stringify(response.data?.data));
-      const strdata = JSON.stringify(response.data?.data);
+      const data = await response.data?.data;
+      console.log(JSON.stringify(data));
+      const strdata = JSON.stringify(data);
       const role = JSON.parse(strdata).role;
       console.log("Role:", role);
-      if (role === "HOD") navigate("/hod-dashboard");
-      else if (role === "FACULTY") navigate("/faculty-dashboard");
-      else if (role === "PRINCIPAL") navigate("/principal-dashboard");
+      if (role === "HOD") navigate("/hod-dashboard", { state: { data } });
+      else if (role === "FACULTY")
+        navigate("/faculty-dashboard", { state: { data } });
+      else if (role === "PRINCIPAL")
+        navigate("/principal-dashboard", { state: { data } });
+      else if (role === "ADMIN") navigate("/admin", { state: { data } });
       else alert("Invalid credentials");
     } catch (err) {
       setError("Invalid credentials");

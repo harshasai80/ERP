@@ -1,5 +1,7 @@
 package com.sgp.erp.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,4 +26,10 @@ public class SubjectController {
     public ResponseEntity<ResponseStructure<String>> deleteSubject(@PathVariable Integer subjectId) {
         return subjectService.deleteSubject(subjectId);
     }
+
+    @GetMapping("/department/{department}/semester/{semester}")
+    public ResponseEntity<ResponseStructure<List<Subject>>> findByDepartmentAndSemester(@PathVariable String department,
+            @PathVariable Byte semester) {
+        return subjectService.findByDepartmentAndSemester(department, semester);
+    }   
 }

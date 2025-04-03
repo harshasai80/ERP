@@ -8,6 +8,7 @@ import RoleBasedLogin from "./components/RoleBasedLogin";
 import HodDashboard from "./components/dashboard/HodDashboard";
 import FacultyDashboard from "./components/dashboard/FacultyDashboard";
 import PrincipalDashboard from "./components/dashboard/PrincipalDashboard";
+import ResetPassword from "./components/ResetPassword";
 
 // import Admin from "./components/Admin";
 
@@ -22,6 +23,8 @@ const App = () => {
         <Route path="/hod-dashboard" element={<HodDashboard />} />
         <Route path="/faculty-dashboard" element={<FacultyDashboard />} />
         <Route path="/principal-dashboard" element={<PrincipalDashboard />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+
         {/* <Route path="/admin" element={<Admin />} /> */}
         {/* Add more routes here when needed */}
       </Routes>

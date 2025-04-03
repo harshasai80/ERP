@@ -16,4 +16,5 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     Optional<Student> findByRegistrationNumber(String registrationNumber);
 
     List<Student> findAllStudentsByDepartmentAndSemAndSection(String department, Byte sem, Section section);
+
 }

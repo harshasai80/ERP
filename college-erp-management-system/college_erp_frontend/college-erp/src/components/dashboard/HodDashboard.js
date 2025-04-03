@@ -3,9 +3,16 @@ import Navbar from "../principal/components/layout/Navbar";
 import Dashboard from "../principal/pages/Dashboard";
 import FacultyList from "../principal/pages/Faculty/FacultyList";
 import StudentList from "../principal/pages/Students/StudentList";
+import { useLocation } from "react-router-dom";
 
 const HodDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
+
+  const location = useLocation();
+
+  const data = location.state?.data;
+
+  console.log(data);
 
   const renderContent = () => {
     switch (activeTab) {
@@ -22,7 +29,7 @@ const HodDashboard = () => {
     <div className="flex flex-col min-h-screen">
       {/* Navbar stretches full width */}
       <div className="w-full bg-white shadow-md py-4">
-        <Navbar />
+        <Navbar name={data?.name} />
       </div>
 
       <main className="flex-1 p-5 bg-gray-100">
@@ -31,7 +38,9 @@ const HodDashboard = () => {
           <div className="flex space-x-4">
             <button
               className={`py-2 px-4 ${
-                activeTab === "dashboard" ? "border-b-2 border-blue-500 text-blue-600" : "text-gray-500"
+                activeTab === "dashboard"
+                  ? "border-b-2 border-blue-500 text-blue-600"
+                  : "text-gray-500"
               }`}
               onClick={() => setActiveTab("dashboard")}
             >
@@ -39,7 +48,9 @@ const HodDashboard = () => {
             </button>
             <button
               className={`py-2 px-4 ${
-                activeTab === "faculty" ? "border-b-2 border-blue-500 text-blue-600" : "text-gray-500"
+                activeTab === "faculty"
+                  ? "border-b-2 border-blue-500 text-blue-600"
+                  : "text-gray-500"
               }`}
               onClick={() => setActiveTab("faculty")}
             >
@@ -47,7 +58,9 @@ const HodDashboard = () => {
             </button>
             <button
               className={`py-2 px-4 ${
-                activeTab === "students" ? "border-b-2 border-blue-500 text-blue-600" : "text-gray-500"
+                activeTab === "students"
+                  ? "border-b-2 border-blue-500 text-blue-600"
+                  : "text-gray-500"
               }`}
               onClick={() => setActiveTab("students")}
             >

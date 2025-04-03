@@ -22,6 +22,7 @@ import com.sgp.erp.model.Users;
 import com.sgp.erp.repository.FacultyRepository;
 
 import jakarta.mail.MessagingException;
+import jakarta.transaction.Transactional;
 
 @Service
 public class UsersService {
@@ -35,6 +36,7 @@ public class UsersService {
     @Autowired
     private EmailService emailService;
 
+    @Transactional
     public void uploadFacultyCSV(MultipartFile file) {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
                 CSVReader csvReader = new CSVReader(reader)) {
