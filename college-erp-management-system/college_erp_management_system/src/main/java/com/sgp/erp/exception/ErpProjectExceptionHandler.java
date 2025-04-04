@@ -46,4 +46,13 @@ public class ErpProjectExceptionHandler extends ResponseEntityExceptionHandler {
         structure.setStatus(HttpStatus.UNAUTHORIZED.value());
         return new ResponseEntity<>(structure, HttpStatus.UNAUTHORIZED);
     }
+
+    @ExceptionHandler(SubjectNotAssignedException.class)
+    public ResponseEntity<ResponseStructure<String>> handleSNAE(Exception ex) {
+        ResponseStructure<String> structure = new ResponseStructure<>();
+        structure.setData(null);
+        structure.setMessage(ex.getMessage());
+        structure.setStatus(HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(structure, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
 }

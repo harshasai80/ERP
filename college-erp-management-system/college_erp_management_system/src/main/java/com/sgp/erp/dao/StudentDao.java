@@ -12,13 +12,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
-import com.sgp.erp.exception.StudentDoesExistException;
-import com.sgp.erp.model.Section;
 import com.sgp.erp.model.Student;
 import com.sgp.erp.model.enums.Section;
 import com.sgp.erp.repository.StudentRepository;
-
-import jakarta.transaction.Transactional;
 
 @Repository
 public class StudentDao {
@@ -44,35 +40,35 @@ public class StudentDao {
     }
 
     public Boolean uploadStudents(MultipartFile studentsFile) {
-        try(BufferedReader reader = new BufferedReader(new InputStreamReader(studentsFile.getInputStream()));
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(studentsFile.getInputStream()));
                 CSVReader csvReader = new CSVReader(reader)) {
 
-                    String[] nextRecord;
-                    csvReader.readNext();
+            String[] nextRecord;
+            csvReader.readNext();
 
-                    while ((nextRecord = csvReader.readNext()) != null) {
-                        String registrationNumber = nextRecord[0];
-                        String name = nextRecord[1];
-                        String department = nextRecord[2];
-                        byte sem = Byte.parseByte(nextRecord[3]);
-                        Section section = Section.valueOf(nextRecord[4]);
+            while ((nextRecord = csvReader.readNext()) != null) {
+                String registrationNumber = nextRecord[0];
+                String name = nextRecord[1];
+                String department = nextRecord[2];
+                byte sem = Byte.parseByte(nextRecord[3]);
+                Section section = Section.valueOf(nextRecord[4]);
 
-                        Student student = new Student();
-                        student.setRegistrationNumber(registrationNumber);
-                        student.setName(name);
-                        student.setDepartment(department);
-                        student.setSem(sem);
-                        student.setSection(section);
-                        try {
-                            studentRepository.save(student);
-                        } catch (Exception e) {
-                            System.out.println("Student with registration number " + registrationNumber + " already exists.");
-                            continue;
-                        }
-                    }
+                Student student = new Student();
+                student.setRegistrationNumber(registrationNumber);
+                student.setName(name);
+                student.setDepartment(department);
+                student.setSem(sem);
+                student.setSection(section);
 
-                    return true;
-        
+                Optional<Student> existingStudent = findByRegistrationNumber(registrationNumber);
+                if (existingStudent.isPresent()) {
+                    System.out.println("Student with registration number " + registrationNumber + " already exists.");
+                    continue;
+                } else {
+                    studentRepository.save(student);
+                }
+            }
+            return true;
         } catch (IOException | CsvValidationException e) {
             throw new RuntimeException("Failed to process CSV file.");
         }
