@@ -4,22 +4,18 @@ const Home = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-gray-200 to-gray-300">
+    <div className="flex flex-col min-h-screen bg-gradient-to-b from-black to-black">
       {/* Navbar */}
-      <nav className="bg-gradient-to-r from-[#2D2A43] to-[#3D3A63] text-white shadow-lg">
+      <nav className="bg-gradient-to-r from-[#4ade80] via-[#57e98c] to-[#4ade80] text-emerald-900 shadow-lg">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center">
-            <div className="mr-4 transform hover:rotate-3 transition-transform duration-300">
-              <img
-                src="/logo128.png"
-                alt="SGP Logo"
-                className="h-12 w-12 rounded-full border-2 border-purple-300 shadow-md"
-              />
+            <div className="mr-4 transform hover:scale-125 transition-transform duration-300">
+              <img src="/logo128.png" alt="SGP Logo" className="h-12 w-12" />
             </div>
-            <div className="group">
+            <div className="group hover:border-b-2 border-emerald-900">
               <h1 className="text-2xl font-bold tracking-wider ">
-                <span className="text-purple-300 group-hover:hidden ">SGP</span>
-                <span className="text-purple-300 hidden group-hover:inline">
+                <span className="text-black group-hover:hidden ">SGP</span>
+                <span className="text-black hidden group-hover:inline">
                   Sanjay Gandhi Polytechnic
                 </span>{" "}
                 ERP System
@@ -29,13 +25,13 @@ const Home = () => {
           <div className="flex items-center space-x-6">
             <Link
               to="/role-based-login"
-              className="hover:text-purple-300 transition duration-300 font-medium px-4 py-2 rounded-lg hover:bg-[#3D3A63]"
+              className="hover:text-slate-50 transition duration-300 font-medium px-4 py-2 rounded-md hover:border-2 border-green-700 hover:bg-[#0000004b]"
             >
               Login
             </Link>
             <Link
               to="/login/student"
-              className="hover:text-purple-300 transition duration-300 font-medium px-4 py-2 rounded-lg hover:bg-[#3D3A63]"
+              className="hover:text-slate-50 transition duration-300 font-medium px-4 py-2 rounded-md hover:border-2 border-green-700 hover:bg-[#0000004b]"
             >
               Student Search
             </Link>
