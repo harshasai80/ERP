@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { PiEyeClosedBold, PiEyeBold } from "react-icons/pi";
 import Api from "../Api";
 
 export default function RoleBasedLogin() {
@@ -7,6 +8,7 @@ export default function RoleBasedLogin() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   const data = {
     sgpcshod: "HOD",
@@ -97,6 +99,13 @@ export default function RoleBasedLogin() {
                 placeholder="Enter password"
                 required
               />
+              <button
+                type="button"
+                className="absolute -left-10px bottom-50 translate-y-1 text-2xl text-white-800"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <PiEyeClosedBold /> : <PiEyeBold />}
+              </button>
             </div>
             <button
               type="submit"

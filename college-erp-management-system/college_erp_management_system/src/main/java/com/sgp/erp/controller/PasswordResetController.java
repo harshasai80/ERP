@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import com.sgp.erp.dto.ResponseStructure;
 import com.sgp.erp.model.Users;
 import com.sgp.erp.repository.UserRepository;
 
@@ -22,11 +23,16 @@ public class PasswordResetController {
     private PasswordEncoder passwordEncoder;
 
     @PostMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestParam String token, @RequestParam String newPassword) {
+    public ResponseEntity<ResponseStructure<String>> resetPassword(@RequestParam String token, @RequestParam String newPassword) {
         Optional<Users> userOptional = userRepository.findByResetToken(token);
+        ResponseStructure<String> structure = new ResponseStructure<>();
 
         if (userOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Invalid or expired token"));
+            structure.setData(null);
+            structure.setMessage("Invalid or expired token");
+            structure.setStatus(HttpStatus.BAD_REQUEST.value());
+            // return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Invalid or expired token"));
+            return new ResponseEntity<>(structure, HttpStatus.BAD_REQUEST);
         }
 
         Users user = userOptional.get();
@@ -34,7 +40,10 @@ public class PasswordResetController {
         user.setResetToken(null); // Clear reset token
         userRepository.save(user);
 
-        return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "Password reset successful"));
+        structure.setData(null);
+        structure.setMessage("Password Reset Successfully");
+        structure.setStatus(HttpStatus.OK.value());
+        return new ResponseEntity<>(structure, HttpStatus.OK);
     }
 
 }
