@@ -38,11 +38,6 @@ const ViewStudentsTab = () => {
     }
   };
 
-  const handleDelete = (id) => {
-    console.log(`Student with ID ${id} deleted.`);
-    // Implement delete logic here (e.g., API call)
-  };
-
   const handleView = (data) => {
     console.log("Student Data:", data);
     navigate("/dashboard", { state: { student: data } });
@@ -104,28 +99,22 @@ const ViewStudentsTab = () => {
         <tbody>
           {students.map((student) => (
             <tr key={student.id} className="odd:bg-white even:bg-gray-100">
-              <td className="py-2 px-4 border">
+              <td className="py-2 px-4 border text-center">
                 {String(student.registrationNumber).toUpperCase()}
               </td>
-              <td className="py-2 px-4 border">
+              <td className="py-2 px-4 border text-center">
                 {String(student.name).toUpperCase()}
               </td>
-              <td className="py-2 px-4 border">
+              <td className="py-2 px-4 border text-center">
                 {String(student.department).toUpperCase()}
               </td>
               <td className="py-2 px-4 border text-center">{student.sem}</td>
               <td className="py-2 px-4 border text-center">
                 <button
-                  className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-700 mr-2"
+                  className="bg-blue-500 text-white px-5 py-1 rounded hover:bg-blue-700 mr-2"
                   onClick={() => handleView(student)}
                 >
                   View
-                </button>
-                <button
-                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700"
-                  onClick={() => handleDelete(student.id)}
-                >
-                  Delete
                 </button>
               </td>
             </tr>

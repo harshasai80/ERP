@@ -142,6 +142,7 @@ function AttendanceTab() {
       console.log(response.data);
       showAlert("Attendance saved successfully!", "success");
     } catch (error) {
+      console.log(error)
       showAlert("Failed to save attendance", "error");
     }
   };
