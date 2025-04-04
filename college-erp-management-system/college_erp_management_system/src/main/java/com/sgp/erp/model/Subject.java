@@ -31,7 +31,6 @@ public class Subject {
     @Column(name = "semester", nullable = false)
     private Byte semester;
 
-
     @Column(name = "max_marks", nullable = false)
     private int maxMarks;
 }

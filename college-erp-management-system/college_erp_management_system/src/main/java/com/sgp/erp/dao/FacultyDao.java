@@ -10,10 +10,14 @@ import com.sgp.erp.model.Faculty;
 import com.sgp.erp.model.FacultySubject;
 import com.sgp.erp.model.Subject;
 import com.sgp.erp.repository.FacultyRepository;
+import com.sgp.erp.repository.FacultySubjectRepository;
 import com.sgp.erp.repository.SubjectRepository;
 
 @Repository
 public class FacultyDao {
+
+    @Autowired
+    private FacultySubjectRepository facultySubjectRepository;
     
     @Autowired
     private FacultyRepository facultyRepository;
@@ -25,10 +29,9 @@ public class FacultyDao {
         return facultyRepository.findByEmail(email);
     }
 
-    public void assignSubject(FacultySubject facultySubject) {
-
-        
-
+    public Boolean assignSubject(FacultySubject facultySubject) {
+        facultySubjectRepository.save(facultySubject);
+        return true;
     }
 
 }
