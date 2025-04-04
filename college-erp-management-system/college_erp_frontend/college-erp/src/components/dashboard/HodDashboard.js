@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import Navbar from "../principal/components/layout/Navbar";
-import Dashboard from "../principal/pages/Dashboard";
-import FacultyList from "../principal/pages/Faculty/FacultyList";
-import StudentList from "../principal/pages/Students/StudentList";
+import Navbar from "../hod/components/layout/Navbar";
+import Dashboard from "../hod/pages/Dashboard";
+import FacultyList from "../hod/pages/Faculty/FacultyList";
+import StudentList from "../hod/pages/Students/StudentList";
 import { useLocation } from "react-router-dom";
 
 const HodDashboard = () => {
