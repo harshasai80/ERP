@@ -1,4 +1,4 @@
-package com.sgp.erp.model;
+package com.sgp.erp.model.enums;
 
 public enum Section {
     A, B, C, D

@@ -17,8 +17,8 @@ import com.sgp.erp.dao.UsersDAO;
 import com.sgp.erp.dto.ResponseStructure;
 import com.sgp.erp.exception.InvalidCredentials;
 import com.sgp.erp.model.Faculty;
-import com.sgp.erp.model.Roles;
 import com.sgp.erp.model.Users;
+import com.sgp.erp.model.enums.Roles;
 import com.sgp.erp.repository.FacultyRepository;
 
 import jakarta.mail.MessagingException;
