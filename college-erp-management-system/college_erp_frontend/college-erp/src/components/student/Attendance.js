@@ -3,6 +3,7 @@ import { format } from "date-fns";
 import { DatePicker } from "./Date-picker";
 import { useLocation } from "react-router-dom";
 import { AttendanceTable, AttendanceRangeTable } from "./AttendanceRangeTable";
+import { motion } from "framer-motion";
 import Api from "../../Api";
 
 const Attendance = () => {
@@ -86,75 +87,112 @@ const Attendance = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6 p-4 md:p-6 bg-gray-100 rounded-lg shadow-md max-w-7xl mx-auto">
-      {/* Form Section */}
-      <div className="bg-white rounded-lg shadow-sm p-4 md:p-6 flex-1">
-        <h2 className="text-lg md:text-2xl font-bold text-gray-800 flex items-center mb-4 md:mb-6">
-          <span className="text-blue-600 mr-2">📅</span> Attendance Dashboard
+    <div className="p-6 bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white rounded-lg">
+      <motion.div
+        className="mb-6"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+      >
+        <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-emerald-200">
+          Student Attendance Dashboard
         </h2>
+      </motion.div>
 
-        {/* Mode Selection Tabs */}
-        <div className="flex mb-4 md:mb-6 space-x-2 md:space-x-4">
-          {["range", "single"].map((m) => (
-            <button
-              key={m}
-              className={`px-3 md:px-5 py-2 md:py-3 rounded-lg font-medium transition-all duration-200 ${
-                mode === m
-                  ? "bg-blue-600 text-white shadow-md"
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-              }`}
-              onClick={() => {
-                setMode(m);
-                setAttendanceData([]);
-              }}
-            >
-              {m === "range" ? "📆 Date Range" : "📍 Single Date"}
-            </button>
-          ))}
-        </div>
-
-        {/* Date Pickers */}
-        <div className="mb-4 md:mb-6">
-          {mode === "range" ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4">
-              <DatePicker
-                label="Start Date"
-                selected={dateRange.start}
-                onChange={handleStartDateChange}
-              />
-              <DatePicker
-                label="End Date"
-                selected={dateRange.end}
-                onChange={handleEndDateChange}
-              />
-            </div>
-          ) : (
-            <DatePicker
-              label="Select Date"
-              selected={date}
-              onChange={handleDateChange}
-              className="w-full"
-            />
-          )}
-        </div>
-
-        {/* Search Button */}
-        <button
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 md:px-8 py-2 md:py-3 rounded-lg font-medium flex items-center shadow-md"
-          onClick={handleSearch}
-          disabled={loading}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Form Section */}
+        <motion.div 
+          className="bg-gradient-to-tr from-gray-800 to-gray-700 rounded-2xl shadow-lg p-6"
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.4 }}
         >
-          <span className="mr-2">🔍</span> {loading ? "Searching..." : "Search"}
-        </button>
-      </div>
+          <h3 className="text-lg font-bold text-emerald-300 mb-4 flex items-center">
+            <span className="mr-2">📅</span> Attendance Lookup
+          </h3>
 
-      {/* Attendance Table Section */}
-      <div className="bg-white rounded-lg shadow-sm p-4 md:p-6 flex-1 overflow-y-auto">
-        {mode === "single" ? (
-          <AttendanceTable attendanceData={attendanceData} />
-        ) : (
-          <AttendanceRangeTable attendanceData={attendanceData} />
-        )}
+          {/* Mode Selection Tabs */}
+          <div className="flex mb-4 space-x-3">
+            {["range", "single"].map((m) => (
+              <motion.button
+                key={m}
+                className={`px-4 py-2 rounded-full font-medium transition-all duration-200 text-sm ${
+                  mode === m
+                    ? "bg-emerald-600 text-white shadow-md"
+                    : "bg-gray-700 text-gray-300 hover:bg-gray-600 border border-emerald-300/30"
+                }`}
+                onClick={() => {
+                  setMode(m);
+                  setAttendanceData([]);
+                }}
+                whileHover={{ scale: 1.05 }}
+              >
+                {m === "range" ? "📆 Date Range" : "📍 Single Date"}
+              </motion.button>
+            ))}
+          </div>
+
+          {/* Date Pickers */}
+          <div className="mb-4">
+            {mode === "range" ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <DatePicker
+                  label="Start Date"
+                  selected={dateRange.start}
+                  onChange={handleStartDateChange}
+                />
+                <DatePicker
+                  label="End Date"
+                  selected={dateRange.end}
+                  onChange={handleEndDateChange}
+                />
+              </div>
+            ) : (
+              <DatePicker
+                label="Select Date"
+                selected={date}
+                onChange={handleDateChange}
+                className="w-full"
+              />
+            )}
+          </div>
+
+          {/* Search Button */}
+          <motion.button
+            className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-full font-medium flex items-center justify-center shadow-md w-full border border-emerald-300/50 text-sm"
+            onClick={handleSearch}
+            disabled={loading}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <span className="mr-2">🔍</span> {loading ? "Searching..." : "Search Records"}
+          </motion.button>
+        </motion.div>
+
+        {/* Attendance Table Section */}
+        <motion.div 
+          className="bg-gradient-to-tr from-gray-800 to-gray-700 rounded-2xl shadow-lg p-6 overflow-auto max-h-96"
+          initial={{ opacity: 0, x: 10 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.4 }}
+        >
+          <h3 className="text-lg font-bold text-emerald-300 mb-4 flex items-center">
+            <span className="mr-2">📊</span> Attendance Records
+          </h3>
+          
+          {attendanceData.length > 0 ? (
+            mode === "single" ? (
+              <AttendanceTable attendanceData={attendanceData} />
+            ) : (
+              <AttendanceRangeTable attendanceData={attendanceData} />
+            )
+          ) : (
+            <div className="text-center py-8 text-gray-400">
+              <p>No attendance data to display</p>
+              <p className="text-sm mt-2">Select a date and click search</p>
+            </div>
+          )}
+        </motion.div>
       </div>
     </div>
   );

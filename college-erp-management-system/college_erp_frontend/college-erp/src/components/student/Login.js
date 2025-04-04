@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Api from "../../Api";
+import { motion } from "framer-motion";
 
 const Login = () => {
   const [formData, setFormData] = useState("");
@@ -19,7 +20,6 @@ const Login = () => {
         { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
       );
       const data = await response.data;
-      console.log(JSON.stringify(response.data));
       if (response.status === 200) {
         navigate("/dashboard", { state: { student: data } });
       } else {
@@ -42,20 +42,33 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-300">
-      {/* Navbar */}
-      <nav className="bg-[#2D2A43] text-white flex justify-between items-center px-4 md:px-6 py-3">
-        <div className="flex items-center gap-3 md:gap-4">
-          <img src="/logo128.png" alt="College Logo" className="h-8 md:h-10 w-auto" />
-          <div className="text-sm md:text-lg font-semibold">Sanjay Gandhi Polytechnic</div>
-        </div>
-        <div className="text-lg font-semibold absolute left-1/2 transform -translate-x-1/2">Student Login</div>
-        <div className="flex items-center gap-4 md:gap-6">
+    <div className="min-h-screen flex flex-col bg-gray-950 text-white">
+      {/* Navbar with emerald gradient */}
+      <nav className="backdrop-blur-md bg-gradient-to-r from-emerald-500/60 to-emerald-700/60 shadow-md">
+        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <motion.img
+              src="/logo128.png"
+              alt="Logo"
+              className="h-12 w-12"
+              whileHover={{ scale: 1.2 }}
+              transition={{ duration: 0.3 }}
+            />
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.3 }}
+            >
+              <h1 className="text-xl md:text-2xl font-extrabold tracking-wide text-white">
+                <span className="hidden sm:inline">Sanjay Gandhi Polytechnic</span>
+                <span className="inline sm:hidden">SGP</span> ERP System
+              </h1>
+            </motion.div>
+          </div>
           <button
-            className="bg-[#9569D8] hover:bg-[#ac3131] px-3 md:px-4 py-1 md:py-2 rounded text-white font-medium text-xs md:text-sm"
             onClick={() => navigate("/")}
+            className="hover:bg-emerald-800 px-4 py-2 rounded-full border border-emerald-300 transition duration-300 text-sm font-medium"
           >
-            Log Out
+            Home
           </button>
         </div>
       </nav>
@@ -63,21 +76,21 @@ const Login = () => {
       {/* Login Form */}
       <div className="flex flex-grow justify-center items-center">
         <form
-          className="bg-[#2e2e48] p-6 rounded-lg shadow-lg text-center w-80"
+          className="bg-gray-800 p-6 rounded-lg shadow-lg text-center w-80"
           onSubmit={handleSubmit}
         >
-          <h2 className="text-white text-xl font-bold mb-2">Register</h2>
+          <h2 className="text-white text-xl font-bold mb-4">Student Login</h2>
           <div className="mb-4 text-left">
-            <label className="text-white block pl-1 mb-1">Reg. No</label>
+            <label className="text-gray-200 block pl-1 mb-1">Reg. No</label>
             <input
               type="text"
               onChange={handleChange}
               placeholder="Enter Reg. No"
-              className="w-full px-3 py-2 rounded-md border border-gray-600 bg-[#b5b5d3] text-black focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full px-3 py-2 rounded-md border border-gray-600 bg-gray-200 text-black focus:outline-none focus:ring-2 focus:ring-emerald-500"
               required
             />
           </div>
-          <button className="w-full py-2 rounded-md bg-[#7a57b7] text-white font-semibold hover:bg-[#5629c0] transition duration-200">
+          <button className="w-full py-2 rounded-md bg-emerald-600 text-white font-semibold hover:bg-emerald-700 transition duration-200">
             Submit
           </button>
         </form>

@@ -1,274 +1,193 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { Menu, X } from "lucide-react";
+
 const Home = () => {
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-black to-black">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white">
       {/* Navbar */}
-      <nav className="bg-gradient-to-r from-[#4ade80] via-[#57e98c] to-[#4ade80] text-emerald-900 shadow-lg">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center">
-            <div className="mr-4 transform hover:scale-125 transition-transform duration-300">
-              <img src="/logo128.png" alt="SGP Logo" className="h-12 w-12" />
-            </div>
-            <div className="group hover:border-b-2 border-emerald-900">
-              <h1 className="text-2xl font-bold tracking-wider ">
-                <span className="text-black group-hover:hidden ">SGP</span>
-                <span className="text-black hidden group-hover:inline">
-                  Sanjay Gandhi Polytechnic
-                </span>{" "}
-                ERP System
+      <nav className="backdrop-blur-md bg-gradient-to-r from-emerald-500/60 to-emerald-700/60 shadow-md sticky top-0 z-50">
+        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <motion.img
+              src="/logo128.png"
+              alt="SGP Logo"
+              className="h-12 w-12 cursor-pointer"
+              whileHover={{ scale: 1.2 }}
+              transition={{ duration: 0.3 }}
+            />
+            <motion.div
+              className="cursor-pointer"
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.3 }}
+            >
+              <h1 className="text-2xl font-extrabold tracking-wide text-white">
+                <span className="hidden sm:inline">Sanjay Gandhi Polytechnic</span>
+                <span className="inline sm:hidden">SGP</span> ERP System
               </h1>
-            </div>
+            </motion.div>
           </div>
-          <div className="flex items-center space-x-6">
+
+          {/* Desktop Links */}
+          <div className="hidden md:flex space-x-4">
             <Link
               to="/role-based-login"
-              className="hover:text-slate-50 transition duration-300 font-medium px-4 py-2 rounded-md hover:border-2 border-green-700 hover:bg-[#0000004b]"
+              className="hover:bg-emerald-800 px-4 py-2 rounded-full border border-emerald-300 transition duration-300 text-sm font-medium"
             >
               Login
             </Link>
             <Link
               to="/login/student"
-              className="hover:text-slate-50 transition duration-300 font-medium px-4 py-2 rounded-md hover:border-2 border-green-700 hover:bg-[#0000004b]"
+              className="hover:bg-emerald-800 px-4 py-2 rounded-full border border-emerald-300 transition duration-300 text-sm font-medium"
             >
               Student Search
             </Link>
           </div>
+
+          {/* Hamburger Menu */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="text-white focus:outline-none"
+            >
+              {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile Dropdown */}
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              className="md:hidden px-4 pt-2 pb-4 space-y-3 bg-emerald-700/80 backdrop-blur-lg shadow-xl rounded-b-2xl mx-4 mt-2"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+            >
+              {[{ label: "Login", to: "/role-based-login" }, { label: "Student Search", to: "/login/student" }].map((link, i) => (
+                <motion.div
+                  key={link.to}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 * i }}
+                >
+                  <Link
+                    to={link.to}
+                    onClick={() => setIsOpen(false)}
+                    className="block w-full text-white text-sm text-center bg-emerald-800 hover:bg-emerald-900 transition-colors duration-300 px-4 py-2 rounded-full border border-emerald-300 shadow"
+                  >
+                    {link.label}
+                  </Link>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
 
-      {/* Main Content */}
-      <div className="flex-grow container mx-auto px-4 py-10">
-        <div className="bg-white rounded-xl shadow-xl p-10 text-center border-t-4 border-[#9569D8]">
-          <h2 className="text-3xl font-bold mb-8 text-[#2D2A43] relative inline-block">
-            Welcome to Sanjay Gandhi Polytechnic ERP System
-          </h2>
-
-          <p className="text-gray-600 mb-10 max-w-3xl mx-auto text-lg">
-            Manage student information, attendance, results, and more with our
-            comprehensive ERP solution.
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-10">
-            <div className="bg-gradient-to-br from-[#2D2A43] to-[#352F54] p-8 rounded-xl shadow-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-1">
-              <div className="bg-[#9569D8] w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-8 w-8 text-white "
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-                  />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold mb-3 text-white">
-                Student Management
-              </h3>
-              <p className="text-gray-300 mb-6">
-                Access and manage student records efficiently.
-              </p>
-              <button
-                onClick={() => navigate("/role-based-login")}
-                className="bg-[#9569D8] hover:bg-purple-700 text-white py-2 px-6 rounded-lg transition duration-300 shadow-md hover:shadow-lg font-medium"
-              >
-                Access
-              </button>
-            </div>
-
-            <div className="bg-gradient-to-br from-[#2D2A43] to-[#352F54] p-8 rounded-xl shadow-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-1">
-              <div className="bg-[#9569D8] w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-8 w-8 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                  />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold mb-3 text-white">
-                Attendance Tracking
-              </h3>
-              <p className="text-gray-300 mb-6">
-                Monitor and record student attendance easily.
-              </p>
-              <button
-                onClick={() => navigate("/login/student")}
-                className="bg-[#9569D8] hover:bg-purple-700 text-white py-2 px-6 rounded-lg transition duration-300 shadow-md hover:shadow-lg font-medium"
-              >
-                Track
-              </button>
-            </div>
-
-            <div className="bg-gradient-to-br from-[#2D2A43] to-[#352F54] p-8 rounded-xl shadow-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-1">
-              <div className="bg-[#9569D8] w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-8 w-8 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                  />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold mb-3 text-white">
-                Results Portal
-              </h3>
-              <p className="text-gray-300 mb-6">
-                Manage and publish examination results.
-              </p>
-              <button
-                onClick={() => navigate("/login/student")}
-                className="bg-[#9569D8] hover:bg-purple-700 text-white py-2 px-6 rounded-lg transition duration-300 shadow-md hover:shadow-lg font-medium"
-              >
-                Results
-              </button>
-            </div>
+      {/* Hero Section */}
+      <section className="flex-grow container mx-auto px-6 py-16">
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          {/* Left */}
+          <div className="flex flex-col justify-center items-center">
+            <motion.h2
+              className="text-3xl sm:text-5xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-emerald-200 leading-tight text-center md:text-left"
+              initial={{ scale: 0.95 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              Welcome to <br /> Sanjay Gandhi Polytechnic <br /> ERP System
+            </motion.h2>
+            <motion.img
+              src="/home.gif"
+              alt="ERP Illustration"
+              className="w-[300px] h-[300px] md:w-[500px] md:h-[500px] object-contain rounded-3xl shadow-2xl"
+              initial={{ rotateY: 20 }}
+              animate={{ rotateY: 0 }}
+              transition={{ duration: 1 }}
+            />
           </div>
 
-          <div className="flex flex-wrap justify-center gap-4 mt-10">
-            <button
-              className="bg-gradient-to-r from-[#9569D8] to-[#8559C8] hover:from-[#8559C8] hover:to-[#7549B8] text-white py-3 px-8 rounded-lg font-semibold transition duration-300 shadow-lg flex items-center"
-              onClick={() => navigate("/login/student")}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 mr-2"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              Student Login
-            </button>
-            <button
-              onClick={() => navigate("/role-based-login")}
-              className="bg-gradient-to-r from-[#9569D8] to-[#8559C8] hover:from-[#8559C8] hover:to-[#7549B8] text-white py-3 px-8 rounded-lg font-semibold transition duration-300 shadow-lg flex items-center"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 mr-2"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
-              </svg>
-              Faculty Login
-            </button>
-            <button
-              onClick={() => navigate("/role-based-login")}
-              className="bg-gradient-to-r from-[#9569D8] to-[#8559C8] hover:from-[#8559C8] hover:to-[#7549B8] text-white py-3 px-8 rounded-lg font-semibold transition duration-300 shadow-lg flex items-center"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 mr-2"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              Administration
-            </button>
+          {/* Right */}
+          <div className="text-center flex flex-col justify-center items-center">
+            <div className="grid grid-cols-1 gap-6 w-full max-w-md">
+              {[{
+                title: "Student Management",
+                desc: "Access and manage student records effortlessly.",
+                action: "Access",
+                route: "/role-based-login",
+                icon: "👨‍🎓",
+              }, {
+                title: "Attendance Tracking",
+                desc: "Track attendance with intuitive tools.",
+                action: "Track",
+                route: "/login/student",
+                icon: "🕒",
+              }, {
+                title: "Results Portal",
+                desc: "Manage and publish student results securely.",
+                action: "Results",
+                route: "/login/student",
+                icon: "📊",
+              }].map(({ title, desc, action, route, icon }, i) => (
+                <motion.div
+                  key={i}
+                  className="bg-gradient-to-tr from-gray-800 to-gray-700 p-5 rounded-2xl shadow-lg hover:shadow-2xl transition-transform hover:-translate-y-1 text-left"
+                  whileHover={{ scale: 1.02 }}
+                >
+                  <div className="text-3xl mb-3">{icon}</div>
+                  <h3 className="text-lg font-bold mb-1 text-emerald-300">{title}</h3>
+                  <p className="text-gray-400 mb-4 text-sm">{desc}</p>
+                  <button
+                    onClick={() => navigate(route)}
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
+                  >
+                    {action}
+                  </button>
+                </motion.div>
+              ))}
+            </div>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </section>
 
       {/* Footer */}
-      <footer className="bg-gradient-to-r from-[#2D2A43] to-[#3D3A63] text-white py-8">
-        <div className="container mx-auto px-4">
+      <footer className="bg-gradient-to-r from-gray-800 to-gray-900 py-8">
+        <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="mb-6 md:mb-0 text-center md:text-left">
-              <h3 className="text-xl font-semibold">
+            <div className="text-center md:text-left mb-4 md:mb-0">
+              <h4 className="text-lg font-semibold text-emerald-300">
                 Sanjay Gandhi Polytechnic Ballari
-              </h3>
-              <p className="text-purple-300 mt-2">
+              </h4>
+              <p className="text-sm text-gray-400">
                 Excellence in Technical Education
               </p>
             </div>
             <div className="flex space-x-6">
-              <a
-                href="#"
-                className="text-purple-300 hover:text-white transition duration-300 flex items-center"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 mr-1"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
+              {['Contact', 'About', 'Privacy Policy'].map((item, idx) => (
+                <a
+                  key={idx}
+                  href="#"
+                  className="text-gray-400 hover:text-white text-sm transition"
                 >
-                  <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-                </svg>
-                Contact
-              </a>
-              <a
-                href="#"
-                className="text-purple-300 hover:text-white transition duration-300 flex items-center"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 mr-1"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                About
-              </a>
-              <a
-                href="#"
-                className="text-purple-300 hover:text-white transition duration-300 flex items-center"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 mr-1"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                Privacy Policy
-              </a>
+                  {item}
+                </a>
+              ))}
             </div>
           </div>
-          <div className="mt-6 pt-6 border-t border-gray-700 text-center text-purple-300 text-sm">
+          <p className="text-center mt-6 text-xs text-gray-500">
             © 2025 Sanjay Gandhi Polytechnic. All rights reserved.
-          </div>
+          </p>
         </div>
       </footer>
     </div>
