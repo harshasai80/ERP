@@ -11,7 +11,9 @@ import com.sgp.erp.model.Subject;
 import com.sgp.erp.service.SubjectService;
 
 @RestController
+@CrossOrigin(origins = { "http://localhost:3000", "http://103.44.2.245:3000" })
 @RequestMapping("/subjects")
+
 public class SubjectController {
 
     @Autowired

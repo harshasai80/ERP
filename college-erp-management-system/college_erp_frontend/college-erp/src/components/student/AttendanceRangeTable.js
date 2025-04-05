@@ -32,24 +32,17 @@ export const AttendanceRangeTable = ({ attendanceData }) => {
   const sortedDates = Object.keys(formattedData).sort();
 
   if (!attendanceData || attendanceData.length === 0) {
-    return (
-      <p className="text-gray-600 text-center">No attendance data available.</p>
-    );
+    return <p className="text-gray-400 text-center">No attendance data available.</p>;
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full min-w-max border border-gray-300 shadow-md rounded-lg text-sm md:text-base">
-        <thead className="bg-blue-600 text-white">
+    <div className="overflow-x-auto mt-6 rounded-xl border border-gray-700 shadow-lg">
+      <table className="w-full min-w-max text-sm bg-gray-900 text-white border border-gray-700">
+        <thead className="bg-emerald-700 text-white">
           <tr>
-            <th className="px-4 py-2 md:px-6 md:py-3 text-left text-xs md:text-sm">
-              Date
-            </th>
+            <th className="px-4 py-3 text-left">Date</th>
             {sessions.map((session, index) => (
-              <th
-                key={index}
-                className="px-4 py-2 md:px-6 md:py-3 text-center text-xs md:text-sm"
-              >
+              <th key={index} className="px-4 py-3 text-center">
                 {session}
               </th>
             ))}
@@ -59,29 +52,22 @@ export const AttendanceRangeTable = ({ attendanceData }) => {
           {sortedDates.map((date, index) => {
             const sessionData = formattedData[date];
             return (
-              <tr
-                key={index}
-                className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
-              >
-                <td className="px-4 py-2 md:px-6 md:py-3 font-medium">
-                  {formatDate(date)}
-                </td>
+              <tr key={index} className="even:bg-gray-800 odd:bg-gray-900">
+                <td className="px-4 py-3 text-emerald-300 font-semibold">{formatDate(date)}</td>
                 {[1, 2, 3, 4, 5, 6, 7].map((sessionNum) => {
                   const status = sessionData[sessionNum];
                   return (
                     <td
                       key={sessionNum}
-                      className={`px-4 py-2 md:px-6 md:py-3 text-center text-xs md:text-sm ${
+                      className={`px-4 py-3 text-center font-medium ${
                         status === "present"
-                          ? "text-green-700 bg-green-100"
+                          ? "text-green-400 bg-green-900"
                           : status === "absent"
-                          ? "text-red-700 bg-red-100"
-                          : "bg-gray-100"
+                          ? "text-red-400 bg-red-900"
+                          : "text-gray-400 bg-gray-800"
                       }`}
                     >
-                      {status
-                        ? status.charAt(0).toUpperCase() + status.slice(1)
-                        : "-"}
+                      {status ? status.charAt(0).toUpperCase() + status.slice(1) : "-"}
                     </td>
                   );
                 })}
@@ -100,36 +86,32 @@ const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString(undefined, options);
 };
 
-// This component displays the attendance table
+// This component displays the session-wise attendance table
 export const AttendanceTable = ({ attendanceData }) => {
   if (!attendanceData || attendanceData.length === 0) {
-    return (
-      <p className="text-gray-600 text-center">No attendance data available.</p>
-    );
+    return <p className="text-gray-400 text-center">No attendance data available.</p>;
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full min-w-max border border-gray-300 shadow-md rounded-lg text-sm md:text-base">
-        <thead className="bg-blue-600 text-white">
+    <div className="overflow-x-auto mt-6 rounded-xl border border-gray-700 shadow-lg">
+      <table className="w-full min-w-max text-sm bg-gray-900 text-white border border-gray-700">
+        <thead className="bg-emerald-700 text-white">
           <tr>
-            <th className="px-4 py-2 md:px-6 md:py-3 text-left text-xs md:text-sm">
-              Session
-            </th>
-            <th className="px-4 py-2 md:px-6 md:py-3 text-left text-xs md:text-sm">
-              Status
-            </th>
+            <th className="px-4 py-3 text-left">Session</th>
+            <th className="px-4 py-3 text-left">Status</th>
           </tr>
         </thead>
         <tbody>
           {attendanceData.map((record, index) => (
             <tr
               key={index}
-              className={`border-b ${
-                record.status === "present" ? "bg-green-100" : "bg-red-100"
+              className={`${
+                record.status === "present"
+                  ? "bg-green-900"
+                  : "bg-red-900"
               }`}
             >
-              <td className="px-4 py-2 md:px-6 md:py-3">
+              <td className="px-4 py-3">
                 {(() => {
                   switch (String(record.session)) {
                     case "1":
@@ -154,10 +136,10 @@ export const AttendanceTable = ({ attendanceData }) => {
                 })()}
               </td>
               <td
-                className={`px-4 py-2 md:px-6 md:py-3 font-medium ${
+                className={`px-4 py-3 font-medium ${
                   record.status === "present"
-                    ? "text-green-700"
-                    : "text-red-700"
+                    ? "text-green-300"
+                    : "text-red-300"
                 }`}
               >
                 {record.status.charAt(0).toUpperCase() + record.status.slice(1)}

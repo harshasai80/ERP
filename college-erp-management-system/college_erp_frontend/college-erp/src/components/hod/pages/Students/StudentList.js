@@ -20,17 +20,15 @@ const StudentList = () => {
     { id: "S005", name: "William Miller", class: "XI", section: "B", guardian: "Jennifer Miller", contact: "jennifer.m@mail.com" },
   ];
 
-  // Handles file selection from input or drag & drop
   const handleFileUpload = (file) => {
     if (file.target) {
-      setCsvFile(file.target.files[0]); // If input field is used
+      setCsvFile(file.target.files[0]);
     } else {
-      setCsvFile(file); // If drag & drop is used
+      setCsvFile(file);
     }
     console.log("Selected file:", file.target ? file.target.files[0] : file);
   };
 
-  // Handles file upload
   const handleUpload = async () => {
     if (!csvFile) return;
 
@@ -54,59 +52,58 @@ const StudentList = () => {
   };
 
   return (
-    <div className="p-5 max-w-5xl mx-auto">
+    <div className="p-5 max-w-5xl mx-auto text-white">
       {showAddStudent ? (
         <AddStudentsTab onClose={() => setShowAddStudent(false)} />
       ) : (
         <>
           <div className="flex justify-between items-center mb-5">
-            <h1 className="text-2xl font-bold text-gray-800">Student List</h1>
-            <button className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700" onClick={() => setShowOptions(true)}>
+            <h1 className="text-2xl font-bold text-white">Student List</h1>
+            <button className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700" onClick={() => setShowOptions(true)}>
               Add New Student
             </button>
           </div>
 
           {showOptions && (
-            <div className="mb-5 p-5 bg-white shadow-lg rounded-lg flex flex-col items-center gap-3 w-96 mx-auto">
-              <p className="text-lg font-semibold">Choose an option:</p>
-              <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 w-full" onClick={() => { setShowAddStudent(true); setShowOptions(false); }}>
+            <div className="mb-5 p-5 bg-gradient-to-br from-gray-900 to-gray-800 shadow-lg rounded-xl flex flex-col items-center gap-3 w-96 mx-auto">
+              <p className="text-lg font-semibold text-white">Choose an option:</p>
+              <button className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 w-full" onClick={() => { setShowAddStudent(true); setShowOptions(false); }}>
                 Add Individually
               </button>
 
-              {/* CSV Upload */}
               <div className="w-full text-center">
-                <DragDropCSVUpload onChange={handleFileUpload} /> {/* Corrected prop name */}
+                <DragDropCSVUpload onChange={handleFileUpload} />
 
                 {csvFile && (
-                  <div className="mt-2 p-2 bg-gray-100 border border-gray-300 rounded text-gray-700 flex justify-between items-center">
+                  <div className="mt-2 p-2 bg-gray-800 border border-gray-700 rounded text-white flex justify-between items-center">
                     <span>{csvFile.name}</span>
                     <button className="ml-2 text-red-500 hover:text-red-700" onClick={() => setCsvFile(null)}>×</button>
                   </div>
                 )}
 
                 {csvFile && (
-                  <button className="mt-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 w-full" onClick={handleUpload} disabled={uploading}>
+                  <button className="mt-2 px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 w-full" onClick={handleUpload} disabled={uploading}>
                     {uploading ? "Uploading..." : "Upload File"}
                   </button>
                 )}
               </div>
 
-              <button className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 w-full" onClick={() => setShowOptions(false)}>
+              <button className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 w-full" onClick={() => setShowOptions(false)}>
                 Cancel
               </button>
             </div>
           )}
 
           <div className="flex gap-3 mb-5">
-            <input type="text" placeholder="Search students..." className="flex-1 p-2 border border-gray-300 rounded" />
-            <select className="p-2 border border-gray-300 rounded">
+            <input type="text" placeholder="Search students..." className="flex-1 p-2 bg-gray-800 text-white border border-gray-700 rounded placeholder-gray-400" />
+            <select className="p-2 bg-gray-800 text-white border border-gray-700 rounded">
               <option value="">All Classes</option>
               <option value="IX">Class IX</option>
               <option value="X">Class X</option>
               <option value="XI">Class XI</option>
               <option value="XII">Class XII</option>
             </select>
-            <select className="p-2 border border-gray-300 rounded">
+            <select className="p-2 bg-gray-800 text-white border border-gray-700 rounded">
               <option value="">All Sections</option>
               <option value="A">Section A</option>
               <option value="B">Section B</option>

@@ -2,8 +2,10 @@ import { useState } from "react";
 import AttendanceTab from "../faculty/AttendanceTab";
 import AssessmentTab from "../faculty/AssessmentTab";
 import SyllabusTab from "../faculty/SyllabusTab";
-import ViewStudentsTab from "../faculty/ViewStudentsTab"; // New Component
+import ViewStudentsTab from "../faculty/ViewStudentsTab";
+import AddSubjectTab from "../faculty/AddSubjectTab.js"; // <-- NEW IMPORT
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const FacultyDashboard = () => {
   const [activeTab, setActiveTab] = useState("attendance");
@@ -13,21 +15,35 @@ const FacultyDashboard = () => {
     { id: "attendance", label: "Attendance" },
     { id: "assessment", label: "Internal Assessment" },
     { id: "syllabus", label: "Syllabus Management" },
-    { id: "view-students", label: "View Students" }, // New Tab
+    { id: "view-students", label: "View Students" },
+    { id: "add-subject", label: "Add Subject" }, // <-- NEW TAB
   ];
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100 font-sans">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 font-sans text-white">
       {/* Header */}
-      <header className="bg-[#2D2A43] text-white py-5 px-6 flex items-center justify-between">
-        <div className="text-center flex-grow">
-          <h1 className="text-3xl font-bold">Faculty Dashboard</h1>
-          <p className="text-gray-300 text-sm">
-            Manage Attendance, Assessments, and Syllabus
-          </p>
+      <header className="bg-gradient-to-r from-emerald-700 to-emerald-900 text-white py-5 px-6 flex items-center justify-between shadow-md">
+        <div className="flex items-center gap-4">
+          <motion.img
+            src="/logo128.png"
+            alt="SGP Logo"
+            className="h-12 w-12 cursor-pointer"
+            whileHover={{ scale: 1.2 }}
+            transition={{ duration: 0.3 }}
+          />
+          <motion.div
+            className="cursor-pointer"
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.3 }}
+          >
+            <h1 className="text-2xl font-extrabold tracking-wide text-white">
+              Sanjay Gandhi Polytechnic ERP
+            </h1>
+            <p className="text-emerald-100 text-sm">Faculty Dashboard</p>
+          </motion.div>
         </div>
         <button
-          className="bg-[#9569D8] hover:bg-[#ac3131] px-4 py-2 rounded text-white font-medium text-sm"
+          className="bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-md text-white font-medium text-sm transition"
           onClick={() => navigate("/")}
         >
           Log Out
@@ -35,36 +51,40 @@ const FacultyDashboard = () => {
       </header>
 
       {/* Navigation Tabs */}
-      <nav className="bg-[#3D3A63] py-3 shadow-lg flex justify-center items-center px-6">
+      <nav className="bg-[#273036] py-3 shadow-md flex justify-center px-6">
         <ul className="flex space-x-6">
           {tabs.map((tab) => (
             <li key={tab.id}>
-              <a
-                href="#"
-                className={`px-6 py-2 rounded-lg text-white font-medium transition ${
+              <button
+                className={`px-5 py-2 rounded-lg font-medium transition-all duration-200 ${
                   activeTab === tab.id
-                    ? "bg-[#9569D8] shadow-md"
-                    : "hover:bg-gray-600"
+                    ? "bg-emerald-600 shadow-md text-white"
+                    : "text-emerald-100 hover:bg-emerald-800 hover:text-white"
                 }`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setActiveTab(tab.id);
-                }}
+                onClick={() => setActiveTab(tab.id)}
               >
                 {tab.label}
-              </a>
+              </button>
             </li>
           ))}
         </ul>
       </nav>
 
       {/* Main Content */}
-      <div className="max-w-5xl mx-auto p-8 flex-1 bg-white shadow-md rounded-lg mt-6">
-        {activeTab === "attendance" && <AttendanceTab />}
-        {activeTab === "assessment" && <AssessmentTab />}
-        {activeTab === "syllabus" && <SyllabusTab />}
-        {activeTab === "view-students" && <ViewStudentsTab />} {/* New Tab */}
-      </div>
+      <main className="flex-1 p-6">
+        <div className="max-w-6xl mx-auto bg-[#2d2f36] rounded-lg p-6 shadow-lg">
+          {activeTab === "attendance" && <AttendanceTab />}
+          {activeTab === "assessment" && <AssessmentTab />}
+          {activeTab === "syllabus" && <SyllabusTab />}
+          {activeTab === "view-students" && <ViewStudentsTab />}
+          {activeTab === "add-subject" && <AddSubjectTab />} {/* NEW CONTENT */}
+        </div>
+      </main>
+
+      {/* Optional Footer */}
+      <footer className="bg-gradient-to-r from-gray-800 to-gray-900 py-6 mt-auto text-center text-gray-500 text-sm">
+        © 2025 Sanjay Gandhi Polytechnic. All rights reserved.
+      </footer>
     </div>
   );
 };

@@ -17,7 +17,7 @@ function AttendanceTab() {
     if (department && semester && section) {
       fetchStudents();
     }
-  },[department, semester, section]);
+  }, [department, semester, section]);
 
   const fetchStudents = async () => {
     try {
@@ -29,7 +29,6 @@ function AttendanceTab() {
       setAbsentStudents([]);
     } catch (error) {
       setStudents([]);
-      console.log("Error fetching students:", error);
       showAlert("Failed to load students", "error");
     }
   };
@@ -50,10 +49,9 @@ function AttendanceTab() {
     { start: "13:00", end: "14:00" },
     { start: "14:00", end: "15:00" },
     { start: "15:00", end: "16:00" },
-    { start: "16:00", end: "17:00" }, // For students with college till 5 PM
+    { start: "16:00", end: "17:00" },
   ];
 
-  // Define lunch breaks for different semesters and departments
   const lunchBreaks = {
     1: { start: "12:00", end: "13:00" },
     2: { start: "13:00", end: "14:00" },
@@ -64,12 +62,12 @@ function AttendanceTab() {
   };
 
   const collegeEndTimes = {
-    1: "16:00", // Ends at 4 PM
-    2: "17:00", // Ends at 5 PM
-    3: "17:00", // Ends at 5 PM
-    4: "17:00", // Ends at 5 PM
-    5: "17:00", // Ends at 5 PM
-    6: "17:00", // Ends at 5 PM
+    1: "16:00",
+    2: "17:00",
+    3: "17:00",
+    4: "17:00",
+    5: "17:00",
+    6: "17:00",
   };
 
   const saveAttendance = async () => {
@@ -81,10 +79,8 @@ function AttendanceTab() {
     const lunchBreak = lunchBreaks[semester];
     const collegeEndTime = collegeEndTimes[semester];
 
-    const selectedStartTime = new Date(`${date}T${startTime.split(":")[0]}:00`);
-    const selectedEndTime = new Date(`${date}T${endTime.split(":")[0]}:00`);
-
-    // console.log(selectedStartTime, selectedEndTime);
+    const selectedStartTime = new Date(`${date}T${startTime}`);
+    const selectedEndTime = new Date(`${date}T${endTime}`);
 
     let selectedSessions = [];
 
@@ -92,30 +88,25 @@ function AttendanceTab() {
       const sessionStart = new Date(`${date}T${session.start}`);
       const sessionEnd = new Date(`${date}T${session.end}`);
 
-      // console.log(sessionStart.getHours(), sessionEnd.getHours());
-
       if (sessionEnd > new Date(`${date}T${collegeEndTime}`)) return;
 
-      // Check if session is during lunch break
       if (lunchBreak) {
         const lunchStart = new Date(`${date}T${lunchBreak.start}`);
         const lunchEnd = new Date(`${date}T${lunchBreak.end}`);
         if (sessionStart >= lunchStart && sessionEnd <= lunchEnd) {
-          return; // 🔥 Skip this session (does NOT affect numbering)
+          return;
         }
       }
-      console.log(selectedStartTime, selectedEndTime);
 
-      // Select sessions within the given time range
       if (sessionStart >= selectedStartTime && sessionEnd <= selectedEndTime) {
         selectedSessions.push({
-          session: index + 1, // ✅ Keeps the correct session number
+          session: index + 1,
           start: session.start,
           end: session.end,
         });
       }
     });
-    console.log(selectedSessions);
+
     const attendanceData = students.map((student) => {
       const sessions = selectedSessions.map((session) => ({
         session: session.session,
@@ -132,17 +123,10 @@ function AttendanceTab() {
       };
     });
 
-    console.log(attendanceData); // Debugging
-
     try {
-      const response = await Api.post(
-        "/students/add-attendance",
-        attendanceData
-      );
-      console.log(response.data);
+      const response = await Api.post("/students/add-attendance", attendanceData);
       showAlert("Attendance saved successfully!", "success");
     } catch (error) {
-      console.log(error)
       showAlert("Failed to save attendance", "error");
     }
   };
@@ -153,15 +137,16 @@ function AttendanceTab() {
   };
 
   return (
-    <div className="bg-white p-5 rounded-md shadow-md mt-5">
-      <h2 className="text-xl font-bold mb-4">Mark Student Attendance</h2>
+    <div className="bg-gray-800 p-6 rounded-md shadow-md mt-5 text-white">
+      <h2 className="text-2xl font-bold mb-4 text-emerald-400">Mark Student Attendance</h2>
+
       <div className="mb-4 grid grid-cols-2 gap-4">
         <div>
-          <label>Department:</label>
+          <label className="text-sm text-gray-300">Department:</label>
           <select
             value={department}
             onChange={(e) => setDepartment(e.target.value)}
-            className="w-full p-2 border"
+            className="w-full p-2.5 border border-emerald-500 rounded bg-gray-700 text-white"
           >
             <option value="">Select Department</option>
             <option value="DCS">DCS</option>
@@ -172,11 +157,11 @@ function AttendanceTab() {
           </select>
         </div>
         <div>
-          <label>Semester:</label>
+          <label className="text-sm text-gray-300">Semester:</label>
           <select
             value={semester}
             onChange={(e) => setSemester(e.target.value)}
-            className="w-full p-2 border"
+            className="w-full p-2.5 border border-emerald-500 rounded bg-gray-700 text-white"
           >
             <option value="">Select Semester</option>
             {[...Array(6)].map((_, i) => (
@@ -185,11 +170,11 @@ function AttendanceTab() {
           </select>
         </div>
         <div>
-          <label>Section:</label>
+          <label className="text-sm text-gray-300">Section:</label>
           <select
             value={section}
             onChange={(e) => setSection(e.target.value)}
-            className="w-full p-2 border"
+            className="w-full p-2.5 border border-emerald-500 rounded bg-gray-700 text-white"
           >
             <option value="">Select Section</option>
             <option value="A">A</option>
@@ -199,49 +184,50 @@ function AttendanceTab() {
           </select>
         </div>
       </div>
-      <div className="mb-4 grid grid-cols-3 gap-4">
+
+      <div className="mb-6 grid grid-cols-3 gap-4">
         <input
           type="date"
           value={date}
           onChange={(e) => setDate(e.target.value)}
-          className="p-2 border"
+          className="p-2.5 border border-emerald-500 rounded bg-gray-700 text-white"
         />
         <input
           type="time"
           value={startTime}
           onChange={(e) => setStartTime(e.target.value)}
-          className="p-2 border"
+          className="p-2.5 border border-emerald-500 rounded bg-gray-700 text-white"
         />
         <input
           type="time"
           value={endTime}
           onChange={(e) => setEndTime(e.target.value)}
-          className="p-2 border"
+          className="p-2.5 border border-emerald-500 rounded bg-gray-700 text-white"
         />
       </div>
+
       {students.length > 0 && (
-        <table className="w-full border-collapse my-5">
+        <table className="w-full border-collapse bg-gray-700 rounded overflow-hidden mb-6">
           <thead>
-            <tr>
-              <th>Roll No</th>
-              <th>Name</th>
-              <th>Absent</th>
+            <tr className="bg-emerald-700 text-white">
+              <th className="p-3 text-left">Roll No</th>
+              <th className="p-3 text-left">Name</th>
+              <th className="p-3 text-left">Absent</th>
             </tr>
           </thead>
           <tbody>
-            {students.map((student) => (
-              <tr key={student.registrationNumber}>
-                <td>{student.registrationNumber}</td>
-                <td>{student.name}</td>
-                <td>
+            {students.map((student, index) => (
+              <tr key={student.registrationNumber} className={index % 2 === 0 ? "bg-gray-800" : "bg-gray-700"}>
+                <td className="p-3">{student.registrationNumber}</td>
+                <td className="p-3">{student.name}</td>
+                <td className="p-3">
                   <input
                     type="checkbox"
                     onChange={(e) =>
                       handleAttendanceChange(e, student.registrationNumber)
                     }
-                    checked={absentStudents.includes(
-                      student.registrationNumber
-                    )}
+                    checked={absentStudents.includes(student.registrationNumber)}
+                    className="w-4 h-4 text-emerald-500 border-gray-600 focus:ring-emerald-500"
                   />
                 </td>
               </tr>
@@ -249,12 +235,14 @@ function AttendanceTab() {
           </tbody>
         </table>
       )}
+
       <button
         onClick={saveAttendance}
-        className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-md"
+        className="bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 rounded-md transition-colors"
       >
         Save Attendance
       </button>
+
       {alert.show && <Alert message={alert.message} type={alert.type} />}
     </div>
   );

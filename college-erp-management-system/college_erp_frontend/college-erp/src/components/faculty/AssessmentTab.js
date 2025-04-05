@@ -17,7 +17,6 @@ function AssessmentTab() {
 
     setStudentsLoaded(true);
 
-    // Initialize marks data for each student
     if (students[classId]) {
       const initialMarks = students[classId].map((student) => ({
         studentId: student.rollNo,
@@ -41,7 +40,6 @@ function AssessmentTab() {
   };
 
   const saveIAMarks = () => {
-    // Validate all marks are entered
     let isValid = true;
     marksData.forEach((data) => {
       if (!data.marks.trim()) {
@@ -54,13 +52,11 @@ function AssessmentTab() {
       return;
     }
 
-    // In a real app, you would send this data to the server
     showAlert(
       `IA marks saved for ${marksData.length} students in ${classId} for ${iaType}`,
       "success"
     );
 
-    // Reset form
     setClassId("");
     setIaType("");
     setStudentsLoaded(false);
@@ -69,26 +65,26 @@ function AssessmentTab() {
 
   const showAlert = (message, type) => {
     setAlert({ show: true, message, type });
-
-    // Hide alert after 5 seconds
     setTimeout(() => {
       setAlert({ show: false, message: "", type: "" });
     }, 5000);
   };
 
   return (
-    <div className="bg-white p-5 rounded-md shadow-md mt-5">
-      <h2 className="text-xl font-bold mb-4">Internal Assessment (IA) Marks</h2>
+    <div className="bg-[#2d2f36] p-6 rounded-md shadow-md text-white">
+      <h2 className="text-2xl font-bold mb-6 text-emerald-300">
+        Internal Assessment (IA) Marks
+      </h2>
 
       <div className="mb-4">
-        <label htmlFor="ia-class" className="block mb-2">
+        <label htmlFor="ia-class" className="block mb-2 text-sm">
           Select Class:
         </label>
         <select
           id="ia-class"
           value={classId}
           onChange={(e) => setClassId(e.target.value)}
-          className="w-full p-2.5 border border-gray-300 rounded-md"
+          className="w-full p-2.5 bg-gray-800 text-white border border-emerald-500 rounded-md"
         >
           <option value="">Select a class</option>
           <option value="cse101">CSE101 - Introduction to Computing</option>
@@ -98,14 +94,14 @@ function AssessmentTab() {
       </div>
 
       <div className="mb-4">
-        <label htmlFor="ia-type" className="block mb-2">
+        <label htmlFor="ia-type" className="block mb-2 text-sm">
           Assessment Type:
         </label>
         <select
           id="ia-type"
           value={iaType}
           onChange={(e) => setIaType(e.target.value)}
-          className="w-full p-2.5 border border-gray-300 rounded-md"
+          className="w-full p-2.5 bg-gray-800 text-white border border-emerald-500 rounded-md"
         >
           <option value="">Select assessment type</option>
           <option value="quiz1">Quiz 1</option>
@@ -118,26 +114,26 @@ function AssessmentTab() {
 
       <button
         onClick={loadStudentsForIA}
-        className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition-colors"
+        className="bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 rounded-md transition"
       >
         Load Students
       </button>
 
       {studentsLoaded && students[classId] && (
         <div>
-          <table className="w-full border-collapse my-5">
+          <table className="w-full border-collapse my-6">
             <thead>
               <tr>
-                <th className="border border-gray-300 p-3 bg-gray-700 text-white text-left">
+                <th className="bg-emerald-800 text-white p-3 text-left rounded-tl-md">
                   Roll No
                 </th>
-                <th className="border border-gray-300 p-3 bg-gray-700 text-white text-left">
+                <th className="bg-emerald-800 text-white p-3 text-left">
                   Student Name
                 </th>
-                <th className="border border-gray-300 p-3 bg-gray-700 text-white text-left">
+                <th className="bg-emerald-800 text-white p-3 text-left">
                   Marks Obtained
                 </th>
-                <th className="border border-gray-300 p-3 bg-gray-700 text-white text-left">
+                <th className="bg-emerald-800 text-white p-3 text-left rounded-tr-md">
                   Max Marks
                 </th>
               </tr>
@@ -146,29 +142,27 @@ function AssessmentTab() {
               {students[classId].map((student, index) => (
                 <tr
                   key={student.rollNo}
-                  className={index % 2 === 0 ? "bg-gray-100" : ""}
+                  className={index % 2 === 0 ? "bg-[#3a3b41]" : "bg-[#2d2f36]"}
                 >
-                  <td className="border border-gray-300 p-3">
-                    {student.rollNo}
-                  </td>
-                  <td className="border border-gray-300 p-3">{student.name}</td>
-                  <td className="border border-gray-300 p-3">
+                  <td className="p-3">{student.rollNo}</td>
+                  <td className="p-3">{student.name}</td>
+                  <td className="p-3">
                     <input
                       type="number"
                       min="0"
                       max="100"
                       value={marksData[index]?.marks || ""}
                       onChange={(e) => handleMarksChange(index, e.target.value)}
-                      className="w-full p-2.5 border border-gray-300 rounded-md"
+                      className="w-full p-2 bg-gray-800 text-white border border-gray-500 rounded-md"
                     />
                   </td>
-                  <td className="border border-gray-300 p-3">
+                  <td className="p-3">
                     <select
                       value={marksData[index]?.maxMarks || "100"}
                       onChange={(e) =>
                         handleMaxMarksChange(index, e.target.value)
                       }
-                      className="w-full p-2.5 border border-gray-300 rounded-md"
+                      className="w-full p-2 bg-gray-800 text-white border border-gray-500 rounded-md"
                     >
                       <option value="10">10</option>
                       <option value="20">20</option>
@@ -184,7 +178,7 @@ function AssessmentTab() {
 
           <button
             onClick={saveIAMarks}
-            className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition-colors"
+            className="bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 rounded-md transition"
           >
             Save IA Marks
           </button>
