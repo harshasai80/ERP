@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 // This component displays the attendance range table
+
 export const AttendanceRangeTable = ({ attendanceData }) => {
   const [formattedData, setFormattedData] = useState({});
 
@@ -16,6 +17,7 @@ export const AttendanceRangeTable = ({ attendanceData }) => {
         transformedData[attendanceDate][session] = status;
       });
     });
+
     setFormattedData(transformedData);
   }, [attendanceData]);
 
@@ -32,17 +34,26 @@ export const AttendanceRangeTable = ({ attendanceData }) => {
   const sortedDates = Object.keys(formattedData).sort();
 
   if (!attendanceData || attendanceData.length === 0) {
-    return <p className="text-gray-400 text-center">No attendance data available.</p>;
+    return (
+      <p className="text-gray-400 text-center py-4">
+        No attendance data available.
+      </p>
+    );
   }
 
   return (
-    <div className="overflow-x-auto mt-6 rounded-xl border border-gray-700 shadow-lg">
-      <table className="w-full min-w-max text-sm bg-gray-900 text-white border border-gray-700">
+    <div className="overflow-x-auto mt-6 rounded-2xl border border-gray-700 shadow-lg">
+      <table className="min-w-[800px] w-full text-sm sm:text-base bg-gray-900 text-white border border-gray-700 rounded-xl">
         <thead className="bg-emerald-700 text-white">
           <tr>
-            <th className="px-4 py-3 text-left">Date</th>
+            <th className="px-4 py-3 text-left sticky left-0 bg-emerald-700 z-10">
+              Date
+            </th>
             {sessions.map((session, index) => (
-              <th key={index} className="px-4 py-3 text-center">
+              <th
+                key={index}
+                className="px-4 py-3 text-center whitespace-nowrap"
+              >
                 {session}
               </th>
             ))}
@@ -52,14 +63,19 @@ export const AttendanceRangeTable = ({ attendanceData }) => {
           {sortedDates.map((date, index) => {
             const sessionData = formattedData[date];
             return (
-              <tr key={index} className="even:bg-gray-800 odd:bg-gray-900">
-                <td className="px-4 py-3 text-emerald-300 font-semibold">{formatDate(date)}</td>
+              <tr
+                key={index}
+                className="even:bg-gray-800 odd:bg-gray-900 border-t border-gray-700"
+              >
+                <td className="px-4 py-3 text-emerald-300 font-semibold sticky left-0 bg-inherit backdrop-blur-sm z-10 whitespace-nowrap">
+                  {formatDate(date)}
+                </td>
                 {[1, 2, 3, 4, 5, 6, 7].map((sessionNum) => {
                   const status = sessionData[sessionNum];
                   return (
                     <td
                       key={sessionNum}
-                      className={`px-4 py-3 text-center font-medium ${
+                      className={`px-4 py-3 text-center font-medium whitespace-nowrap rounded ${
                         status === "present"
                           ? "text-green-400 bg-green-900"
                           : status === "absent"
@@ -67,7 +83,9 @@ export const AttendanceRangeTable = ({ attendanceData }) => {
                           : "text-gray-400 bg-gray-800"
                       }`}
                     >
-                      {status ? status.charAt(0).toUpperCase() + status.slice(1) : "-"}
+                      {status
+                        ? status.charAt(0).toUpperCase() + status.slice(1)
+                        : "-"}
                     </td>
                   );
                 })}
@@ -79,7 +97,6 @@ export const AttendanceRangeTable = ({ attendanceData }) => {
     </div>
   );
 };
-
 // Helper function to format the date
 const formatDate = (dateString) => {
   const options = { year: "numeric", month: "short", day: "numeric" };
@@ -89,12 +106,12 @@ const formatDate = (dateString) => {
 // This component displays the session-wise attendance table
 export const AttendanceTable = ({ attendanceData }) => {
   if (!attendanceData || attendanceData.length === 0) {
-    return <p className="text-gray-400 text-center">No attendance data available.</p>;
+    return <p className="text-gray-400 text-center py-4">No attendance data available.</p>;
   }
 
   return (
-    <div className="overflow-x-auto mt-6 rounded-xl border border-gray-700 shadow-lg">
-      <table className="w-full min-w-max text-sm bg-gray-900 text-white border border-gray-700">
+    <div className="overflow-x-auto mt-6 rounded-2xl border border-gray-700 shadow-lg">
+      <table className="min-w-[500px] w-full text-sm sm:text-base bg-gray-900 text-white border border-gray-700 rounded-xl">
         <thead className="bg-emerald-700 text-white">
           <tr>
             <th className="px-4 py-3 text-left">Session</th>
@@ -108,32 +125,13 @@ export const AttendanceTable = ({ attendanceData }) => {
               className={`${
                 record.status === "present"
                   ? "bg-green-900"
-                  : "bg-red-900"
+                  : record.status === "absent"
+                  ? "bg-red-900"
+                  : "bg-gray-800"
               }`}
             >
-              <td className="px-4 py-3">
-                {(() => {
-                  switch (String(record.session)) {
-                    case "1":
-                      return "9 AM - 10 AM";
-                    case "2":
-                      return "10 AM - 11 AM";
-                    case "3":
-                      return "11 AM - 12 PM";
-                    case "4":
-                      return "12 PM - 1 PM";
-                    case "5":
-                      return "1 PM - 2 PM";
-                    case "6":
-                      return "2 PM - 3 PM";
-                    case "7":
-                      return "3 PM - 4 PM";
-                    case "8":
-                      return "4 PM - 5 PM";
-                    default:
-                      return "Unknown Session";
-                  }
-                })()}
+              <td className="px-4 py-3 whitespace-nowrap">
+                {getSessionTime(record.session)}
               </td>
               <td
                 className={`px-4 py-3 font-medium ${
@@ -150,4 +148,19 @@ export const AttendanceTable = ({ attendanceData }) => {
       </table>
     </div>
   );
+};
+
+// Helper to convert session number to time
+const getSessionTime = (session) => {
+  const map = {
+    "1": "9 AM - 10 AM",
+    "2": "10 AM - 11 AM",
+    "3": "11 AM - 12 PM",
+    "4": "12 PM - 1 PM",
+    "5": "1 PM - 2 PM",
+    "6": "2 PM - 3 PM",
+    "7": "3 PM - 4 PM",
+    "8": "4 PM - 5 PM",
+  };
+  return map[String(session)] || "Unknown Session";
 };

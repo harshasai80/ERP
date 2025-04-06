@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sgp.erp.dto.ResponseStructure;
+import com.sgp.erp.model.Faculty;
 import com.sgp.erp.model.FacultySubject;
 import com.sgp.erp.service.FacultyService;
 import com.sgp.erp.service.UsersService;
@@ -42,4 +43,10 @@ public class FacultyController {
     public ResponseEntity<ResponseStructure<FacultySubject>> assignSubject(@RequestBody FacultySubject facultySubject) {
         return facultyService.assignSubject(facultySubject);
     }
+
+    @PostMapping("/add")
+    public ResponseEntity<ResponseStructure<Faculty>> addFaculty(@RequestBody Faculty faculty) {
+        return userService.addUser(faculty);
+    }
+
 }

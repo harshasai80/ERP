@@ -42,23 +42,46 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-950 text-white">
-      {/* Navbar with emerald gradient */}
-      <nav className="backdrop-blur-md bg-gradient-to-r from-emerald-500/60 to-emerald-700/60 shadow-md">
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-4">
+    <div className="relative min-h-screen bg-gray-950 text-white overflow-hidden flex flex-col">
+      {/* Floating Background Circles */}
+      <div className="absolute inset-0 z-0">
+        {[...Array(10)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute rounded-full bg-emerald-600 opacity-20 blur-3xl"
+            animate={{
+              y: [0, -20, 0],
+              x: [0, 10, -10, 0],
+            }}
+            transition={{
+              duration: 8 + Math.random() * 4,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: Math.random() * 4,
+            }}
+            style={{
+              width: `${100 + Math.random() * 100}px`,
+              height: `${100 + Math.random() * 100}px`,
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Navbar */}
+      <nav className="relative z-10 backdrop-blur-md bg-gradient-to-r from-emerald-500/60 to-emerald-700/60 shadow-md">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center space-x-3">
             <motion.img
               src="/logo128.png"
               alt="Logo"
-              className="h-12 w-12"
+              className="h-10 w-10 sm:h-12 sm:w-12"
               whileHover={{ scale: 1.2 }}
               transition={{ duration: 0.3 }}
             />
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.3 }}
-            >
-              <h1 className="text-xl md:text-2xl font-extrabold tracking-wide text-white">
+            <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.3 }}>
+              <h1 className="text-lg sm:text-xl md:text-2xl font-extrabold tracking-wide text-white leading-tight">
                 <span className="hidden sm:inline">Sanjay Gandhi Polytechnic</span>
                 <span className="inline sm:hidden">SGP</span> ERP System
               </h1>
@@ -66,7 +89,7 @@ const Login = () => {
           </div>
           <button
             onClick={() => navigate("/")}
-            className="hover:bg-emerald-800 px-4 py-2 rounded-full border border-emerald-300 transition duration-300 text-sm font-medium"
+            className="hover:bg-emerald-800 px-3 py-1 sm:px-4 sm:py-2 rounded-full border border-emerald-300 transition duration-300 text-xs sm:text-sm font-medium"
           >
             Home
           </button>
@@ -74,26 +97,36 @@ const Login = () => {
       </nav>
 
       {/* Login Form */}
-      <div className="flex flex-grow justify-center items-center">
-        <form
-          className="bg-gray-800 p-6 rounded-lg shadow-lg text-center w-80"
+      <div className="relative z-10 flex-grow flex items-center justify-center px-4 py-10 sm:py-16">
+        <motion.form
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="w-full max-w-sm sm:max-w-md bg-gray-900/90 backdrop-blur-md p-6 sm:p-8 rounded-2xl shadow-2xl border border-gray-700 text-center"
           onSubmit={handleSubmit}
         >
-          <h2 className="text-white text-xl font-bold mb-4">Student Login</h2>
-          <div className="mb-4 text-left">
-            <label className="text-gray-200 block pl-1 mb-1">Reg. No</label>
+          <h2 className="text-xl sm:text-2xl font-bold mb-6 tracking-wide">
+            Student Login
+          </h2>
+          <div className="mb-5 text-left">
+            <label className="text-gray-300 block mb-2 text-sm sm:text-base">
+              Registration Number
+            </label>
             <input
               type="text"
               onChange={handleChange}
               placeholder="Enter Reg. No"
-              className="w-full px-3 py-2 rounded-md border border-gray-600 bg-gray-200 text-black focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full px-4 py-2 rounded-md border border-gray-600 bg-gray-100 text-black text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-emerald-500"
               required
             />
           </div>
-          <button className="w-full py-2 rounded-md bg-emerald-600 text-white font-semibold hover:bg-emerald-700 transition duration-200">
+          <button
+            type="submit"
+            className="w-full py-2 sm:py-2.5 rounded-md bg-emerald-600 text-white font-semibold hover:bg-emerald-700 transition duration-300 text-sm sm:text-base"
+          >
             Submit
           </button>
-        </form>
+        </motion.form>
       </div>
     </div>
   );

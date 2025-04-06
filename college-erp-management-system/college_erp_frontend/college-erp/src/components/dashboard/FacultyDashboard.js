@@ -3,7 +3,7 @@ import AttendanceTab from "../faculty/AttendanceTab";
 import AssessmentTab from "../faculty/AssessmentTab";
 import SyllabusTab from "../faculty/SyllabusTab";
 import ViewStudentsTab from "../faculty/ViewStudentsTab";
-import AddSubjectTab from "../faculty/AddSubjectTab.js"; // <-- NEW IMPORT
+import AddSubjectTab from "../faculty/AddSubjectTab";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -16,13 +16,13 @@ const FacultyDashboard = () => {
     { id: "assessment", label: "Internal Assessment" },
     { id: "syllabus", label: "Syllabus Management" },
     { id: "view-students", label: "View Students" },
-    { id: "add-subject", label: "Add Subject" }, // <-- NEW TAB
+    { id: "add-subject", label: "Add Subject" },
   ];
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 font-sans text-white">
       {/* Header */}
-      <header className="bg-gradient-to-r from-emerald-700 to-emerald-900 text-white py-5 px-6 flex items-center justify-between shadow-md">
+      <header className="bg-gradient-to-r from-emerald-700 to-emerald-900 text-white py-5 px-4 sm:px-6 flex items-center justify-between shadow-md">
         <div className="flex items-center gap-4">
           <motion.img
             src="/logo128.png"
@@ -32,7 +32,7 @@ const FacultyDashboard = () => {
             transition={{ duration: 0.3 }}
           />
           <motion.div
-            className="cursor-pointer"
+            className="cursor-pointer hidden sm:block"
             whileHover={{ scale: 1.05 }}
             transition={{ duration: 0.3 }}
           >
@@ -51,12 +51,12 @@ const FacultyDashboard = () => {
       </header>
 
       {/* Navigation Tabs */}
-      <nav className="bg-[#273036] py-3 shadow-md flex justify-center px-6">
-        <ul className="flex space-x-6">
+      <nav className="bg-[#273036] py-3 shadow-md px-2 sm:px-6 overflow-x-auto">
+        <ul className="flex flex-nowrap gap-2 sm:gap-4 min-w-max">
           {tabs.map((tab) => (
-            <li key={tab.id}>
+            <li key={tab.id} className="shrink-0">
               <button
-                className={`px-5 py-2 rounded-lg font-medium transition-all duration-200 ${
+                className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-all duration-200 ${
                   activeTab === tab.id
                     ? "bg-emerald-600 shadow-md text-white"
                     : "text-emerald-100 hover:bg-emerald-800 hover:text-white"
@@ -71,17 +71,17 @@ const FacultyDashboard = () => {
       </nav>
 
       {/* Main Content */}
-      <main className="flex-1 p-6">
+      <main className="flex-1 p-4 sm:p-6">
         <div className="max-w-6xl mx-auto bg-[#2d2f36] rounded-lg p-6 shadow-lg">
           {activeTab === "attendance" && <AttendanceTab />}
           {activeTab === "assessment" && <AssessmentTab />}
           {activeTab === "syllabus" && <SyllabusTab />}
           {activeTab === "view-students" && <ViewStudentsTab />}
-          {activeTab === "add-subject" && <AddSubjectTab />} {/* NEW CONTENT */}
+          {activeTab === "add-subject" && <AddSubjectTab />}
         </div>
       </main>
 
-      {/* Optional Footer */}
+      {/* Footer */}
       <footer className="bg-gradient-to-r from-gray-800 to-gray-900 py-6 mt-auto text-center text-gray-500 text-sm">
         © 2025 Sanjay Gandhi Polytechnic. All rights reserved.
       </footer>

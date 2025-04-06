@@ -87,14 +87,14 @@ const Attendance = () => {
   };
 
   return (
-    <div className="p-6 bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white rounded-lg">
+    <div className="p-4 sm:p-6 bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white rounded-lg">
       <motion.div
         className="mb-6"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
       >
-        <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-emerald-200">
+        <h2 className="text-xl sm:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-emerald-200">
           Student Attendance Dashboard
         </h2>
       </motion.div>
@@ -102,21 +102,21 @@ const Attendance = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Form Section */}
         <motion.div 
-          className="bg-gradient-to-tr from-gray-800 to-gray-700 rounded-2xl shadow-lg p-6"
+          className="bg-gradient-to-tr from-gray-800 to-gray-700 rounded-2xl shadow-lg p-4 sm:p-6"
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <h3 className="text-lg font-bold text-emerald-300 mb-4 flex items-center">
+          <h3 className="text-base sm:text-lg font-bold text-emerald-300 mb-4 flex items-center">
             <span className="mr-2">📅</span> Attendance Lookup
           </h3>
 
           {/* Mode Selection Tabs */}
-          <div className="flex mb-4 space-x-3">
+          <div className="flex flex-wrap mb-4 gap-2">
             {["range", "single"].map((m) => (
               <motion.button
                 key={m}
-                className={`px-4 py-2 rounded-full font-medium transition-all duration-200 text-sm ${
+                className={`px-4 py-2 rounded-full font-medium text-sm transition-all duration-200 ${
                   mode === m
                     ? "bg-emerald-600 text-white shadow-md"
                     : "bg-gray-700 text-gray-300 hover:bg-gray-600 border border-emerald-300/30"
@@ -133,9 +133,9 @@ const Attendance = () => {
           </div>
 
           {/* Date Pickers */}
-          <div className="mb-4">
+          <div className="mb-4 space-y-3">
             {mode === "range" ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <DatePicker
                   label="Start Date"
                   selected={dateRange.start}
@@ -171,15 +171,15 @@ const Attendance = () => {
 
         {/* Attendance Table Section */}
         <motion.div 
-          className="bg-gradient-to-tr from-gray-800 to-gray-700 rounded-2xl shadow-lg p-6 overflow-auto max-h-96"
+          className="bg-gradient-to-tr from-gray-800 to-gray-700 rounded-2xl shadow-lg p-4 sm:p-6 overflow-x-auto max-h-[500px]"
           initial={{ opacity: 0, x: 10 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <h3 className="text-lg font-bold text-emerald-300 mb-4 flex items-center">
+          <h3 className="text-base sm:text-lg font-bold text-emerald-300 mb-4 flex items-center">
             <span className="mr-2">📊</span> Attendance Records
           </h3>
-          
+
           {attendanceData.length > 0 ? (
             mode === "single" ? (
               <AttendanceTable attendanceData={attendanceData} />

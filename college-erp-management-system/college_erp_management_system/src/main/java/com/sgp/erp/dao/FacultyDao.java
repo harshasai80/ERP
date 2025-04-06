@@ -12,6 +12,7 @@ import com.sgp.erp.model.Subject;
 import com.sgp.erp.repository.FacultyRepository;
 import com.sgp.erp.repository.FacultySubjectRepository;
 import com.sgp.erp.repository.SubjectRepository;
+import com.sgp.erp.service.EmailService;
 
 @Repository
 public class FacultyDao {
@@ -21,6 +22,9 @@ public class FacultyDao {
     
     @Autowired
     private FacultyRepository facultyRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private SubjectRepository subjectRepository;

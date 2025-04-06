@@ -16,6 +16,7 @@ import com.opencsv.exceptions.CsvValidationException;
 import com.sgp.erp.dao.UsersDAO;
 import com.sgp.erp.dto.ResponseStructure;
 import com.sgp.erp.exception.InvalidCredentials;
+import com.sgp.erp.exception.UserDoesExistException;
 import com.sgp.erp.model.Faculty;
 import com.sgp.erp.model.Users;
 import com.sgp.erp.model.enums.Roles;
@@ -79,6 +80,19 @@ public class UsersService {
         } catch (MessagingException e) {
             throw new RuntimeException("Failed to send password reset email.");
         }
+    }
+
+    public ResponseEntity<ResponseStructure<Faculty>> addUser(Faculty faculty) {
+        ResponseStructure<Faculty> structure = new ResponseStructure<Faculty>();
+        Faculty res = usersDAO.addUser(faculty);
+
+        if(res != null) {
+            structure.setData(res);
+            structure.setMessage("User added successfully");
+            structure.setStatus(HttpStatus.CREATED.value());
+            return new ResponseEntity<ResponseStructure<Faculty>>(structure, HttpStatus.CREATED);
+        }
+        throw new UserDoesExistException();
     }
 
     public ResponseEntity<ResponseStructure<Faculty>> login(String email, String password) {

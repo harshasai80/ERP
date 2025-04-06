@@ -48,8 +48,8 @@ const IAMarks = () => {
   }, [registrationNumber]);
 
   return (
-    <div className="p-6 max-w-4xl mx-auto rounded-xl shadow-lg bg-[#2d2f36] text-white">
-      <h2 className="text-2xl font-bold text-gray-100 mb-6 text-center">
+    <div className="p-6 sm:p-8 max-w-5xl mx-auto rounded-2xl shadow-lg bg-gray-900 text-white">
+      <h2 className="text-2xl sm:text-3xl font-bold text-gray-100 mb-6 text-center">
         Internal Assessment & Attendance
       </h2>
 
@@ -58,31 +58,35 @@ const IAMarks = () => {
 
       {iaMarks.length > 0 && (
         <div className="overflow-x-auto">
-          <table className="min-w-full bg-[#3a3b42] border border-gray-600 rounded-lg shadow-md">
-            <thead>
-              <tr className="text-gray-300 text-sm">
-                <th className="px-4 py-2 border border-gray-500">Subject</th>
-                <th className="px-4 py-2 border border-gray-500">Code</th>
-                <th className="px-4 py-2 border border-gray-500">IA1</th>
-                <th className="px-4 py-2 border border-gray-500">IA2</th>
-                <th className="px-4 py-2 border border-gray-500">IA3</th>
-                <th className="px-4 py-2 border border-gray-500">Theory %</th>
-                <th className="px-4 py-2 border border-gray-500">Lab %</th>
+          <table className="min-w-[700px] w-full bg-gray-800 border border-gray-700 rounded-xl shadow-md text-sm sm:text-base">
+            <thead className="bg-emerald-700 text-white">
+              <tr>
+                <th className="px-4 py-3 text-left">Subject</th>
+                <th className="px-4 py-3 text-left">Code</th>
+                <th className="px-4 py-3 text-center">IA1</th>
+                <th className="px-4 py-3 text-center">IA2</th>
+                <th className="px-4 py-3 text-center">IA3</th>
+                <th className="px-4 py-3 text-center">Theory %</th>
+                <th className="px-4 py-3 text-center">Lab %</th>
               </tr>
             </thead>
             <tbody>
               {iaMarks.map((subject, index) => (
                 <tr
                   key={index}
-                  className="text-gray-200 text-center border-t border-gray-600"
+                  className={`${
+                    index % 2 === 0 ? "bg-gray-900" : "bg-gray-800"
+                  } text-center border-t border-gray-700`}
                 >
-                  <td className="px-4 py-2">{subject.subjectName}</td>
-                  <td className="px-4 py-2">{subject.subjectCode}</td>
-                  <td className="px-4 py-2">{subject.iaMarks.ia1}</td>
-                  <td className="px-4 py-2">{subject.iaMarks.ia2}</td>
-                  <td className="px-4 py-2">{subject.iaMarks.ia3}</td>
-                  <td className="px-4 py-2">{subject.theoryAttendance}</td>
-                  <td className="px-4 py-2">{subject.labAttendance}</td>
+                  <td className="px-4 py-3 text-left text-emerald-300 font-medium">
+                    {subject.subjectName}
+                  </td>
+                  <td className="px-4 py-3 text-left">{subject.subjectCode}</td>
+                  <td className="px-4 py-3">{subject.iaMarks.ia1}</td>
+                  <td className="px-4 py-3">{subject.iaMarks.ia2}</td>
+                  <td className="px-4 py-3">{subject.iaMarks.ia3}</td>
+                  <td className="px-4 py-3 text-green-400">{subject.theoryAttendance}</td>
+                  <td className="px-4 py-3 text-green-400">{subject.labAttendance}</td>
                 </tr>
               ))}
             </tbody>
