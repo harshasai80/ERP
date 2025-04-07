@@ -11,31 +11,34 @@ const AddFacultyTab = ({ onClose }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    let formattedValue = value;
+
+    if (name === "department" || name === "role") {
+      formattedValue = value.toUpperCase();
+    }
+
+    setFormData((prev) => ({ ...prev, [name]: formattedValue }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Faculty Data:", formData);
-  
+
     try {
-      const response = await Api.post("/faculty/ad",formData ,
-        {
-          "Content-Type": "application/json",
-        }
-      );
+      const response = await Api.post("/faculty/add", formData, {
+        "Content-Type": "application/json",
+      });
 
       const result = await response.data;
       console.log("Faculty added:", result);
-  
-      // Close modal or form
+      alert("Faculty added successfully!");
+
       onClose();
     } catch (error) {
       console.error("Error adding faculty:", error);
       alert("Something went wrong while submitting the form.");
     }
   };
-  
 
   return (
     <div className="p-6 max-w-xl mx-auto bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl shadow-xl text-white relative">

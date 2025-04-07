@@ -52,9 +52,9 @@ const FacultyDashboard = () => {
 
       {/* Navigation Tabs */}
       <nav className="bg-[#273036] py-3 shadow-md px-2 sm:px-6 overflow-x-auto">
-        <ul className="flex flex-nowrap gap-2 sm:gap-4 min-w-max">
+        <ul className="flex justify-center flex-wrap gap-2 sm:gap-4">
           {tabs.map((tab) => (
-            <li key={tab.id} className="shrink-0">
+            <li key={tab.id}>
               <button
                 className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-all duration-200 ${
                   activeTab === tab.id

@@ -10,6 +10,7 @@ const HodDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
   const location = useLocation();
   const navigate = useNavigate();
+
   const data = location.state?.data;
 
   const renderContent = () => {
@@ -17,7 +18,7 @@ const HodDashboard = () => {
       case "faculty":
         return <FacultyList />;
       case "students":
-        return <StudentList />;
+        return <StudentList department={data.department} />;
       default:
         return <Dashboard />;
     }
@@ -29,7 +30,7 @@ const HodDashboard = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-black to-gray-900 text-white font-sans">
-      <Navbar/>
+      <Navbar/> 
 
       {/* Tab Buttons */}
       <motion.div
