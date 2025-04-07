@@ -1,5 +1,4 @@
-// src/components/tables/DataTable.js
-import React from 'react';
+import React from "react";
 
 const DataTable = ({ columns, data }) => {
   return (
@@ -7,43 +6,33 @@ const DataTable = ({ columns, data }) => {
       <table className="w-full table-auto">
         <thead>
           <tr>
-            {columns.map((column, index) => (
-              <th
-                key={index}
-                className="bg-emerald-700 text-white p-4 text-left text-sm uppercase font-semibold border-b border-emerald-600"
-              >
-                {column}
-              </th>
-            ))}
+            {columns.map((column, index) => {
+              const colName = typeof column === "string" ? column : column.name;
+              return (
+                <th
+                  key={index}
+                  className="bg-emerald-700 text-white p-4 text-center text-sm uppercase font-semibold border-b border-emerald-600"
+                >
+                  {colName}
+                </th>
+              );
+            })}
           </tr>
         </thead>
         <tbody>
           {data.map((row, rowIndex) => (
-            <tr
-              key={rowIndex}
-              className="hover:bg-gray-700 transition-colors"
-            >
+            <tr key={rowIndex} className="hover:bg-gray-700 transition-colors">
               {columns.map((column, colIndex) => {
-                if (column === 'Actions') {
-                  return (
-                    <td key={colIndex} className="p-4">
-                      {row.actions}
-                    </td>
-                  );
-                }
-
-                const columnKey = column.toLowerCase().replace(/ /g, '');
-                const cellValue =
-                  row[columnKey === 'id' ? 'id' : columnKey] ||
-                  row[column.toLowerCase()] ||
-                  row[column];
+                const colName = typeof column === "string" ? column : column.name;
+                const key = colName.toLowerCase().replace(/ /g, "");
+                const cellValue = row[key] || "";
 
                 return (
                   <td
                     key={colIndex}
-                    className="p-4 border-b border-gray-700 text-sm"
+                    className={`p-4 border-b border-gray-700 text-sm text-center`}
                   >
-                    {cellValue}
+                    {colName === "Actions" ? row.actions : cellValue}
                   </td>
                 );
               })}

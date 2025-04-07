@@ -1,11 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Api from "../../Api";
 import { motion } from "framer-motion";
 
 const Login = () => {
   const [formData, setFormData] = useState("");
+  const [circleAnimKey, setCircleAnimKey] = useState(0);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Trigger re-render of animated circles on typing
+    setCircleAnimKey((prev) => prev + 1);
+  }, [formData]);
 
   const handleChange = (e) => {
     setFormData(e.target.value);
@@ -43,15 +49,16 @@ const Login = () => {
 
   return (
     <div className="relative min-h-screen bg-gray-950 text-white overflow-hidden flex flex-col">
-      {/* Floating Background Circles */}
+      {/* Animated Background Circles */}
       <div className="absolute inset-0 z-0">
         {[...Array(10)].map((_, i) => (
           <motion.div
-            key={i}
+            key={`${circleAnimKey}-${i}`}
             className="absolute rounded-full bg-emerald-600 opacity-20 blur-3xl"
             animate={{
               y: [0, -20, 0],
               x: [0, 10, -10, 0],
+              scale: [1, 1.1, 1],
             }}
             transition={{
               duration: 8 + Math.random() * 4,
@@ -64,6 +71,7 @@ const Login = () => {
               height: `${100 + Math.random() * 100}px`,
               top: `${Math.random() * 100}%`,
               left: `${Math.random() * 100}%`,
+              backgroundColor: `rgba(52, 211, 153, ${Math.min(0.2 + formData.length * 0.02, 0.6)})`,
             }}
           />
         ))}

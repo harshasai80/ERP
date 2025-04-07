@@ -1,8 +1,26 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import SummaryCard from '../components/cards/SummaryCard';
 import { motion } from 'framer-motion';
+import Api from "../../../Api"; // Make sure this path matches your project structure
 
-const Dashboard = () => {
+const Dashboard = ({ department }) => {
+  const [facultyCount, setFacultyCount] = useState(0);
+
+  useEffect(() => {
+    const fetchFacultyCount = async () => {
+      try {
+        const response = await Api.get("/faculty/all", {
+          params: { department },
+        });
+        setFacultyCount(response.data.data.length || 0);
+      } catch (error) {
+        console.error("Failed to fetch faculty data:", error);
+      }
+    };
+
+    fetchFacultyCount();
+  }, [department]);
+
   return (
     <motion.div 
       initial={{ opacity: 0, y: 30 }} 
@@ -18,7 +36,7 @@ const Dashboard = () => {
         <motion.div whileHover={{ scale: 1.05 }} transition={{ type: 'spring', stiffness: 300 }}>
           <SummaryCard 
             title="Total Faculty" 
-            value="45" 
+            value={facultyCount.toString()} 
             icon="👨‍🏫" 
             className="shadow-md p-6 rounded-2xl bg-gray-800 hover:shadow-lg transition text-white" 
           />

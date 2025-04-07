@@ -10,28 +10,12 @@ const StudentList = ({ department }) => {
   const [csvFile, setCsvFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [students, setStudents] = useState([]);
+  const [filters, setFilters] = useState({ semester: "", section: "" });
 
-  // Simulate HOD info (replace this with real data from auth or API)
-  const [hodInfo, setHodInfo] = useState({ department: "CSE" });
-
-  const [filters, setFilters] = useState({
-    semester: "",
-    section: "",
-  });
-
-  const columns = ["Registration Number", "Name", "Department", "Semester", "Section"];
-
-  useEffect(() => {
-    // Fetch HOD info if from an API or global context
-    // Example: setHodInfo(authContext.user);
-  }, []);
+  const columns = ["Registration Number", "Name", "Department", "Semester", "Section", "Actions"];
 
   const handleFileUpload = (file) => {
-    if (file.target) {
-      setCsvFile(file.target.files[0]);
-    } else {
-      setCsvFile(file);
-    }
+    setCsvFile(file.target ? file.target.files[0] : file);
   };
 
   const handleUpload = async () => {
@@ -46,6 +30,7 @@ const StudentList = ({ department }) => {
         headers: { "Content-Type": "multipart/form-data" },
       });
       alert("CSV file uploaded successfully!");
+      fetchStudents(); // Refresh after upload
     } catch (error) {
       alert("Failed to upload CSV file.");
     } finally {
@@ -56,7 +41,6 @@ const StudentList = ({ department }) => {
 
   const fetchStudents = async () => {
     const { semester, section } = filters;
-
     if (!semester || !section) {
       alert("Please select semester and section.");
       return;
@@ -65,7 +49,7 @@ const StudentList = ({ department }) => {
     try {
       const response = await Api.get("/student/all", {
         params: {
-          department: department,
+          department,
           semester: parseInt(semester),
           section,
         },
@@ -142,7 +126,7 @@ const StudentList = ({ department }) => {
             </div>
           )}
 
-          {/* Filter Section (no department input) */}
+          {/* Filter Section */}
           <div className="flex flex-col sm:flex-row gap-3 mb-5 items-center">
             <select
               className="p-2 bg-gray-800 text-white border border-gray-700 rounded"
@@ -183,11 +167,17 @@ const StudentList = ({ department }) => {
           <DataTable
             columns={columns}
             data={students.map((s) => ({
-              "Registration Number": s.registrationNumber,
-              Name: s.name,
-              Department: s.department,
-              Semester: s.sem,
-              Section: s.section,
+              registrationnumber: s.registrationNumber,
+              name: s.name,
+              department: s.department.toUpperCase(),
+              semester: s.sem,
+              section: s.section,
+              actions: (
+                <div className="flex gap-2 justify-center">
+                  <button className="text-sm px-2 py-1 bg-blue-600 rounded hover:bg-blue-700">Edit</button>
+                  <button className="text-sm px-2 py-1 bg-red-600 rounded hover:bg-red-700">Delete</button>
+                </div>
+              ),
             }))}
           />
         </>

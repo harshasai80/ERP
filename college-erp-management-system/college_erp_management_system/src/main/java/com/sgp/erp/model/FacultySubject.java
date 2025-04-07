@@ -38,5 +38,5 @@ public class FacultySubject {
     private SubjectType subjectType;
 
     @Column(name = "batches")
-    private String[] batches;
+    private String[][] batches;
 }

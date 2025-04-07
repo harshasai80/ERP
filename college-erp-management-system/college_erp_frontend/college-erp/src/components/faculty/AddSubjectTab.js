@@ -1,73 +1,153 @@
-import React, { useState } from 'react';
-import Api from '../../Api';
+import React, { useState, useEffect } from "react";
+import Api from "../../Api";
 
 function AddSubjectTab() {
   const [formData, setFormData] = useState({
-    department: '',
-    semester: '',
-    subject: '',
-    subjectType: '',
-    section: '',
-    batch: '',
+    department: "",
+    semester: "",
+    subjectId: "",
+    subjectType: "",
+    section: "",
+    batches: [],
   });
 
+  const [subjectOptions, setSubjectOptions] = useState([]);
+  const [batchRanges, setBatchRanges] = useState({});
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    const { department, semester } = formData;
+    if (department && semester) {
+      Api.get(`/subjects/department/${department}/semester/${semester}`)
+        .then((res) => setSubjectOptions(res.data.data || []))
+        .catch((err) => {
+          console.error("Error fetching subjects:", err);
+          setSubjectOptions([]);
+        });
+    }
+  }, [formData.department, formData.semester]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "subjectType" && value === "Theory") {
+      setFormData((prev) => ({ ...prev, [name]: value, batches: [] }));
+      setBatchRanges({});
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleBatchToggle = (batch) => {
+    let updatedBatches = [...formData.batches];
+    if (updatedBatches.includes(batch)) {
+      updatedBatches = updatedBatches.filter((b) => b !== batch);
+      const newRanges = { ...batchRanges };
+      delete newRanges[batch];
+      setBatchRanges(newRanges);
+    } else {
+      if (updatedBatches.length < 2) {
+        updatedBatches.push(batch);
+      }
+    }
+    setFormData((prev) => ({ ...prev, batches: updatedBatches }));
+  };
+
+  const handleRangeChange = (batch, field, value) => {
+    setBatchRanges((prev) => ({
+      ...prev,
+      [batch]: {
+        ...prev[batch],
+        [field]: value,
+      },
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check for empty fields
-    if (Object.values(formData).some((val) => val.trim() === '')) {
-      alert('Please fill in all fields.');
+    if (
+      !formData.department ||
+      !formData.semester ||
+      !formData.subjectId ||
+      !formData.subjectType ||
+      !formData.section ||
+      (formData.subjectType === "Lab" && formData.batches.length === 0)
+    ) {
+      alert("Please fill all required fields.");
       return;
     }
 
+    if (formData.subjectType === "Lab") {
+      const regNoPattern = /^[0-9]{3}[a-z]{2}[0-9]{5}$/i;
+
+      const hasInvalidRanges = formData.batches.some((batch) => {
+        const range = batchRanges[batch];
+        return (
+          !range ||
+          !range.start?.trim() ||
+          !range.end?.trim() ||
+          !regNoPattern.test(range.start.trim()) ||
+          !regNoPattern.test(range.end.trim())
+        );
+      });
+
+      if (hasInvalidRanges) {
+        alert("Please enter valid register numbers (e.g., 459cs22027) for all selected batches.");
+        return;
+      }
+    }
+
     setLoading(true);
-    setMessage('');
+    setMessage("");
+
+    const payload = {
+      ...formData,
+      batchDetails:
+        formData.subjectType === "Lab"
+          ? formData.batches.map((batch) => ({
+              name: batch,
+              start: batchRanges[batch].start.trim(),
+              end: batchRanges[batch].end.trim(),
+            }))
+          : [],
+    };
+
+    console.log("Submitting Payload:", JSON.stringify(payload, null, 2));
 
     try {
-      const response = await Api.post('/faculty/assign-subject', formData, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await Api.post("/faculty/assign-subject", payload);
+      console.log("Response:", response.data);
+      setMessage("Subject assigned successfully!");
 
-      setMessage('Subject assigned successfully!');
-      console.log('Response:', response.data);
-
-      // Reset form after successful submission
       setFormData({
-        department: '',
-        semester: '',
-        subject: '',
-        subjectType: '',
-        section: '',
-        batch: '',
+        department: "",
+        semester: "",
+        subjectId: "",
+        subjectType: "",
+        section: "",
+        batches: [],
       });
+      setBatchRanges({});
     } catch (error) {
-      console.error('Submission error:', error);
-      setMessage('Failed to assign subject. Please try again.');
+      console.error("Submission error:", error);
+      setMessage("Failed to assign subject. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-12 p-8 bg-gradient-to-tr from-gray-800 to-gray-700 text-white shadow-2xl rounded-2xl border border-emerald-500">
+    <div className="max-w-xl mx-auto mt-10 p-6 bg-gradient-to-tr from-gray-800 to-gray-700 text-white shadow-2xl rounded-xl border border-emerald-500">
       <h2 className="text-2xl font-semibold text-center text-emerald-300 mb-6">
-        Diploma Faculty Details
+        Assign Subject to Faculty
       </h2>
 
       {message && (
         <div
-          className={`text-sm text-center mb-4 ${
-            message.includes('successfully') ? 'text-emerald-400' : 'text-red-400'
+          className={`text-center mb-4 ${
+            message.includes("successfully") ? "text-emerald-400" : "text-red-400"
           }`}
         >
           {message}
@@ -75,95 +155,117 @@ function AddSubjectTab() {
       )}
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        {/* Department */}
         <select
           name="department"
           value={formData.department}
           onChange={handleChange}
-          className="p-3 bg-gray-900 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          className="p-3 bg-gray-900 border border-gray-600 rounded-md"
         >
           <option value="">Select Department</option>
-          <option value="Computer Science">Computer Science</option>
-          <option value="Electronics and Communication">Electronics and Communication</option>
-          <option value="Mechanical">Mechanical</option>
-          <option value="Civil">Civil</option>
-          <option value="Electrical">Electrical</option>
+          <option value="DCS">Computer Science</option>
+          <option value="DEEE">Electrical and Electronics</option>
+          <option value="DME">Mechanical</option>
+          <option value="DCE">Civil</option>
         </select>
 
-        {/* Semester */}
         <select
           name="semester"
           value={formData.semester}
           onChange={handleChange}
-          className="p-3 bg-gray-900 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          className="p-3 bg-gray-900 border border-gray-600 rounded-md"
         >
           <option value="">Select Semester</option>
-          {Array.from({ length: 6 }, (_, i) => (
-            <option key={i + 1} value={i + 1}>
-              Semester {i + 1}
+          {[1, 2, 3, 4, 5, 6].map((s) => (
+            <option key={s} value={s}>
+              Semester {s}
             </option>
           ))}
         </select>
 
-        {/* Subject */}
         <select
-          name="subject"
-          value={formData.subject}
+          name="subjectId"
+          value={formData.subjectId}
           onChange={handleChange}
-          className="p-3 bg-gray-900 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          className="p-3 bg-gray-900 border border-gray-600 rounded-md"
         >
           <option value="">Select Subject</option>
-          <option value="Basic Electronics">Basic Electronics</option>
-          <option value="Computer Fundamentals">Computer Fundamentals</option>
-          <option value="Applied Mathematics">Applied Mathematics</option>
-          <option value="Engineering Drawing">Engineering Drawing</option>
+          {subjectOptions.map((subj) => (
+            <option key={subj.subjectId} value={subj.subjectId}>
+              {subj.subjectName} ({subj.subjectCode})
+            </option>
+          ))}
         </select>
 
-        {/* Subject Type */}
         <select
           name="subjectType"
           value={formData.subjectType}
           onChange={handleChange}
-          className="p-3 bg-gray-900 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          className="p-3 bg-gray-900 border border-gray-600 rounded-md"
         >
           <option value="">Select Subject Type</option>
           <option value="Theory">Theory</option>
           <option value="Lab">Lab</option>
         </select>
 
-        {/* Section */}
         <select
           name="section"
           value={formData.section}
           onChange={handleChange}
-          className="p-3 bg-gray-900 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          className="p-3 bg-gray-900 border border-gray-600 rounded-md"
         >
           <option value="">Select Section</option>
           <option value="A">A</option>
           <option value="B">B</option>
+          <option value="C">C</option>
+          <option value="D">D</option>
         </select>
 
-        {/* Batch */}
-        <select
-          name="batch"
-          value={formData.batch}
-          onChange={handleChange}
-          className="p-3 bg-gray-900 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500"
-        >
-          <option value="">Select Batch</option>
-          <option value="2020-2023">2020-2023</option>
-          <option value="2021-2024">2021-2024</option>
-          <option value="2022-2025">2022-2025</option>
-          <option value="2023-2026">2023-2026</option>
-          <option value="2024-2027">2024-2027</option>
-        </select>
+        {formData.subjectType === "Lab" && (
+          <>
+            <div>
+              <p className="mb-2 font-medium">Select Batch (max 2):</p>
+              <div className="flex gap-4">
+                {["B1", "B2"].map((batch) => (
+                  <label key={batch} className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={formData.batches.includes(batch)}
+                      onChange={() => handleBatchToggle(batch)}
+                    />
+                    {batch}
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {formData.batches.map((batch) => (
+              <div key={batch} className="flex items-center gap-3">
+                <span className="w-10">{batch}</span>
+                <input
+                  type="text"
+                  placeholder="Start Reg No."
+                  value={batchRanges[batch]?.start || ""}
+                  onChange={(e) => handleRangeChange(batch, "start", e.target.value)}
+                  className="p-2 w-full bg-gray-900 border border-gray-600 rounded-md"
+                />
+                <input
+                  type="text"
+                  placeholder="End Reg No."
+                  value={batchRanges[batch]?.end || ""}
+                  onChange={(e) => handleRangeChange(batch, "end", e.target.value)}
+                  className="p-2 w-full bg-gray-900 border border-gray-600 rounded-md"
+                />
+              </div>
+            ))}
+          </>
+        )}
 
         <button
           type="submit"
           disabled={loading}
-          className="bg-emerald-600 hover:bg-emerald-700 py-3 rounded-md font-medium transition duration-300 disabled:opacity-50"
+          className="mt-4 bg-emerald-600 hover:bg-emerald-700 py-3 rounded-md font-medium transition duration-300 disabled:opacity-50"
         >
-          {loading ? 'Submitting...' : 'Submit'}
+          {loading ? "Submitting..." : "Submit"}
         </button>
       </form>
     </div>
