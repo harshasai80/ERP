@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sgp.erp.dto.ResponseStructure;
+import com.sgp.erp.model.FacultySubject;
 import com.sgp.erp.model.Subject;
+import com.sgp.erp.service.FacultySubjectService;
 import com.sgp.erp.service.SubjectService;
 
 @RestController
@@ -18,6 +20,9 @@ public class SubjectController {
 
     @Autowired
     private SubjectService subjectService;
+
+    @Autowired
+    private FacultySubjectService facultySubjectService;
 
     @PostMapping("/add")
     public ResponseEntity<ResponseStructure<Subject>> saveSubject(@RequestBody Subject subject) {
@@ -38,5 +43,10 @@ public class SubjectController {
     @GetMapping("/upload")
     public ResponseEntity<ResponseStructure<String>> uploadSubjectsCSV(@RequestParam("file") MultipartFile file) {
         return subjectService.uploadSubjectsCSV(file);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<ResponseStructure<List<FacultySubject>>> findByFacultyId(@RequestParam Long facultyId) {
+        return facultySubjectService.findByFacultyId(facultyId);
     }
 }

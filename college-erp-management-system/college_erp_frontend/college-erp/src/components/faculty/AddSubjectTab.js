@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Api from "../../Api";
 
-function AddSubjectTab() {
+function AddSubjectTab({ faculty }) {
   const [formData, setFormData] = useState({
     department: "",
-    semester: "",
+    semester: 0,
     subjectId: "",
     subjectType: "",
     section: "",
@@ -16,6 +16,7 @@ function AddSubjectTab() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
+  // Fetch subject options
   useEffect(() => {
     const { department, semester } = formData;
     if (department && semester) {
@@ -72,8 +73,7 @@ function AddSubjectTab() {
       !formData.semester ||
       !formData.subjectId ||
       !formData.subjectType ||
-      !formData.section ||
-      (formData.subjectType === "Lab" && formData.batches.length === 0)
+      !formData.section
     ) {
       alert("Please fill all required fields.");
       return;
@@ -94,7 +94,9 @@ function AddSubjectTab() {
       });
 
       if (hasInvalidRanges) {
-        alert("Please enter valid register numbers (e.g., 459cs22027) for all selected batches.");
+        alert(
+          "Please enter valid register numbers (e.g., 459cs22027) for all selected batches."
+        );
         return;
       }
     }
@@ -102,22 +104,39 @@ function AddSubjectTab() {
     setLoading(true);
     setMessage("");
 
+    const selectedSubject = subjectOptions.find(
+      (s) => String(s.subjectId) === formData.subjectId
+    );
+
     const payload = {
-      ...formData,
-      batchDetails:
+      section: formData.section.toUpperCase(),
+      subject: {
+        subjectId: selectedSubject.subjectId,
+        subjectName: selectedSubject.subjectName,
+        subjectCode: selectedSubject.subjectCode,
+        department: selectedSubject.department,
+        value: selectedSubject.value,
+        semester: selectedSubject.semester,
+        maxMarks: selectedSubject.maxMarks,
+      },
+      faculty: faculty,
+      subjectType: formData.subjectType.toUpperCase(),
+      batches:
         formData.subjectType === "Lab"
-          ? formData.batches.map((batch) => ({
-              name: batch,
-              start: batchRanges[batch].start.trim(),
-              end: batchRanges[batch].end.trim(),
-            }))
+          ? formData.batches.map((batch) => [
+              batch,
+              batchRanges[batch].start.trim(),
+              batchRanges[batch].end.trim(),
+            ])
           : [],
     };
 
     console.log("Submitting Payload:", JSON.stringify(payload, null, 2));
 
     try {
-      const response = await Api.post("/faculty/assign-subject", payload);
+      const response = await Api.post("/faculty/assign-subject", payload, {
+        headers: { "Content-Type": "application/json" },
+      });
       console.log("Response:", response.data);
       setMessage("Subject assigned successfully!");
 
@@ -147,7 +166,9 @@ function AddSubjectTab() {
       {message && (
         <div
           className={`text-center mb-4 ${
-            message.includes("successfully") ? "text-emerald-400" : "text-red-400"
+            message.includes("successfully")
+              ? "text-emerald-400"
+              : "text-red-400"
           }`}
         >
           {message}
@@ -245,14 +266,18 @@ function AddSubjectTab() {
                   type="text"
                   placeholder="Start Reg No."
                   value={batchRanges[batch]?.start || ""}
-                  onChange={(e) => handleRangeChange(batch, "start", e.target.value)}
+                  onChange={(e) =>
+                    handleRangeChange(batch, "start", e.target.value)
+                  }
                   className="p-2 w-full bg-gray-900 border border-gray-600 rounded-md"
                 />
                 <input
                   type="text"
                   placeholder="End Reg No."
                   value={batchRanges[batch]?.end || ""}
-                  onChange={(e) => handleRangeChange(batch, "end", e.target.value)}
+                  onChange={(e) =>
+                    handleRangeChange(batch, "end", e.target.value)
+                  }
                   className="p-2 w-full bg-gray-900 border border-gray-600 rounded-md"
                 />
               </div>

@@ -4,12 +4,15 @@ import AssessmentTab from "../faculty/AssessmentTab";
 import SyllabusTab from "../faculty/SyllabusTab";
 import ViewStudentsTab from "../faculty/ViewStudentsTab";
 import AddSubjectTab from "../faculty/AddSubjectTab";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
 const FacultyDashboard = () => {
   const [activeTab, setActiveTab] = useState("attendance");
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const data = location.state?.data;
 
   const tabs = [
     { id: "attendance", label: "Attendance" },
@@ -77,7 +80,7 @@ const FacultyDashboard = () => {
           {activeTab === "assessment" && <AssessmentTab />}
           {activeTab === "syllabus" && <SyllabusTab />}
           {activeTab === "view-students" && <ViewStudentsTab />}
-          {activeTab === "add-subject" && <AddSubjectTab />}
+          {activeTab === "add-subject" && <AddSubjectTab faculty={data} />}
         </div>
       </main>
 

@@ -25,8 +25,10 @@ export default function RoleBasedLogin() {
       const role = data.role;
 
       if (role === "HOD") navigate("/hod-dashboard", { state: { data } });
-      else if (role === "FACULTY") navigate("/faculty-dashboard", { state: { data } });
-      else if (role === "PRINCIPAL") navigate("/principal-dashboard", { state: { data } });
+      else if (role === "FACULTY")
+        navigate("/faculty-dashboard", { state: { data } });
+      else if (role === "PRINCIPAL")
+        navigate("/principal-dashboard", { state: { data } });
       else if (role === "ADMIN") navigate("/admin", { state: { data } });
       else alert("Invalid credentials");
     } catch (err) {
@@ -47,9 +49,14 @@ export default function RoleBasedLogin() {
               whileHover={{ scale: 1.2 }}
               transition={{ duration: 0.3 }}
             />
-            <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.3 }}>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.3 }}
+            >
               <h1 className="text-lg sm:text-xl md:text-2xl font-extrabold tracking-wide text-white leading-tight">
-                <span className="hidden sm:inline">Sanjay Gandhi Polytechnic</span>
+                <span className="hidden sm:inline">
+                  Sanjay Gandhi Polytechnic
+                </span>
                 <span className="inline sm:hidden">SGP</span> ERP System
               </h1>
             </motion.div>
@@ -89,7 +96,9 @@ export default function RoleBasedLogin() {
               />
             </div>
             <div className="mb-6 relative">
-              <label className="block text-gray-300 text-sm mb-1">Password</label>
+              <label className="block text-gray-300 text-sm mb-1">
+                Password
+              </label>
               <input
                 type={showPassword ? "text" : "password"}
                 value={password}
@@ -100,7 +109,7 @@ export default function RoleBasedLogin() {
               />
               <button
                 type="button"
-                className="absolute top-[44px] right-3 text-white text-lg"
+                className="absolute top-[55%] right-3 text-white text-lg"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? <PiEyeClosedBold /> : <PiEyeBold />}

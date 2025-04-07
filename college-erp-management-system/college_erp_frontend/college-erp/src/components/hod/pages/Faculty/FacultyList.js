@@ -166,7 +166,9 @@ const FacultyList = ({ department }) => {
           {/* Upload Faculty CSV / Add Individually Options */}
           {showUpload && (
             <div className="mb-5 p-5 bg-gradient-to-br from-gray-900 to-gray-800 shadow-lg rounded-xl flex flex-col items-center gap-3 w-96 mx-auto">
-              <p className="text-lg font-semibold text-white">Choose an option:</p>
+              <p className="text-lg font-semibold text-white">
+                Choose an option:
+              </p>
               <button
                 className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 w-full"
                 onClick={() => {

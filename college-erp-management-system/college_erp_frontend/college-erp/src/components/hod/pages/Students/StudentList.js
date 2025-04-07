@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Api from "../../../../Api";
 import DataTable from "../../components/tables/DataTable";
 import AddStudentsTab from "../../components/tabs/AddStudentsTab";

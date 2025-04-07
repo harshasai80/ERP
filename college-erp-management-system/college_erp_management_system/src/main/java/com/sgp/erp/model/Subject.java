@@ -37,5 +37,5 @@ public class Subject {
 
 enum SubjectType {
     THEORY,
-    PRACTICAL
+    LAB
 }
