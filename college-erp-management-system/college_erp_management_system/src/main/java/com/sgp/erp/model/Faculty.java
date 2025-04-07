@@ -24,6 +24,9 @@ public class Faculty {
     @Column(nullable = false)
     private String name;
 
+    // @Column(nullable = false)
+    // private String dteId;
+
     @Column(nullable = false, unique = true)
     private String email;
 
