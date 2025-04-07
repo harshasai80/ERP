@@ -55,4 +55,13 @@ public class ErpProjectExceptionHandler extends ResponseEntityExceptionHandler {
         structure.setStatus(HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<>(structure, HttpStatus.UNPROCESSABLE_ENTITY);
     }
+
+    @ExceptionHandler(FacultyNotFoundException.class)
+    public ResponseEntity<ResponseStructure<String>> handleFNF(Exception ex) {
+        ResponseStructure<String> structure = new ResponseStructure<>();
+        structure.setData(null);
+        structure.setMessage(ex.getMessage());
+        structure.setStatus(HttpStatus.NOT_FOUND.value());
+        return new ResponseEntity<>(structure, HttpStatus.NOT_FOUND);
+    }
 }

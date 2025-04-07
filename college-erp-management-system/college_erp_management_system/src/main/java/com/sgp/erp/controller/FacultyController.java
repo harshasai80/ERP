@@ -1,15 +1,19 @@
 package com.sgp.erp.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.service.annotation.GetExchange;
 
 import com.sgp.erp.dto.ResponseStructure;
 import com.sgp.erp.model.Faculty;
@@ -47,6 +51,11 @@ public class FacultyController {
     @PostMapping("/add")
     public ResponseEntity<ResponseStructure<Faculty>> addFaculty(@RequestBody Faculty faculty) {
         return userService.addUser(faculty);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<ResponseStructure<List<Faculty>>> getAllFaculties(@RequestParam String department) {
+        return facultyService.getAllFaculties(department);
     }
 
 }

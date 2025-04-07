@@ -19,7 +19,7 @@ public class FacultyDao {
 
     @Autowired
     private FacultySubjectRepository facultySubjectRepository;
-    
+
     @Autowired
     private FacultyRepository facultyRepository;
 
@@ -36,6 +36,10 @@ public class FacultyDao {
     public Boolean assignSubject(FacultySubject facultySubject) {
         facultySubjectRepository.save(facultySubject);
         return true;
+    }
+
+    public Optional<List<Faculty>> findByDepartment(String department) {
+        return facultyRepository.findByDepartment(department);
     }
 
 }
