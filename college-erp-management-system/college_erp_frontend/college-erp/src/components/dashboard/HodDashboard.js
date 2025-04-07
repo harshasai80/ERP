@@ -16,11 +16,11 @@ const HodDashboard = () => {
   const renderContent = () => {
     switch (activeTab) {
       case "faculty":
-        return <FacultyList />;
+        return <FacultyList department={data.department} />;
       case "students":
         return <StudentList department={data.department} />;
       default:
-        return <Dashboard />;
+        return <Dashboard department={data.department} />;
     }
   };
 
