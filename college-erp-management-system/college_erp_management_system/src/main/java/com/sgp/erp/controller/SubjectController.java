@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sgp.erp.dto.ResponseStructure;
 import com.sgp.erp.model.Subject;
@@ -33,5 +34,10 @@ public class SubjectController {
     public ResponseEntity<ResponseStructure<List<Subject>>> findByDepartmentAndSemester(@PathVariable String department,
             @PathVariable Byte semester) {
         return subjectService.findByDepartmentAndSemester(department, semester);
-    }   
+    }
+
+    @GetMapping("/upload")
+    public ResponseEntity<ResponseStructure<String>> uploadSubjectsCSV(@RequestParam("file") MultipartFile file) {
+        return subjectService.uploadSubjectsCSV(file);
+    }
 }

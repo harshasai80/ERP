@@ -6,9 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.sgp.erp.dao.SubjectDao;
 import com.sgp.erp.dto.ResponseStructure;
 import com.sgp.erp.exception.DataNotFoundException;
+import com.sgp.erp.exception.DataNotSavedException;
 import com.sgp.erp.model.Subject;
 
 @Service
@@ -50,6 +53,18 @@ public class SubjectService {
                     "No subjects found for department: " + department + " and semester: " + semester);
         }
 
+    }
+
+    public ResponseEntity<ResponseStructure<String>> uploadSubjectsCSV(MultipartFile subjectsFile) {
+        Boolean subjects = subjectDao.uploadSubjectsCSV(subjectsFile);
+        ResponseStructure<String> structure = new ResponseStructure<String>();
+        if (subjects) {
+            structure.setData("Subjects uploaded successfully");
+            structure.setMessage("Subjects uploaded successfully");
+            structure.setStatus(HttpStatus.CREATED.value());
+            return new ResponseEntity<ResponseStructure<String>>(structure, HttpStatus.CREATED);
+        }
+        throw new DataNotSavedException("Subjects not uploaded");
     }
 
 }

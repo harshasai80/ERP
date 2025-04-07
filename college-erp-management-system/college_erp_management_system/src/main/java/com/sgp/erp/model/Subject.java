@@ -26,7 +26,7 @@ public class Subject {
     private String department;
 
     @Column(name = "value", nullable = false)
-    private String value;
+    private int value;
 
     @Column(name = "semester", nullable = false)
     private Byte semester;

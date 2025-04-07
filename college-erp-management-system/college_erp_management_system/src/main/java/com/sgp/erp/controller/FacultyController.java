@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.service.annotation.GetExchange;
-
 import com.sgp.erp.dto.ResponseStructure;
 import com.sgp.erp.model.Faculty;
 import com.sgp.erp.model.FacultySubject;

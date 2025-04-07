@@ -33,7 +33,7 @@ public class AttendanceService {
             structure.setStatus(HttpStatus.OK.value());
             return new ResponseEntity<ResponseStructure<List<Attendance>>>(structure, HttpStatus.OK);
         }
-        throw new DataNotFoundException();
+        throw new DataNotFoundException("Attendance not found");
     }
 
     public ResponseEntity<ResponseStructure<List<Attendance>>> getAttendanceByRegisterNoAndDateRange(String registerNo,
@@ -49,10 +49,11 @@ public class AttendanceService {
             structure.setStatus(HttpStatus.OK.value());
             return new ResponseEntity<ResponseStructure<List<Attendance>>>(structure, HttpStatus.OK);
         }
-        throw new DataNotFoundException();
+        throw new DataNotFoundException("Attendance not found");
     }
 
-    public ResponseEntity<ResponseStructure<List<Attendance>>> addAttendanceRecords(List<Map<String, Object>> attendanceData) {
+    public ResponseEntity<ResponseStructure<List<Attendance>>> addAttendanceRecords(
+            List<Map<String, Object>> attendanceData) {
 
         List<Attendance> savedAttendances = attendanceDao.addAttendanceRecords(attendanceData);
         ResponseStructure<List<Attendance>> structure = new ResponseStructure<List<Attendance>>();
@@ -63,8 +64,7 @@ public class AttendanceService {
             structure.setStatus(HttpStatus.CREATED.value());
             return new ResponseEntity<ResponseStructure<List<Attendance>>>(structure, HttpStatus.CREATED);
         }
-        throw new DataNotSavedException();
+        throw new DataNotSavedException("Attendances not saved");
     }
-
 
 }

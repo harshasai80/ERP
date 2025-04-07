@@ -9,9 +9,4 @@ public class DataNotSavedException extends RuntimeException {
     public DataNotSavedException(String message) {
         super(message);
     }
-
-    @Override
-    public String getMessage() {
-        return "Data not saved";
-    }
 }
