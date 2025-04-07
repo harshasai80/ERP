@@ -183,10 +183,13 @@ function AddSubjectTab({ faculty }) {
           className="p-3 bg-gray-900 border border-gray-600 rounded-md"
         >
           <option value="">Select Department</option>
-          <option value="DCS">Computer Science</option>
-          <option value="DEEE">Electrical and Electronics</option>
-          <option value="DME">Mechanical</option>
-          <option value="DCE">Civil</option>
+          <option value="DCS">Diploma in Computer Science Engineering</option>
+          <option value="DEEE">
+            Diploma in Electrical and Electronics Engineering
+          </option>
+          <option value="DME">Diploma in Mechanical Engineering</option>
+          <option value="DCE">Diploma in Civil Engineering</option>
+          <option value="DMT">Diploma in Metallurgy Engineering</option>
         </select>
 
         <select
@@ -196,7 +199,7 @@ function AddSubjectTab({ faculty }) {
           className="p-3 bg-gray-900 border border-gray-600 rounded-md"
         >
           <option value="">Select Semester</option>
-          {[1, 2, 3, 4, 5, 6].map((s) => (
+          {[1, 2, 3, 4, 5].map((s) => (
             <option key={s} value={s}>
               Semester {s}
             </option>
@@ -265,6 +268,7 @@ function AddSubjectTab({ faculty }) {
                 <input
                   type="text"
                   placeholder="Start Reg No."
+                  required
                   value={batchRanges[batch]?.start || ""}
                   onChange={(e) =>
                     handleRangeChange(batch, "start", e.target.value)
@@ -274,6 +278,7 @@ function AddSubjectTab({ faculty }) {
                 <input
                   type="text"
                   placeholder="End Reg No."
+                  required
                   value={batchRanges[batch]?.end || ""}
                   onChange={(e) =>
                     handleRangeChange(batch, "end", e.target.value)
