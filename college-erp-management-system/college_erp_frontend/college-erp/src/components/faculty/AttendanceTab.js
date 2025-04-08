@@ -128,70 +128,67 @@ function AttendanceTab({faculty}) {
     6: "17:00",
   };
 
+// Inside saveAttendance function:
 
-  const saveAttendance = async () => {
-    if (!date || !startTime || !endTime || !semester || !subjectId) {
-      showAlert("Please fill all fields", "error");
-      return;
+const saveAttendance = async () => {
+  if (!date || !startTime || !endTime || !semester || !subjectId) {
+    showAlert("Please fill all fields", "error");
+    return;
+  }
+
+  const selectedStartTime = new Date(`${date}T${startTime}`);
+  const selectedEndTime = new Date(`${date}T${endTime}`);
+  const lunchBreak = lunchBreaks[semester];
+  const collegeEndTime = collegeEndTimes[semester];
+
+  let selectedSessions = [];
+
+  predefinedSessions.forEach((session, index) => {
+    const sessionStart = new Date(`${date}T${session.start}`);
+    const sessionEnd = new Date(`${date}T${session.end}`);
+
+    if (collegeEndTime && sessionEnd > new Date(`${date}T${collegeEndTime}`)) return;
+
+    if (lunchBreak) {
+      const lunchStart = new Date(`${date}T${lunchBreak.start}`);
+      const lunchEnd = new Date(`${date}T${lunchBreak.end}`);
+      if (sessionStart >= lunchStart && sessionEnd <= lunchEnd) return;
     }
 
-    const selectedStartTime = new Date(`${date}T${startTime}`);
-    const selectedEndTime = new Date(`${date}T${endTime}`);
-    const lunchBreak = lunchBreaks[semester];
-    const collegeEndTime = collegeEndTimes[semester];
-
-    let selectedSessions = [];
-
-    predefinedSessions.forEach((session, index) => {
-      const sessionStart = new Date(`${date}T${session.start}`);
-      const sessionEnd = new Date(`${date}T${session.end}`);
-
-      if (sessionEnd > new Date(`${date}T${collegeEndTime}`)) return;
-
-      if (lunchBreak) {
-        const lunchStart = new Date(`${date}T${lunchBreak.start}`);
-        const lunchEnd = new Date(`${date}T${lunchBreak.end}`);
-        if (sessionStart >= lunchStart && sessionEnd <= lunchEnd) return;
-      }
-
-      if (sessionStart >= selectedStartTime && sessionEnd <= selectedEndTime) {
-        selectedSessions.push({
-          session: index + 1,
-          start: session.start,
-          end: session.end,
-        });
-      }
-    });
-
-    const attendanceData = students.map((student) => {
-      const sessions = selectedSessions.map((session) => ({
-        session: session.session,
-        status: absentStudents.includes(student.registrationNumber)
-          ? "absent"
-          : "present",
-      }));
-
-      console.log("Sessions:", sessions);
-
-      const batches = batch.split(",").map((batch) => batch.trim());
-
-      return {
-        registrationNumber: student.registrationNumber,
-        date,
-        subjectId: parseInt(subjectId),
-        batches: subjectType === "LAB" ? batches : null,
-        sessions,
-      };
-    });
-
-    try {
-      console.log("Attendance Data:", attendanceData);
-      await Api.post("/students/add-attendance", attendanceData);
-      showAlert("Attendance saved successfully!", "success");
-    } catch (error) {
-      showAlert("Failed to save attendance", "error");
+    if (sessionStart >= selectedStartTime && sessionEnd <= selectedEndTime) {
+      selectedSessions.push({
+        session: index + 1,
+        start: session.start,
+        end: session.end,
+      });
     }
-  };
+  });
+
+  const attendanceData = students.map((student) => {
+    const sessions = selectedSessions.map((session) => ({
+      session: session.session,
+      status: absentStudents.includes(student.registrationNumber)
+        ? "absent"
+        : "present",
+    }));
+
+    return {
+      registrationNumber: student.registrationNumber,
+      date,
+      semester: semester,
+      subjectId: parseInt(subjectId),
+      batch: subjectType === "LAB" ? batch : null,
+      sessions,
+    };
+  });
+
+  try {
+    await Api.post("/students/add-attendance", attendanceData);
+    showAlert("Attendance saved successfully!", "success");
+  } catch (error) {
+    showAlert("Failed to save attendance", "error");
+  }
+};
 
   const showAlert = (message, type) => {
     setAlert({ show: true, message, type });
