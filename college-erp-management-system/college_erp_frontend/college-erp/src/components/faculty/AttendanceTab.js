@@ -39,6 +39,19 @@ function AttendanceTab({faculty}) {
     }
   };
 
+  // useEffect(() => {
+  //   if (subjectId) {
+  //     const selected = subjects.find((s) => s.subject.subjectId.toString() === subjectId);
+  //     if (selected) {
+  //       setSubjectType(selected.subjectType);
+  //       setAvailableBatches(selected.batches || []);
+  //       if (selected.subjectType === "LAB" && selected.batches.length === 0) {
+  //         showAlert("No batches assigned for selected lab subject", "error");
+  //       }
+  //       fetchStudents(selected.subjectType === "LAB" ? selected.batches[0] : null);
+  //     }
+  //   }
+  // }, [subjectId]);
   useEffect(() => {
     if (subjectId) {
       const selected = subjects.find((s) => s.subject.subjectId.toString() === subjectId);
@@ -48,32 +61,35 @@ function AttendanceTab({faculty}) {
         if (selected.subjectType === "LAB" && selected.batches.length === 0) {
           showAlert("No batches assigned for selected lab subject", "error");
         }
-        fetchStudents(selected.subjectType === "LAB" ? selected.batches[0] : null);
+        // fetchStudents(selected.subjectType === "LAB" ? selected.batches[0] : null); <-- removed
       }
     }
   }, [subjectId]);
-
-  useEffect(() => {
-    if (subjectType === "LAB" && batch) {
-      fetchStudents(batch);
-    }
-  }, [batch]);
-
+  
   const fetchStudents = async (selectedBatch = null) => {
     try {
       let url = `/student/all?department=${department}&semester=${semester}&section=${section}`;
+  
       if (selectedBatch) {
-        url += `&batch=${selectedBatch}`;
+        const [batchName, startRegNo, endRegNo] = selectedBatch.split(",");
+        if (startRegNo && endRegNo) {
+          console.log("startRegNo:", startRegNo, "endRegNo:", endRegNo);
+          url += `&startRegNo=${startRegNo}&endRegNo=${endRegNo}`;
+          console.log("url:", url);
+        }
       }
+  
       const response = await Api.get(url);
       const data = response.data?.data || [];
       setStudents(data);
       setAbsentStudents([]);
     } catch (error) {
+      console.error("Fetch students failed", error);
       setStudents([]);
       showAlert("Failed to load students", "error");
     }
   };
+  
 
   const handleAttendanceChange = (e, rollNo) => {
     if (e.target.checked) {
@@ -111,6 +127,7 @@ function AttendanceTab({faculty}) {
     5: "17:00",
     6: "17:00",
   };
+
 
   const saveAttendance = async () => {
     if (!date || !startTime || !endTime || !semester || !subjectId) {
@@ -154,17 +171,21 @@ function AttendanceTab({faculty}) {
           : "present",
       }));
 
+      console.log("Sessions:", sessions);
+
+      const batches = batch.split(",").map((batch) => batch.trim());
+
       return {
         registrationNumber: student.registrationNumber,
         date,
-        semester: semester,
         subjectId: parseInt(subjectId),
-        batch: subjectType === "LAB" ? batch : null,
+        batches: subjectType === "LAB" ? batches : null,
         sessions,
       };
     });
 
     try {
+      console.log("Attendance Data:", attendanceData);
       await Api.post("/students/add-attendance", attendanceData);
       showAlert("Attendance saved successfully!", "success");
     } catch (error) {
@@ -251,7 +272,7 @@ function AttendanceTab({faculty}) {
               <option value="">Select Batch</option>
               {availableBatches.map((b) => (
                 <option key={b} value={b}>
-                  {b}
+                  {b[0]} ({b[1]} - {b[2]})
                 </option>
               ))}
             </select>
@@ -310,6 +331,13 @@ function AttendanceTab({faculty}) {
           </tbody>
         </table>
       )}
+
+<button
+  onClick={() => fetchStudents(subjectType === "LAB" ? batch : null)}
+  className="bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 rounded-md transition-colors mr-1"
+>
+  Load Students
+</button>
 
       <button
         onClick={saveAttendance}

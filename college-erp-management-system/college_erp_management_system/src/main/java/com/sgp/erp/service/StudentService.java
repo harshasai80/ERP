@@ -2,6 +2,7 @@ package com.sgp.erp.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -49,19 +50,31 @@ public class StudentService {
         throw new StudentDoesExistException();
     }
 
-    public ResponseEntity<ResponseStructure<List<Student>>> findAllStudentsByDepartmentAndSemesterAndSection(String department,
-            Byte semester, Section section) {
-        ResponseStructure<List<Student>> structure = new ResponseStructure<List<Student>>();
-        List<Student> students = studentDao.findAllStudentsByDepartmentAndSemesterAndSection(department, semester,
-                section);
-        if (!students.isEmpty()) {
-            structure.setData(students);
-            structure.setMessage("Students found");
-            structure.setStatus(HttpStatus.OK.value());
-            return new ResponseEntity<ResponseStructure<List<Student>>>(structure, HttpStatus.OK);
-        }
-        throw new StudentNotFoundException();
+    public ResponseEntity<ResponseStructure<List<Student>>> findAllStudentsByDepartmentAndSemesterAndSection(
+        String department, Byte semester, Section section,
+        String startRegNo, String endRegNo) {
+
+    ResponseStructure<List<Student>> structure = new ResponseStructure<>();
+
+    List<Student> students = studentDao.findAllStudentsByDepartmentAndSemesterAndSection(department, semester, section);
+
+    if (startRegNo != null && endRegNo != null) {
+        students = students.stream()
+                .filter(s -> s.getRegistrationNumber().compareTo(startRegNo) >= 0 &&
+                             s.getRegistrationNumber().compareTo(endRegNo) <= 0)
+                .collect(Collectors.toList());
     }
+
+    if (!students.isEmpty()) {
+        structure.setData(students);
+        structure.setMessage("Students found");
+        structure.setStatus(HttpStatus.OK.value());
+        return new ResponseEntity<>(structure, HttpStatus.OK);
+    }
+
+    throw new StudentNotFoundException();
+}
+
 
     public ResponseEntity<ResponseStructure<String>> uploadStudent(MultipartFile file) {
         ResponseStructure<String> structure = new ResponseStructure<String>();

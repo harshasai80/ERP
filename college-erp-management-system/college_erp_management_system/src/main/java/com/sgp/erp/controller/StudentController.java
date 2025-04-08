@@ -40,12 +40,17 @@ public class StudentController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<ResponseStructure<List<Student>>> findAllStudentsByDepartmentAndSemester(
-            @RequestParam String department,
-            @RequestParam Byte semester,
-            @RequestParam Section section) {
-        return studentService.findAllStudentsByDepartmentAndSemesterAndSection(department, semester, section);
-    }
+public ResponseEntity<ResponseStructure<List<Student>>> findAllStudentsByDepartmentAndSemester(
+        @RequestParam String department,
+        @RequestParam Byte semester,
+        @RequestParam Section section,
+        @RequestParam(required = false) String startRegNo,
+        @RequestParam(required = false) String endRegNo) {
+
+    return studentService.findAllStudentsByDepartmentAndSemesterAndSection(
+            department, semester, section, startRegNo, endRegNo);
+}
+
 
     @PostMapping("/upload")
     public ResponseEntity<ResponseStructure<String>> uploadStudents(@RequestParam MultipartFile file) {
