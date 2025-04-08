@@ -76,7 +76,7 @@ const FacultyDashboard = () => {
       {/* Main Content */}
       <main className="flex-1 p-4 sm:p-6">
         <div className="max-w-6xl mx-auto bg-[#2d2f36] rounded-lg p-6 shadow-lg">
-          {activeTab === "attendance" && <AttendanceTab />}
+          {activeTab === "attendance" && <AttendanceTab faculty={data} />}
           {activeTab === "assessment" && <AssessmentTab />}
           {activeTab === "syllabus" && <SyllabusTab />}
           {activeTab === "view-students" && <ViewStudentsTab />}
