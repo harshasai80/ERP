@@ -6,14 +6,16 @@ import java.time.LocalDate;
 
 @Entity
 @Data
-@Table(name = "attendance", indexes = { @Index(name = "idx_student_date", columnList = "student_id, attendance_date") })
+@Table(name = "attendance", indexes = {
+		@Index(name = "idx_student_date", columnList = "student_id, attendance_date")
+})
 public class Attendance {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne
+	@ManyToOne(optional = false)
 	@JoinColumn(name = "student_id", nullable = false)
 	private Student student;
 
@@ -22,12 +24,4 @@ public class Attendance {
 
 	@Column(columnDefinition = "JSON", nullable = false)
 	private String sessions;
-
-	@ManyToOne
-	@JoinColumn(name = "subject_id", nullable = false)
-	private Subject subject;
-
-	@Column(name = "batches")
-	private String[] batches;
-
 }

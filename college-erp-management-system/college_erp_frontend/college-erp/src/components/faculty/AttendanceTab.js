@@ -51,8 +51,12 @@ function AttendanceTab({ faculty }) {
 
   const fetchStudents = async (selectedBatch = null) => {
     try {
-      const selectedSubject = subjects.find((s) => s.id.toString() === subjectId);
-      let url = `/student/all?department=${department}&semester=${semester}&section=${selectedSubject?.section || ""}`;
+      const selectedSubject = subjects.find(
+        (s) => s.id.toString() === subjectId
+      );
+      let url = `/student/all?department=${department}&semester=${semester}&section=${
+        selectedSubject?.section || ""
+      }`;
       if (selectedBatch) {
         const [batchName, startRegNo, endRegNo] = selectedBatch.split(",");
         if (startRegNo && endRegNo) {
@@ -131,7 +135,8 @@ function AttendanceTab({ faculty }) {
       const sessionStart = new Date(`${date}T${session.start}`);
       const sessionEnd = new Date(`${date}T${session.end}`);
 
-      if (collegeEndTime && sessionEnd > new Date(`${date}T${collegeEndTime}`)) return;
+      if (collegeEndTime && sessionEnd > new Date(`${date}T${collegeEndTime}`))
+        return;
 
       if (lunchBreak) {
         const lunchStart = new Date(`${date}T${lunchBreak.start}`);
@@ -167,6 +172,8 @@ function AttendanceTab({ faculty }) {
     });
 
     try {
+      console.log(selectedSubject);
+      console.log(attendanceData);
       await Api.post("/students/add-attendance", attendanceData);
       showAlert("Attendance saved successfully!", "success");
     } catch (error) {
@@ -181,7 +188,9 @@ function AttendanceTab({ faculty }) {
 
   return (
     <div className="bg-gray-800 p-6 rounded-md shadow-md mt-5 text-white">
-      <h2 className="text-2xl font-bold mb-4 text-emerald-400">Mark Student Attendance</h2>
+      <h2 className="text-2xl font-bold mb-4 text-emerald-400">
+        Mark Student Attendance
+      </h2>
 
       <div className="mb-4 grid grid-cols-2 gap-4">
         <div>
@@ -222,7 +231,11 @@ function AttendanceTab({ faculty }) {
             <option value="">Select Subject</option>
             {subjects.map((s) => (
               <option key={s.id} value={s.id}>
-                {s.subject.subjectName} ({s.subject.subjectCode}) - Sec {s.section} {s.subjectType === "LAB" && s.batches.length > 0 ? `- Batches ${s.batches.length}` : ""}
+                {s.subject.subjectName} ({s.subject.subjectCode}) - Sec{" "}
+                {s.section}{" "}
+                {s.subjectType === "LAB" && s.batches.length > 0
+                  ? `- Batches ${s.batches.length}`
+                  : ""}
               </option>
             ))}
           </select>
@@ -278,14 +291,21 @@ function AttendanceTab({ faculty }) {
           </thead>
           <tbody>
             {students.map((student, index) => (
-              <tr key={student.registrationNumber} className={index % 2 === 0 ? "bg-gray-800" : "bg-gray-700"}>
+              <tr
+                key={student.registrationNumber}
+                className={index % 2 === 0 ? "bg-gray-800" : "bg-gray-700"}
+              >
                 <td className="p-3">{student.registrationNumber}</td>
                 <td className="p-3">{student.name}</td>
                 <td className="p-3">
                   <input
                     type="checkbox"
-                    onChange={(e) => handleAttendanceChange(e, student.registrationNumber)}
-                    checked={absentStudents.includes(student.registrationNumber)}
+                    onChange={(e) =>
+                      handleAttendanceChange(e, student.registrationNumber)
+                    }
+                    checked={absentStudents.includes(
+                      student.registrationNumber
+                    )}
                     className="w-4 h-4 text-emerald-500 border-gray-600 focus:ring-emerald-500"
                   />
                 </td>

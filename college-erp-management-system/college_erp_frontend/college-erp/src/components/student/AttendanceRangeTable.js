@@ -25,6 +25,7 @@ export const AttendanceRangeTable = ({ attendanceData }) => {
     "9 AM - 10 AM",
     "10 AM - 11 AM",
     "11 AM - 12 PM",
+    "12 PM - 1 PM",
     "1 PM - 2 PM",
     "2 PM - 3 PM",
     "3 PM - 4 PM",
@@ -70,7 +71,7 @@ export const AttendanceRangeTable = ({ attendanceData }) => {
                 <td className="px-4 py-3 text-emerald-300 font-semibold sticky left-0 bg-inherit backdrop-blur-sm z-10 whitespace-nowrap">
                   {formatDate(date)}
                 </td>
-                {[1, 2, 3, 4, 5, 6, 7].map((sessionNum) => {
+                {[1, 2, 3, 4, 5, 6, 7, 8].map((sessionNum) => {
                   const status = sessionData[sessionNum];
                   return (
                     <td
@@ -106,7 +107,11 @@ const formatDate = (dateString) => {
 // This component displays the session-wise attendance table
 export const AttendanceTable = ({ attendanceData }) => {
   if (!attendanceData || attendanceData.length === 0) {
-    return <p className="text-gray-400 text-center py-4">No attendance data available.</p>;
+    return (
+      <p className="text-gray-400 text-center py-4">
+        No attendance data available.
+      </p>
+    );
   }
 
   return (
@@ -153,14 +158,14 @@ export const AttendanceTable = ({ attendanceData }) => {
 // Helper to convert session number to time
 const getSessionTime = (session) => {
   const map = {
-    "1": "9 AM - 10 AM",
-    "2": "10 AM - 11 AM",
-    "3": "11 AM - 12 PM",
-    "4": "12 PM - 1 PM",
-    "5": "1 PM - 2 PM",
-    "6": "2 PM - 3 PM",
-    "7": "3 PM - 4 PM",
-    "8": "4 PM - 5 PM",
+    1: "9 AM - 10 AM",
+    2: "10 AM - 11 AM",
+    3: "11 AM - 12 PM",
+    4: "12 PM - 1 PM",
+    5: "1 PM - 2 PM",
+    6: "2 PM - 3 PM",
+    7: "3 PM - 4 PM",
+    8: "4 PM - 5 PM",
   };
   return map[String(session)] || "Unknown Session";
 };
