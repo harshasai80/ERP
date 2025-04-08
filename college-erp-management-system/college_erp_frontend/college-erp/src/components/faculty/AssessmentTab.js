@@ -1,174 +1,211 @@
-import React, { useState } from "react";
-import { students } from "./Data/demoData";
+import React, { useState, useEffect } from "react";
+import Api from "../../Api";
 import Alert from "./Alert";
 
-function AssessmentTab() {
-  const [classId, setClassId] = useState("");
-  const [iaType, setIaType] = useState("");
-  const [studentsLoaded, setStudentsLoaded] = useState(false);
+const departments = ["DCS", "DEEE", "DME", "DCE", "DMT"];
+const semesters = [1, 2, 3, 4, 5, 6];
+const sections = ["A", "B", "C"];
+const assessments = ["1IA", "2IA", "3IA", "4IA", "5IA", "Skill Test 1", "Skill Test 2"];
+
+function AssessmentTab({faculty}) {
+  const [department, setDepartment] = useState("");
+  const [semester, setSemester] = useState("");
+  const [section, setSection] = useState("");
+  const [assessmentType, setAssessmentType] = useState("");
+  const [subjects, setSubjects] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [selectedSubjectId, setSelectedSubjectId] = useState("");
   const [marksData, setMarksData] = useState([]);
   const [alert, setAlert] = useState({ show: false, message: "", type: "" });
 
-  const loadStudentsForIA = () => {
-    if (!classId || !iaType) {
-      showAlert("Please select a class and assessment type", "error");
-      return;
+  useEffect(() => {
+    if (department && semester) {
+      Api
+        .get(`/subjects/all?facultyId=${faculty.id}`)
+        .then((res) => {
+          setSubjects(res.data.data || []);
+        })
+        .catch((err) => console.error(err));
     }
+  }, [department, semester]);
 
-    setStudentsLoaded(true);
-
-    if (students[classId]) {
-      const initialMarks = students[classId].map((student) => ({
-        studentId: student.rollNo,
-        marks: "",
-        maxMarks: "100",
-      }));
-      setMarksData(initialMarks);
+  useEffect(() => {
+    if (department && semester && section) {
+      Api
+        .get(`/student/all`, {
+          params: {
+            department,
+            semester,
+            section,
+          },
+        })
+        .then((res) => {
+          setStudents(res.data.data || []);
+          const initialMarks = res.data.data.map((student) => ({
+            studentId: student.studentId,
+            name: student.name,
+            marks: "",
+            maxMarks: "100",
+          }));
+          setMarksData(initialMarks);
+        })
+        .catch((err) => console.error(err));
     }
-  };
+  }, [department, semester, section]);
 
   const handleMarksChange = (index, value) => {
-    const updatedMarks = [...marksData];
-    updatedMarks[index].marks = value;
-    setMarksData(updatedMarks);
+    const updated = [...marksData];
+    updated[index].marks = value;
+    setMarksData(updated);
   };
 
   const handleMaxMarksChange = (index, value) => {
-    const updatedMarks = [...marksData];
-    updatedMarks[index].maxMarks = value;
-    setMarksData(updatedMarks);
+    const updated = [...marksData];
+    updated[index].maxMarks = value;
+    setMarksData(updated);
   };
 
-  const saveIAMarks = () => {
-    let isValid = true;
-    marksData.forEach((data) => {
-      if (!data.marks.trim()) {
-        isValid = false;
-      }
-    });
+  const handleSave = () => {
+    if (!selectedSubjectId || !assessmentType || !department || !semester || !section) {
+      showAlert("Please fill all fields before saving", "error");
+      return;
+    }
 
-    if (!isValid) {
+    const incomplete = marksData.some((m) => m.marks.trim() === "");
+    if (incomplete) {
       showAlert("Please enter marks for all students", "error");
       return;
     }
 
-    showAlert(
-      `IA marks saved for ${marksData.length} students in ${classId} for ${iaType}`,
-      "success"
-    );
+    // Replace this with your save API
+    console.log("Saving", {
+      subjectId: selectedSubjectId,
+      assessmentType,
+      marksData,
+    });
 
-    setClassId("");
-    setIaType("");
-    setStudentsLoaded(false);
-    setMarksData([]);
+    showAlert("IA marks saved successfully!", "success");
   };
 
   const showAlert = (message, type) => {
     setAlert({ show: true, message, type });
-    setTimeout(() => {
-      setAlert({ show: false, message: "", type: "" });
-    }, 5000);
+    setTimeout(() => setAlert({ show: false, message: "", type: "" }), 4000);
   };
 
   return (
     <div className="bg-[#2d2f36] p-6 rounded-md shadow-md text-white">
       <h2 className="text-2xl font-bold mb-6 text-emerald-300">
-        Internal Assessment (IA) Marks
+        Internal Assessment (IA) Marks Entry
       </h2>
 
-      <div className="mb-4">
-        <label htmlFor="ia-class" className="block mb-2 text-sm">
-          Select Class:
-        </label>
+      {/* Filters */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
         <select
-          id="ia-class"
-          value={classId}
-          onChange={(e) => setClassId(e.target.value)}
-          className="w-full p-2.5 bg-gray-800 text-white border border-emerald-500 rounded-md"
+          value={department}
+          onChange={(e) => setDepartment(e.target.value)}
+          className="bg-gray-800 text-white p-2 rounded-md border border-emerald-500"
         >
-          <option value="">Select a class</option>
-          <option value="cse101">CSE101 - Introduction to Computing</option>
-          <option value="cse201">CSE201 - Data Structures</option>
-          <option value="cse301">CSE301 - Database Systems</option>
+          <option value="">Select Department</option>
+          {departments.map((dept) => (
+            <option key={dept} value={dept}>
+              {dept}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={semester}
+          onChange={(e) => setSemester(e.target.value)}
+          className="bg-gray-800 text-white p-2 rounded-md border border-emerald-500"
+        >
+          <option value="">Select Semester</option>
+          {semesters.map((sem) => (
+            <option key={sem} value={sem}>
+              Semester {sem}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={section}
+          onChange={(e) => setSection(e.target.value)}
+          className="bg-gray-800 text-white p-2 rounded-md border border-emerald-500"
+        >
+          <option value="">Select Section</option>
+          {sections.map((sec) => (
+            <option key={sec} value={sec}>
+              Section {sec}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={selectedSubjectId}
+          onChange={(e) => setSelectedSubjectId(e.target.value)}
+          className="bg-gray-800 text-white p-2 rounded-md border border-emerald-500 col-span-1 md:col-span-2"
+        >
+          <option value="">Select Subject</option>
+          {subjects.map((s) => (
+            <option key={s.subject.subjectId} value={s.subject.subjectId}>
+              {s.subject.subjectName} ({s.subject.subjectCode})
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={assessmentType}
+          onChange={(e) => setAssessmentType(e.target.value)}
+          className="bg-gray-800 text-white p-2 rounded-md border border-emerald-500"
+        >
+          <option value="">Select IA Type</option>
+          {assessments.map((a) => (
+            <option key={a} value={a}>
+              {a}
+            </option>
+          ))}
         </select>
       </div>
 
-      <div className="mb-4">
-        <label htmlFor="ia-type" className="block mb-2 text-sm">
-          Assessment Type:
-        </label>
-        <select
-          id="ia-type"
-          value={iaType}
-          onChange={(e) => setIaType(e.target.value)}
-          className="w-full p-2.5 bg-gray-800 text-white border border-emerald-500 rounded-md"
-        >
-          <option value="">Select assessment type</option>
-          <option value="quiz1">Quiz 1</option>
-          <option value="midterm">Midterm Exam</option>
-          <option value="assignment">Assignment</option>
-          <option value="project">Project</option>
-          <option value="quiz2">Quiz 2</option>
-        </select>
-      </div>
-
-      <button
-        onClick={loadStudentsForIA}
-        className="bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 rounded-md transition"
-      >
-        Load Students
-      </button>
-
-      {studentsLoaded && students[classId] && (
-        <div>
+      {/* Table */}
+      {students.length > 0 && (
+        <div className="overflow-x-auto">
           <table className="w-full border-collapse my-6">
             <thead>
               <tr>
-                <th className="bg-emerald-800 text-white p-3 text-left rounded-tl-md">
-                  Roll No
-                </th>
-                <th className="bg-emerald-800 text-white p-3 text-left">
-                  Student Name
-                </th>
-                <th className="bg-emerald-800 text-white p-3 text-left">
-                  Marks Obtained
-                </th>
-                <th className="bg-emerald-800 text-white p-3 text-left rounded-tr-md">
-                  Max Marks
-                </th>
+                <th className="bg-emerald-800 p-3 text-left rounded-tl-md">Student ID</th>
+                <th className="bg-emerald-800 p-3 text-left">Name</th>
+                <th className="bg-emerald-800 p-3 text-left">Marks</th>
+                <th className="bg-emerald-800 p-3 text-left rounded-tr-md">Max Marks</th>
               </tr>
             </thead>
             <tbody>
-              {students[classId].map((student, index) => (
+              {marksData.map((student, idx) => (
                 <tr
-                  key={student.rollNo}
-                  className={index % 2 === 0 ? "bg-[#3a3b41]" : "bg-[#2d2f36]"}
+                  key={student.studentId}
+                  className={idx % 2 === 0 ? "bg-[#3a3b41]" : "bg-[#2d2f36]"}
                 >
-                  <td className="p-3">{student.rollNo}</td>
+                  <td className="p-3">{student.studentId}</td>
                   <td className="p-3">{student.name}</td>
                   <td className="p-3">
                     <input
                       type="number"
                       min="0"
-                      max="100"
-                      value={marksData[index]?.marks || ""}
-                      onChange={(e) => handleMarksChange(index, e.target.value)}
-                      className="w-full p-2 bg-gray-800 text-white border border-gray-500 rounded-md"
+                      value={student.marks}
+                      onChange={(e) => handleMarksChange(idx, e.target.value)}
+                      className="bg-gray-800 text-white p-2 rounded-md w-full"
                     />
                   </td>
                   <td className="p-3">
                     <select
-                      value={marksData[index]?.maxMarks || "100"}
-                      onChange={(e) =>
-                        handleMaxMarksChange(index, e.target.value)
-                      }
-                      className="w-full p-2 bg-gray-800 text-white border border-gray-500 rounded-md"
+                      value={student.maxMarks}
+                      onChange={(e) => handleMaxMarksChange(idx, e.target.value)}
+                      className="bg-gray-800 text-white p-2 rounded-md w-full"
                     >
-                      <option value="10">10</option>
-                      <option value="20">20</option>
-                      <option value="25">25</option>
-                      <option value="50">50</option>
-                      <option value="100">100</option>
+                      {[10, 20, 25, 30, 50, 100].map((m) => (
+                        <option key={m} value={m}>
+                          {m}
+                        </option>
+                      ))}
                     </select>
                   </td>
                 </tr>
@@ -177,8 +214,8 @@ function AssessmentTab() {
           </table>
 
           <button
-            onClick={saveIAMarks}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 rounded-md transition"
+            onClick={handleSave}
+            className="bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 rounded-md"
           >
             Save IA Marks
           </button>
