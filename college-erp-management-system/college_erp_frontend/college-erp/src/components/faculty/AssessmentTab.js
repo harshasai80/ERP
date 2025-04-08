@@ -5,9 +5,17 @@ import Alert from "./Alert";
 const departments = ["DCS", "DEEE", "DME", "DCE", "DMT"];
 const semesters = [1, 2, 3, 4, 5, 6];
 const sections = ["A", "B", "C"];
-const assessments = ["1IA", "2IA", "3IA", "4IA", "5IA", "Skill Test 1", "Skill Test 2"];
+const assessments = [
+  "1IA",
+  "2IA",
+  "3IA",
+  "4IA",
+  "5IA",
+  "Skill Test 1",
+  "Skill Test 2",
+];
 
-function AssessmentTab({faculty}) {
+function AssessmentTab({ faculty }) {
   const [department, setDepartment] = useState("");
   const [semester, setSemester] = useState("");
   const [section, setSection] = useState("");
@@ -20,8 +28,7 @@ function AssessmentTab({faculty}) {
 
   useEffect(() => {
     if (department && semester) {
-      Api
-        .get(`/subjects/all?facultyId=${faculty.id}`)
+      Api.get(`/subjects/all?facultyId=${faculty.id}`)
         .then((res) => {
           setSubjects(res.data.data || []);
         })
@@ -31,18 +38,17 @@ function AssessmentTab({faculty}) {
 
   useEffect(() => {
     if (department && semester && section) {
-      Api
-        .get(`/student/all`, {
-          params: {
-            department,
-            semester,
-            section,
-          },
-        })
+      Api.get(`/student/all`, {
+        params: {
+          department,
+          semester,
+          section,
+        },
+      })
         .then((res) => {
           setStudents(res.data.data || []);
           const initialMarks = res.data.data.map((student) => ({
-            studentId: student.studentId,
+            registrationNumber: student.registrationNumber,
             name: student.name,
             marks: "",
             maxMarks: "100",
@@ -66,7 +72,13 @@ function AssessmentTab({faculty}) {
   };
 
   const handleSave = () => {
-    if (!selectedSubjectId || !assessmentType || !department || !semester || !section) {
+    if (
+      !selectedSubjectId ||
+      !assessmentType ||
+      !department ||
+      !semester ||
+      !section
+    ) {
       showAlert("Please fill all fields before saving", "error");
       return;
     }
@@ -77,7 +89,6 @@ function AssessmentTab({faculty}) {
       return;
     }
 
-    // Replace this with your save API
     console.log("Saving", {
       subjectId: selectedSubjectId,
       assessmentType,
@@ -167,24 +178,28 @@ function AssessmentTab({faculty}) {
       </div>
 
       {/* Table */}
-      {students.length > 0 && (
+      {students.length > 0 ? (
         <div className="overflow-x-auto">
           <table className="w-full border-collapse my-6">
             <thead>
               <tr>
-                <th className="bg-emerald-800 p-3 text-left rounded-tl-md">Student ID</th>
+                <th className="bg-emerald-800 p-3 text-left rounded-tl-md">
+                  Registration No.
+                </th>
                 <th className="bg-emerald-800 p-3 text-left">Name</th>
                 <th className="bg-emerald-800 p-3 text-left">Marks</th>
-                <th className="bg-emerald-800 p-3 text-left rounded-tr-md">Max Marks</th>
+                <th className="bg-emerald-800 p-3 text-left rounded-tr-md">
+                  Max Marks
+                </th>
               </tr>
             </thead>
             <tbody>
               {marksData.map((student, idx) => (
                 <tr
-                  key={student.studentId}
+                  key={student.registrationNumber}
                   className={idx % 2 === 0 ? "bg-[#3a3b41]" : "bg-[#2d2f36]"}
                 >
-                  <td className="p-3">{student.studentId}</td>
+                  <td className="p-3">{student.registrationNumber}</td>
                   <td className="p-3">{student.name}</td>
                   <td className="p-3">
                     <input
@@ -198,7 +213,9 @@ function AssessmentTab({faculty}) {
                   <td className="p-3">
                     <select
                       value={student.maxMarks}
-                      onChange={(e) => handleMaxMarksChange(idx, e.target.value)}
+                      onChange={(e) =>
+                        handleMaxMarksChange(idx, e.target.value)
+                      }
                       className="bg-gray-800 text-white p-2 rounded-md w-full"
                     >
                       {[10, 20, 25, 30, 50, 100].map((m) => (
@@ -219,6 +236,10 @@ function AssessmentTab({faculty}) {
           >
             Save IA Marks
           </button>
+        </div>
+      ) : (
+        <div className="text-center text-red-400 font-semibold mt-6">
+          No students available for the selected filters.
         </div>
       )}
 

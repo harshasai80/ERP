@@ -13,6 +13,8 @@ const FacultyDashboard = () => {
   const location = useLocation();
 
   const data = location.state?.data;
+  const facultyName = data?.name || "Faculty";
+  const facultyRole = data?.role || "Role";
 
   const tabs = [
     { id: "attendance", label: "Attendance" },
@@ -45,12 +47,23 @@ const FacultyDashboard = () => {
             <p className="text-emerald-100 text-sm">Faculty Dashboard</p>
           </motion.div>
         </div>
-        <button
-          className="bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-md text-white font-medium text-sm transition"
-          onClick={() => navigate("/")}
-        >
-          Log Out
-        </button>
+
+        {/* Right Section: Name + Role + Logout */}
+        <div className="flex items-center gap-6">
+          {/* Faculty Name and Role */}
+          <div className="text-right hidden sm:block">
+            <p className="text-sm font-semibold text-white">{facultyName}</p>
+            <p className="text-xs text-emerald-100">{facultyRole}</p>
+          </div>
+
+          {/* Logout Button */}
+          <button
+            className="bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-md text-white font-medium text-sm transition"
+            onClick={() => navigate("/")}
+          >
+            Log Out
+          </button>
+        </div>
       </header>
 
       {/* Navigation Tabs */}
