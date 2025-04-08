@@ -12,16 +12,16 @@ import java.util.Collections;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-	 @Override
-	    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-	        if (!username.equals("admin")) {
-	            throw new UsernameNotFoundException("User not found");
-	        }
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		if (!username.equals("admin")) {
+			throw new UsernameNotFoundException("User not found");
+		}
 
-	        // 🔹 Encode password with BCrypt (only for testing)
-	        String encodedPassword = new BCryptPasswordEncoder().encode("admin123");
-	        System.out.println("Encoded Password: " + encodedPassword);
+		// 🔹 Encode password with BCrypt (only for testing)
+		String encodedPassword = new BCryptPasswordEncoder().encode("admin123");
+		System.out.println("Encoded Password: " + encodedPassword);
 
-	        return new User("admin", encodedPassword, Collections.emptyList());
-	    }
+		return new User("admin", encodedPassword, Collections.emptyList());
+	}
 }

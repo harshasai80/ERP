@@ -2,10 +2,9 @@ import React, { useState, useEffect } from "react";
 import Alert from "./Alert";
 import Api from "../../Api";
 
-function AttendanceTab({faculty}) {
+function AttendanceTab({ faculty }) {
   const [department, setDepartment] = useState("");
   const [semester, setSemester] = useState("");
-  const [section, setSection] = useState("");
   const [subjectId, setSubjectId] = useState("");
   const [batch, setBatch] = useState("");
   const [subjectType, setSubjectType] = useState("");
@@ -20,16 +19,14 @@ function AttendanceTab({faculty}) {
   const [alert, setAlert] = useState({ show: false, message: "", type: "" });
 
   useEffect(() => {
-    if (department && semester && section) {
+    if (department && semester) {
       fetchSubjects();
     }
-  }, [department, semester, section]);
+  }, [department, semester]);
 
   const fetchSubjects = async () => {
     try {
-      const response = await Api.get(
-        `/subjects/all?facultyId=${faculty.id}`
-      );
+      const response = await Api.get(`/subjects/all?facultyId=${faculty.id}`);
       const data = response.data?.data || [];
       setSubjects(data);
     } catch (error) {
@@ -39,46 +36,30 @@ function AttendanceTab({faculty}) {
     }
   };
 
-  // useEffect(() => {
-  //   if (subjectId) {
-  //     const selected = subjects.find((s) => s.subject.subjectId.toString() === subjectId);
-  //     if (selected) {
-  //       setSubjectType(selected.subjectType);
-  //       setAvailableBatches(selected.batches || []);
-  //       if (selected.subjectType === "LAB" && selected.batches.length === 0) {
-  //         showAlert("No batches assigned for selected lab subject", "error");
-  //       }
-  //       fetchStudents(selected.subjectType === "LAB" ? selected.batches[0] : null);
-  //     }
-  //   }
-  // }, [subjectId]);
   useEffect(() => {
     if (subjectId) {
-      const selected = subjects.find((s) => s.subject.subjectId.toString() === subjectId);
+      const selected = subjects.find((s) => s.id.toString() === subjectId);
       if (selected) {
         setSubjectType(selected.subjectType);
         setAvailableBatches(selected.batches || []);
-        if (selected.subjectType === "LAB" && selected.batches.length === 0) {
+        if (selected.subjectType === "LAB" && selected.batches?.length === 0) {
           showAlert("No batches assigned for selected lab subject", "error");
         }
-        // fetchStudents(selected.subjectType === "LAB" ? selected.batches[0] : null); <-- removed
       }
     }
   }, [subjectId]);
-  
+
   const fetchStudents = async (selectedBatch = null) => {
     try {
-      let url = `/student/all?department=${department}&semester=${semester}&section=${section}`;
-  
+      const selectedSubject = subjects.find((s) => s.id.toString() === subjectId);
+      let url = `/student/all?department=${department}&semester=${semester}&section=${selectedSubject?.section || ""}`;
       if (selectedBatch) {
         const [batchName, startRegNo, endRegNo] = selectedBatch.split(",");
         if (startRegNo && endRegNo) {
-          console.log("startRegNo:", startRegNo, "endRegNo:", endRegNo);
           url += `&startRegNo=${startRegNo}&endRegNo=${endRegNo}`;
-          console.log("url:", url);
         }
       }
-  
+
       const response = await Api.get(url);
       const data = response.data?.data || [];
       setStudents(data);
@@ -89,7 +70,6 @@ function AttendanceTab({faculty}) {
       showAlert("Failed to load students", "error");
     }
   };
-  
 
   const handleAttendanceChange = (e, rollNo) => {
     if (e.target.checked) {
@@ -128,67 +108,71 @@ function AttendanceTab({faculty}) {
     6: "17:00",
   };
 
-// Inside saveAttendance function:
-
-const saveAttendance = async () => {
-  if (!date || !startTime || !endTime || !semester || !subjectId) {
-    showAlert("Please fill all fields", "error");
-    return;
-  }
-
-  const selectedStartTime = new Date(`${date}T${startTime}`);
-  const selectedEndTime = new Date(`${date}T${endTime}`);
-  const lunchBreak = lunchBreaks[semester];
-  const collegeEndTime = collegeEndTimes[semester];
-
-  let selectedSessions = [];
-
-  predefinedSessions.forEach((session, index) => {
-    const sessionStart = new Date(`${date}T${session.start}`);
-    const sessionEnd = new Date(`${date}T${session.end}`);
-
-    if (collegeEndTime && sessionEnd > new Date(`${date}T${collegeEndTime}`)) return;
-
-    if (lunchBreak) {
-      const lunchStart = new Date(`${date}T${lunchBreak.start}`);
-      const lunchEnd = new Date(`${date}T${lunchBreak.end}`);
-      if (sessionStart >= lunchStart && sessionEnd <= lunchEnd) return;
+  const saveAttendance = async () => {
+    if (!date || !startTime || !endTime || !semester || !subjectId) {
+      showAlert("Please fill all fields", "error");
+      return;
     }
 
-    if (sessionStart >= selectedStartTime && sessionEnd <= selectedEndTime) {
-      selectedSessions.push({
-        session: index + 1,
-        start: session.start,
-        end: session.end,
-      });
+    const selectedSubject = subjects.find((s) => s.id.toString() === subjectId);
+    if (!selectedSubject) {
+      showAlert("Invalid subject selected", "error");
+      return;
     }
-  });
 
-  const attendanceData = students.map((student) => {
-    const sessions = selectedSessions.map((session) => ({
-      session: session.session,
-      status: absentStudents.includes(student.registrationNumber)
-        ? "absent"
-        : "present",
-    }));
+    const selectedStartTime = new Date(`${date}T${startTime}`);
+    const selectedEndTime = new Date(`${date}T${endTime}`);
+    const lunchBreak = lunchBreaks[semester];
+    const collegeEndTime = collegeEndTimes[semester];
 
-    return {
-      registrationNumber: student.registrationNumber,
-      date,
-      semester: semester,
-      subjectId: parseInt(subjectId),
-      batch: subjectType === "LAB" ? batch : null,
-      sessions,
-    };
-  });
+    let selectedSessions = [];
 
-  try {
-    await Api.post("/students/add-attendance", attendanceData);
-    showAlert("Attendance saved successfully!", "success");
-  } catch (error) {
-    showAlert("Failed to save attendance", "error");
-  }
-};
+    predefinedSessions.forEach((session, index) => {
+      const sessionStart = new Date(`${date}T${session.start}`);
+      const sessionEnd = new Date(`${date}T${session.end}`);
+
+      if (collegeEndTime && sessionEnd > new Date(`${date}T${collegeEndTime}`)) return;
+
+      if (lunchBreak) {
+        const lunchStart = new Date(`${date}T${lunchBreak.start}`);
+        const lunchEnd = new Date(`${date}T${lunchBreak.end}`);
+        if (sessionStart >= lunchStart && sessionEnd <= lunchEnd) return;
+      }
+
+      if (sessionStart >= selectedStartTime && sessionEnd <= selectedEndTime) {
+        selectedSessions.push({
+          session: index + 1,
+          start: session.start,
+          end: session.end,
+        });
+      }
+    });
+
+    const attendanceData = students.map((student) => {
+      const sessions = selectedSessions.map((session) => ({
+        session: session.session,
+        status: absentStudents.includes(student.registrationNumber)
+          ? "absent"
+          : "present",
+      }));
+
+      return {
+        registrationNumber: student.registrationNumber,
+        date,
+        semester: semester,
+        subjectId: selectedSubject.subject.subjectId,
+        batch: selectedSubject.subjectType === "LAB" ? batch : null,
+        sessions,
+      };
+    });
+
+    try {
+      await Api.post("/students/add-attendance", attendanceData);
+      showAlert("Attendance saved successfully!", "success");
+    } catch (error) {
+      showAlert("Failed to save attendance", "error");
+    }
+  };
 
   const showAlert = (message, type) => {
     setAlert({ show: true, message, type });
@@ -229,20 +213,6 @@ const saveAttendance = async () => {
           </select>
         </div>
         <div>
-          <label className="text-sm text-gray-300">Section:</label>
-          <select
-            value={section}
-            onChange={(e) => setSection(e.target.value)}
-            className="w-full p-2.5 border border-emerald-500 rounded bg-gray-700 text-white"
-          >
-            <option value="">Select Section</option>
-            <option value="A">A</option>
-            <option value="B">B</option>
-            <option value="C">C</option>
-            <option value="D">D</option>
-          </select>
-        </div>
-        <div>
           <label className="text-sm text-gray-300">Subject:</label>
           <select
             value={subjectId}
@@ -250,12 +220,11 @@ const saveAttendance = async () => {
             className="w-full p-2.5 border border-emerald-500 rounded bg-gray-700 text-white"
           >
             <option value="">Select Subject</option>
-            {Array.isArray(subjects) &&
-              subjects.map((s) => (
-                <option key={s.id} value={s.subject.subjectId}>
-                  {s.subject.subjectName} ({s.subject.subjectCode})
-                </option>
-              ))}
+            {subjects.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.subject.subjectName} ({s.subject.subjectCode}) - Sec {s.section} {s.subjectType === "LAB" && s.batches.length > 0 ? `- Batches ${s.batches.length}` : ""}
+              </option>
+            ))}
           </select>
         </div>
         {subjectType === "LAB" && (
@@ -309,10 +278,7 @@ const saveAttendance = async () => {
           </thead>
           <tbody>
             {students.map((student, index) => (
-              <tr
-                key={student.registrationNumber}
-                className={index % 2 === 0 ? "bg-gray-800" : "bg-gray-700"}
-              >
+              <tr key={student.registrationNumber} className={index % 2 === 0 ? "bg-gray-800" : "bg-gray-700"}>
                 <td className="p-3">{student.registrationNumber}</td>
                 <td className="p-3">{student.name}</td>
                 <td className="p-3">
@@ -329,12 +295,12 @@ const saveAttendance = async () => {
         </table>
       )}
 
-<button
-  onClick={() => fetchStudents(subjectType === "LAB" ? batch : null)}
-  className="bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 rounded-md transition-colors mr-1"
->
-  Load Students
-</button>
+      <button
+        onClick={() => fetchStudents(subjectType === "LAB" ? batch : null)}
+        className="bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 rounded-md transition-colors mr-2"
+      >
+        Load Students
+      </button>
 
       <button
         onClick={saveAttendance}

@@ -4,17 +4,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
-import com.sgp.erp.model.Student;
 import com.sgp.erp.model.Subject;
-import com.sgp.erp.model.enums.Section;
 import com.sgp.erp.repository.SubjectRepository;
 
 @Repository
