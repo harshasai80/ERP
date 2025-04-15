@@ -28,9 +28,6 @@ const ViewStudentsTab = () => {
           );
         } else {
           alert(`Error ${error.response.status}: ${error.response.data}`);
-          console.log(
-            `Error ${error.response.status}: ${error.response.data.trace}`
-          );
         }
       } else {
         console.log("Network error or server not responding.");
@@ -39,7 +36,6 @@ const ViewStudentsTab = () => {
   };
 
   const handleView = (data) => {
-    console.log("Student Data:", data);
     navigate("/dashboard", { state: { student: data } });
   };
 

@@ -3,16 +3,16 @@ import Api from "../../Api";
 import Alert from "./Alert";
 
 const departments = ["DCS", "DEEE", "DME", "DCE", "DMT"];
-const semesters = [1, 2, 3, 4, 5, 6];
-const sections = ["A", "B", "C"];
+const semesters = [1, 2, 3, 4, 5];
+const sections = ["A", "B", "C", "D"];
 const assessments = [
-  "1IA",
-  "2IA",
-  "3IA",
-  "4IA",
-  "5IA",
-  "Skill Test 1",
-  "Skill Test 2",
+  "IA - 1",
+  "IA - 2",
+  "IA - 3",
+  "IA - 4",
+  "IA - 5",
+  "Skill Test - 1",
+  "Skill Test - 2",
 ];
 
 function AssessmentTab({ faculty }) {
@@ -98,6 +98,22 @@ function AssessmentTab({ faculty }) {
     showAlert("IA marks saved successfully!", "success");
   };
 
+  const handleSubjectChange = (subjectId) => {
+    setSelectedSubjectId(subjectId);
+
+    const subjectIdNum = parseInt(subjectId); // convert to number
+    const selected = subjects.find((s) => s.subject.subjectId === subjectIdNum);
+
+    if (selected) {
+      const max = selected.subject.maxMarks || 100;
+      const updatedMarksData = marksData.map((entry) => ({
+        ...entry,
+        maxMarks: max.toString(),
+      }));
+      setMarksData(updatedMarksData);
+    }
+  };
+
   const showAlert = (message, type) => {
     setAlert({ show: true, message, type });
     setTimeout(() => setAlert({ show: false, message: "", type: "" }), 4000);
@@ -152,14 +168,14 @@ function AssessmentTab({ faculty }) {
 
         <select
           value={selectedSubjectId}
-          onChange={(e) => setSelectedSubjectId(e.target.value)}
+          onChange={(e) => handleSubjectChange(e.target.value)}
           className="bg-gray-800 text-white p-2 rounded-md border border-emerald-500 col-span-1 md:col-span-2"
         >
           <option value="">Select Subject</option>
           {subjects.map((s) => (
-            <option key={s.subject.subjectId} value={s.subject.subjectId}>
-              {s.subject.subjectName} ({s.subject.subjectCode})
-            </option>
+            <option key={s.id} value={s.subject.subjectId}>
+            {s.subject.subjectName} ({s.subject.subjectCode}) - Section {s.section}
+          </option>
           ))}
         </select>
 
@@ -210,21 +226,7 @@ function AssessmentTab({ faculty }) {
                       className="bg-gray-800 text-white p-2 rounded-md w-full"
                     />
                   </td>
-                  <td className="p-3">
-                    <select
-                      value={student.maxMarks}
-                      onChange={(e) =>
-                        handleMaxMarksChange(idx, e.target.value)
-                      }
-                      className="bg-gray-800 text-white p-2 rounded-md w-full"
-                    >
-                      {[10, 20, 25, 30, 50, 100].map((m) => (
-                        <option key={m} value={m}>
-                          {m}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
+                  <td className="p-3">{student.maxMarks}</td>
                 </tr>
               ))}
             </tbody>

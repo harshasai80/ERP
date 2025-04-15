@@ -64,4 +64,22 @@ public class ErpProjectExceptionHandler extends ResponseEntityExceptionHandler {
         structure.setStatus(HttpStatus.NOT_FOUND.value());
         return new ResponseEntity<>(structure, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(UserDoesExistException.class)
+    public ResponseEntity<ResponseStructure<String>> handleUDEE(Exception ex) {
+        ResponseStructure<String> structure = new ResponseStructure<>();
+        structure.setData(null);
+        structure.setMessage(ex.getMessage());
+        structure.setStatus(HttpStatus.FORBIDDEN.value());
+        return new ResponseEntity<>(structure, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(DuplicateDataEntryException.class)
+    public ResponseEntity<ResponseStructure<String>> handleDDEE(Exception ex) {
+        ResponseStructure<String> structure = new ResponseStructure<>();
+        structure.setData(null);
+        structure.setMessage(ex.getMessage());
+        structure.setStatus(HttpStatus.FORBIDDEN.value());
+        return new ResponseEntity<>(structure, HttpStatus.FORBIDDEN);
+    }
 }

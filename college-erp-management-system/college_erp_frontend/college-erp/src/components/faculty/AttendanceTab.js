@@ -172,12 +172,16 @@ function AttendanceTab({ faculty }) {
     });
 
     try {
-      console.log(selectedSubject);
-      console.log(attendanceData);
       await Api.post("/students/add-attendance", attendanceData);
       showAlert("Attendance saved successfully!", "success");
     } catch (error) {
-      showAlert("Failed to save attendance", "error");
+      let message;
+      if (error.response?.status === 403) {
+        message = "Duplicate entry found. Failed to save attendance";
+      } else {
+        message = "Failed to save attendance";
+      }
+      showAlert(message, "error");
     }
   };
 

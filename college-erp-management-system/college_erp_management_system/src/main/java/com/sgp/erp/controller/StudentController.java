@@ -40,7 +40,7 @@ public class StudentController {
     }
 
     @GetMapping("/all")
-public ResponseEntity<ResponseStructure<List<Student>>> findAllStudentsByDepartmentAndSemester(
+public ResponseEntity<ResponseStructure<List<Student>>> findAllStudentsByDepartmentAndSemesterAndSection(
         @RequestParam String department,
         @RequestParam Byte semester,
         @RequestParam Section section,

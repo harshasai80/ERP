@@ -3,8 +3,11 @@ package com.sgp.erp.dao;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -18,6 +21,7 @@ import com.sgp.erp.repository.StudentRepository;
 
 @Repository
 public class StudentDao {
+
     @Autowired
     private StudentRepository studentRepository;
 
@@ -36,7 +40,19 @@ public class StudentDao {
 
     public List<Student> findAllStudentsByDepartmentAndSemesterAndSection(String department, Byte semester,
             Section section) {
-        return studentRepository.findAllStudentsByDepartmentAndSemAndSection(department, semester, section);
+        List<Student> students = studentRepository.findAllStudentsByDepartmentAndSemAndSection(department, semester,
+                section);
+        students.sort(Comparator.comparingInt(s -> extractLastNo(s.getRegistrationNumber())));
+        return students;
+    }
+
+    private static int extractLastNo(String regNo) {
+        Matcher matcher = Pattern.compile("(\\d+)$").matcher(regNo);
+        if (matcher.find()) {
+            return Integer.parseInt(matcher.group(1));
+        }
+        return 0;
+
     }
 
     public Boolean uploadStudents(MultipartFile studentsFile) {
@@ -49,7 +65,7 @@ public class StudentDao {
             while ((nextRecord = csvReader.readNext()) != null) {
                 String registrationNumber = nextRecord[0];
                 String name = nextRecord[1];
-                String department = nextRecord[2];
+               String department = nextRecord[2];
                 byte sem = Byte.parseByte(nextRecord[3]);
                 Section section = Section.valueOf(nextRecord[4]);
 

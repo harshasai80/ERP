@@ -31,8 +31,6 @@ export default function ResetPassword() {
       return;
     }
 
-    console.log(token);
-
     try {
       const response = await Api.post(
         `/auth/reset-password?token=${token}&newPassword=${newPassword}`,
@@ -43,12 +41,10 @@ export default function ResetPassword() {
       );
 
       const data = await response.data;
-      console.log(JSON.stringify(response.data));
 
       if (data.status !== 200) {
         setError(data.message || "Failed to reset password");
       } else {
-        console.log("Password reset successfully!\n",JSON.stringify(data));
         alert("Password reset successfully!");
         navigate("/role-based-login");
       }

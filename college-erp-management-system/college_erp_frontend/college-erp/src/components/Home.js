@@ -6,6 +6,18 @@ import { Menu, X } from "lucide-react";
 const Home = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const [gifSrc, setGifSrc] = useState("/home.gif"); // GIF source state
+
+  const handleHoverStart = () => {
+    setGifSrc("/home-static.gif"); // Set to a static version (or a placeholder)
+    setTimeout(() => {
+      setGifSrc("/home.gif"); // Reset to the animated GIF
+    }, 1); // Delay before restarting the animation
+  };
+
+  const handleHoverEnd = () => {
+    setGifSrc("/home.gif"); // Optionally reset to a specific GIF after hover ends
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white">
@@ -26,7 +38,9 @@ const Home = () => {
               transition={{ duration: 0.3 }}
             >
               <h1 className="text-2xl font-extrabold tracking-wide text-white">
-                <span className="hidden sm:inline">Sanjay Gandhi Polytechnic</span>
+                <span className="hidden sm:inline">
+                  Sanjay Gandhi Polytechnic
+                </span>
                 <span className="inline sm:hidden">SGP</span> ERP System
               </h1>
             </motion.div>
@@ -54,7 +68,11 @@ const Home = () => {
               onClick={() => setIsOpen(!isOpen)}
               className="text-white focus:outline-none"
             >
-              {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
             </button>
           </div>
         </div>
@@ -69,7 +87,10 @@ const Home = () => {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3 }}
             >
-              {[{ label: "Login", to: "/role-based-login" }, { label: "Student Search", to: "/login/student" }].map((link, i) => (
+              {[
+                { label: "Login", to: "/role-based-login" },
+                { label: "Student Search", to: "/login/student" },
+              ].map((link, i) => (
                 <motion.div
                   key={link.to}
                   initial={{ opacity: 0, y: 10 }}
@@ -109,44 +130,52 @@ const Home = () => {
               Welcome to <br /> Sanjay Gandhi Polytechnic <br /> ERP System
             </motion.h2>
             <motion.img
-              src="/home.gif"
+              src={gifSrc}
               alt="ERP Illustration"
               className="w-[300px] h-[300px] md:w-[500px] md:h-[500px] object-contain rounded-3xl shadow-2xl"
               initial={{ rotateY: 20 }}
               animate={{ rotateY: 0 }}
               transition={{ duration: 1 }}
+              onMouseEnter={handleHoverStart} // Start animation on hover
+              onMouseLeave={handleHoverEnd} // Reset animation on hover end
             />
           </div>
 
           {/* Right */}
           <div className="text-center flex flex-col justify-center items-center">
             <div className="grid grid-cols-1 gap-6 w-full max-w-md">
-              {[{
-                title: "Student Management",
-                desc: "Access and manage student records effortlessly.",
-                action: "Access",
-                route: "/role-based-login",
-                icon: "👨‍🎓",
-              }, {
-                title: "Attendance Tracking",
-                desc: "Track attendance with intuitive tools.",
-                action: "Track",
-                route: "/login/student",
-                icon: "🕒",
-              }, {
-                title: "Results Portal",
-                desc: "Manage and publish student results securely.",
-                action: "Results",
-                route: "/login/student",
-                icon: "📊",
-              }].map(({ title, desc, action, route, icon }, i) => (
+              {[
+                {
+                  title: "Student Management",
+                  desc: "Access and manage student records effortlessly.",
+                  action: "Access",
+                  route: "/role-based-login",
+                  icon: "👨‍🎓",
+                },
+                {
+                  title: "Attendance Tracking",
+                  desc: "Track attendance with intuitive tools.",
+                  action: "Track",
+                  route: "/login/student",
+                  icon: "🕒",
+                },
+                {
+                  title: "Results Portal",
+                  desc: "Manage and publish student results securely.",
+                  action: "Results",
+                  route: "/login/student",
+                  icon: "📊",
+                },
+              ].map(({ title, desc, action, route, icon }, i) => (
                 <motion.div
                   key={i}
                   className="bg-gradient-to-tr from-gray-800 to-gray-700 p-5 rounded-2xl shadow-lg hover:shadow-2xl transition-transform hover:-translate-y-1 text-left"
                   whileHover={{ scale: 1.02 }}
                 >
                   <div className="text-3xl mb-3">{icon}</div>
-                  <h3 className="text-lg font-bold mb-1 text-emerald-300">{title}</h3>
+                  <h3 className="text-lg font-bold mb-1 text-emerald-300">
+                    {title}
+                  </h3>
                   <p className="text-gray-400 mb-4 text-sm">{desc}</p>
                   <button
                     onClick={() => navigate(route)}
@@ -174,7 +203,7 @@ const Home = () => {
               </p>
             </div>
             <div className="flex space-x-6">
-              {['Contact', 'About', 'Privacy Policy'].map((item, idx) => (
+              {["Contact", "About", "Privacy Policy"].map((item, idx) => (
                 <a
                   key={idx}
                   href="#"

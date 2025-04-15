@@ -1,5 +1,6 @@
 package com.sgp.erp.repository;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -19,7 +20,7 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
     // Find attendance within a date range for a student
     @Query("SELECT a FROM Attendance a WHERE a.student.registrationNumber = ?1 AND a.attendanceDate BETWEEN ?2 AND ?3")
     List<Attendance> findAttendanceByRegistrationNumberAndDateRange(String registrationNumber, LocalDate startDate,
-            LocalDate endDate);
+            LocalDate endDate, Pageable pageable);
 
     Optional<Attendance> findByStudentAndAttendanceDate(Student student, LocalDate date);
 }
