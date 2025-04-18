@@ -48,13 +48,21 @@ const FacultyDashboard = () => {
           </motion.div>
         </div>
 
-        {/* Right Section: Name + Role + Logout */}
+        {/* Right Section: Name + Role + Reset Password + Logout */}
         <div className="flex items-center gap-6">
           {/* Faculty Name and Role */}
           <div className="text-right hidden sm:block">
             <p className="text-sm font-semibold text-white">{facultyName}</p>
             <p className="text-xs text-emerald-100">{facultyRole}</p>
           </div>
+
+          {/* Reset Password Button */}
+          <button
+            className="bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded-md text-white font-medium text-sm transition"
+            onClick={() => navigate("/reset-password", { state: { data } })} // Update this route as needed
+          >
+            Reset Password
+          </button>
 
           {/* Logout Button */}
           <button

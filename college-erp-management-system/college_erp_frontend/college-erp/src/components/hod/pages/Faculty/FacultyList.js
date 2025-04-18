@@ -118,7 +118,7 @@ const FacultyList = ({ department }) => {
   ];
 
   const facultyData = faculties.map((faculty) => ({
-    name: faculty.name,
+    name: faculty.name.toUpperCase(),
     email: faculty.email,
     department: faculty.department.toUpperCase(),
     actions: (

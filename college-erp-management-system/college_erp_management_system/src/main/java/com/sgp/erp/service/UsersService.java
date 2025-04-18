@@ -3,11 +3,12 @@ package com.sgp.erp.service;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.UUID;
+// import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,11 +23,14 @@ import com.sgp.erp.model.Users;
 import com.sgp.erp.model.enums.Roles;
 import com.sgp.erp.repository.FacultyRepository;
 
-import jakarta.mail.MessagingException;
+// import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 
 @Service
 public class UsersService {
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private FacultyRepository facultyRepository;
@@ -34,8 +38,8 @@ public class UsersService {
     @Autowired
     private UsersDAO usersDAO;
 
-    @Autowired
-    private EmailService emailService;
+    // @Autowired
+    // private EmailService emailService;
 
     @Transactional
     public void uploadFacultyCSV(MultipartFile file) {
@@ -60,8 +64,9 @@ public class UsersService {
 
                 Users users = new Users();
                 users.setEmail(email);
-                users.setPassword(null);
-                users.setResetToken(UUID.randomUUID().toString());
+                System.out.println("459" + department.toLowerCase());
+                users.setPassword(passwordEncoder.encode("459" + department.toLowerCase()));
+                // users.setResetToken(UUID.randomUUID().toString());
 
                 usersDAO.save(users);
 
@@ -72,13 +77,15 @@ public class UsersService {
                 faculty.setRole(role);
 
                 facultyRepository.save(faculty);
-                emailService.sendPasswordResetEmail(users.getEmail(), users.getResetToken());
+                // emailService.sendPasswordResetEmail(users.getEmail(), users.getResetToken());
             }
+            System.out.println("csv file uploaded");
 
         } catch (IOException | CsvValidationException e) {
+            System.out.println("Failed to process CSV file: " + e.getMessage());
             throw new RuntimeException("Failed to process CSV file.");
-        } catch (MessagingException e) {
-            throw new RuntimeException("Failed to send password reset email.");
+            // } catch (MessagingException e) {
+            // throw new RuntimeException("Failed to send password reset email.");
         }
     }
 
@@ -86,7 +93,7 @@ public class UsersService {
         ResponseStructure<Faculty> structure = new ResponseStructure<Faculty>();
         Faculty res = usersDAO.addUser(faculty);
 
-        if(res != null) {
+        if (res != null) {
             structure.setData(res);
             structure.setMessage("User added successfully");
             structure.setStatus(HttpStatus.CREATED.value());

@@ -59,22 +59,23 @@ public class UsersDAO {
 
     @Transactional
     public Faculty addUser(Faculty faculty) {
-        try {
+        // try {
                 Users users = new Users();
                 users.setEmail(faculty.getEmail());
-                users.setPassword(null);
-                users.setResetToken(UUID.randomUUID().toString());
+                System.out.println("459"+faculty.getDepartment().toLowerCase());
+                users.setPassword(passwordEncoder.encode("459"+faculty.getDepartment().toLowerCase()));
+                // users.setResetToken(UUID.randomUUID().toString());
 
                 userRepository.save(users);
 
                 facultyRepository.save(faculty);
-                emailService.sendPasswordResetEmail(users.getEmail(), users.getResetToken());
+                // emailService.sendPasswordResetEmail(users.getEmail(), users.getResetToken());
 
                 return faculty;
 
-        } catch (MessagingException e) {
-            throw new RuntimeException("Failed to send password reset email.");
-        }
+        // } catch (MessagingException e) {
+        //     throw new RuntimeException("Failed to send password reset email.");
+        // }
     }
 
 }

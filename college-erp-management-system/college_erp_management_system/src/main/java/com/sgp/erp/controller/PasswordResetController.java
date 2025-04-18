@@ -22,19 +22,26 @@ public class PasswordResetController {
     private PasswordEncoder passwordEncoder;
 
     @PostMapping("/reset-password")
-    public ResponseEntity<ResponseStructure<String>> resetPassword(@RequestParam String token, @RequestParam String newPassword) {
-        Optional<Users> userOptional = userRepository.findByResetToken(token);
+    public ResponseEntity<ResponseStructure<String>> resetPassword(@RequestParam String email, @RequestParam String newPassword, @RequestParam String oldPassword) {
+        Optional<Users> userOptional = userRepository.findByEmail(email);
         ResponseStructure<String> structure = new ResponseStructure<>();
 
         if (userOptional.isEmpty()) {
             structure.setData(null);
             structure.setMessage("Invalid or expired token");
             structure.setStatus(HttpStatus.BAD_REQUEST.value());
-            // return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Invalid or expired token"));
             return new ResponseEntity<>(structure, HttpStatus.BAD_REQUEST);
         }
 
         Users user = userOptional.get();
+
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {    
+            structure.setData(null);
+            structure.setMessage("Invalid old password");
+            structure.setStatus(HttpStatus.BAD_REQUEST.value());            
+            return new ResponseEntity<>(structure, HttpStatus.BAD_REQUEST);
+        }
+        
         user.setPassword(passwordEncoder.encode(newPassword)); // Encrypt password
         user.setResetToken(null); // Clear reset token
         userRepository.save(user);
