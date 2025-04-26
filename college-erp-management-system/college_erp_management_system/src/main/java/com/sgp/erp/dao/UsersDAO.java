@@ -1,7 +1,6 @@
 package com.sgp.erp.dao;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,18 +9,13 @@ import com.sgp.erp.model.Faculty;
 import com.sgp.erp.model.Users;
 import com.sgp.erp.repository.FacultyRepository;
 import com.sgp.erp.repository.UserRepository;
-import com.sgp.erp.service.EmailService;
 
-import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 
 @Repository
 public class UsersDAO {
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private EmailService emailService;
 
     @Autowired
     private FacultyRepository facultyRepository;

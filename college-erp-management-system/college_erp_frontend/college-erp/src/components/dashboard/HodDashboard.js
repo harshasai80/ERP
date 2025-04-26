@@ -30,7 +30,7 @@ const HodDashboard = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-black to-gray-900 text-white font-sans">
-      <Navbar/> 
+      <Navbar data={data}/> 
 
       {/* Tab Buttons */}
       <motion.div

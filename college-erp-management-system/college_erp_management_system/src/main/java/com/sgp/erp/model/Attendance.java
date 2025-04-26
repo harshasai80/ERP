@@ -25,10 +25,6 @@ public class Attendance {
 	@Column(columnDefinition = "JSON", nullable = false)
 	private String sessions;
 
-	@ManyToOne
-	@JoinColumn(name = "subject_id", nullable = false)
-	private Subject subject;
-
 	@Column(name = "batches")
 	private String[] batches;
 
