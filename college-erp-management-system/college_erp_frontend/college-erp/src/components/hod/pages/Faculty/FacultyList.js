@@ -3,6 +3,7 @@ import Api from "../../../../Api";
 import DataTable from "../../components/tables/DataTable";
 import DragDropCSVUpload from "../../../DragDropFileUpload";
 import AddFacultyTab from "../../components/tabs/AddFacultyTab";
+import EditFacultyModal from "./EditFacultyModal";
 
 const FacultyList = ({ department }) => {
   const [faculties, setFaculties] = useState([]);
@@ -17,13 +18,41 @@ const FacultyList = ({ department }) => {
   const [subjectFile, setSubjectFile] = useState(null);
   const [uploadingSubject, setUploadingSubject] = useState(false);
 
+  const [selectedFaculty, setSelectedFaculty] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    const fetchFaculties = async () => {
+      setLoading(true);
+      try {
+        const response = await Api.get("/faculty/all", {
+          params: { department },
+        });
+        const nonHodFaculties = response.data.data.filter(
+          (faculty) => faculty.role !== "HOD"
+        );
+        setFaculties(nonHodFaculties || []);
+      } catch (error) {
+        console.error("Error fetching faculties:", error);
+        alert("Failed to fetch faculty data.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFaculties();
+  }, [department]);
+
   const fetchFaculties = async () => {
     setLoading(true);
     try {
       const response = await Api.get("/faculty/all", {
         params: { department },
       });
-      setFaculties(response.data.data || []);
+      const nonHodFaculties = response.data.data.filter(
+        (faculty) => faculty.role !== "HOD"
+      );
+      setFaculties(nonHodFaculties || []);
     } catch (error) {
       console.error("Error fetching faculties:", error);
       alert("Failed to fetch faculty data.");
@@ -31,10 +60,6 @@ const FacultyList = ({ department }) => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchFaculties();
-  }, [department]);
 
   const handleAddFaculty = () => {
     setShowSubjectUpload(false); // close subject panel
@@ -89,7 +114,7 @@ const FacultyList = ({ department }) => {
     const formData = new FormData();
     formData.append("file", subjectFile);
     try {
-      await Api.post("/subject/upload", formData, {
+      await Api.post("/subjects/upload", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       alert("Subject CSV uploaded successfully!");
@@ -102,8 +127,10 @@ const FacultyList = ({ department }) => {
     }
   };
 
-  const handleEdit = (facultyId) => {
-    alert(`Edit faculty with ID: ${facultyId}`);
+  const handleEdit = (faculty) => {
+    setSelectedFaculty(faculty);
+    console.log("Edit faculty:", faculty);
+    setShowModal(true);
   };
 
   const handleDelete = (facultyId) => {
@@ -125,13 +152,13 @@ const FacultyList = ({ department }) => {
       <div className="flex gap-2 justify-center">
         <button
           className="px-2 py-1 text-black bg-yellow-400 rounded hover:bg-yellow-500"
-          onClick={() => handleEdit(faculty.id)}
+          onClick={() => handleEdit(faculty)}
         >
           Edit
         </button>
         <button
           className="px-2 py-1 text-white bg-red-600 rounded hover:bg-red-700"
-          onClick={() => handleDelete(faculty.id)}
+          onClick={() => handleDelete(faculty)}
         >
           Delete
         </button>
@@ -245,6 +272,15 @@ const FacultyList = ({ department }) => {
                 Cancel
               </button>
             </div>
+          )}
+
+          {showModal && (
+            <EditFacultyModal
+              show={showModal}
+              faculty={selectedFaculty}
+              onUpdate={fetchFaculties}
+              onClose={() => setShowModal(false)}
+            />
           )}
 
           {loading ? (

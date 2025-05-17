@@ -12,8 +12,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.sgp.erp.dao.StudentDao;
 import com.sgp.erp.dto.ResponseStructure;
+import com.sgp.erp.exception.FacultyNotFoundException;
 import com.sgp.erp.exception.StudentDoesExistException;
 import com.sgp.erp.exception.StudentNotFoundException;
+import com.sgp.erp.model.Faculty;
 import com.sgp.erp.model.Student;
 import com.sgp.erp.model.enums.Section;
 
@@ -51,30 +53,30 @@ public class StudentService {
     }
 
     public ResponseEntity<ResponseStructure<List<Student>>> findAllStudentsByDepartmentAndSemesterAndSection(
-        String department, Byte semester, Section section,
-        String startRegNo, String endRegNo) {
+            String department, Byte semester, Section section,
+            String startRegNo, String endRegNo) {
 
-    ResponseStructure<List<Student>> structure = new ResponseStructure<>();
+        ResponseStructure<List<Student>> structure = new ResponseStructure<>();
 
-    List<Student> students = studentDao.findAllStudentsByDepartmentAndSemesterAndSection(department, semester, section);
+        List<Student> students = studentDao.findAllStudentsByDepartmentAndSemesterAndSection(department, semester,
+                section);
 
-    if (startRegNo != null && endRegNo != null) {
-        students = students.stream()
-                .filter(s -> s.getRegistrationNumber().compareTo(startRegNo) >= 0 &&
-                             s.getRegistrationNumber().compareTo(endRegNo) <= 0)
-                .collect(Collectors.toList());
+        if (startRegNo != null && endRegNo != null) {
+            students = students.stream()
+                    .filter(s -> s.getRegistrationNumber().compareTo(startRegNo) >= 0 &&
+                            s.getRegistrationNumber().compareTo(endRegNo) <= 0)
+                    .collect(Collectors.toList());
+        }
+
+        if (!students.isEmpty()) {
+            structure.setData(students);
+            structure.setMessage("Students found");
+            structure.setStatus(HttpStatus.OK.value());
+            return new ResponseEntity<>(structure, HttpStatus.OK);
+        }
+
+        throw new StudentNotFoundException();
     }
-
-    if (!students.isEmpty()) {
-        structure.setData(students);
-        structure.setMessage("Students found");
-        structure.setStatus(HttpStatus.OK.value());
-        return new ResponseEntity<>(structure, HttpStatus.OK);
-    }
-
-    throw new StudentNotFoundException();
-}
-
 
     public ResponseEntity<ResponseStructure<String>> uploadStudent(MultipartFile file) {
         ResponseStructure<String> structure = new ResponseStructure<String>();
@@ -86,6 +88,30 @@ public class StudentService {
             return new ResponseEntity<ResponseStructure<String>>(structure, HttpStatus.CREATED);
         }
         throw new StudentDoesExistException();
+    }
+
+    public ResponseEntity<ResponseStructure<Student>> updateStudent(String registrationNumber, Student student) {
+        ResponseStructure<Student> structure = new ResponseStructure<Student>();
+        Student updatedStudent = studentDao.update(registrationNumber, student);
+        if (updatedStudent != null) {
+            structure.setData(updatedStudent);
+            structure.setMessage("Student updated successfully");
+            structure.setStatus(HttpStatus.OK.value());
+            return new ResponseEntity<ResponseStructure<Student>>(structure, HttpStatus.OK);
+        }
+        throw new StudentNotFoundException();
+    }
+
+    public ResponseEntity<ResponseStructure<List<Student>>> findByDepartment(String department) {
+        ResponseStructure<List<Student>> structure = new ResponseStructure<List<Student>>();
+        Optional<List<Student>> students = studentDao.findByDepartment(department);
+        if (students.isPresent()) {
+            structure.setData(students.get());
+            structure.setMessage("Students found");
+            structure.setStatus(HttpStatus.OK.value());
+            return new ResponseEntity<ResponseStructure<List<Student>>>(structure, HttpStatus.OK);
+        }
+        throw new StudentNotFoundException();
     }
 
 }

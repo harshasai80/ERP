@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
+import com.sgp.erp.model.Faculty;
 import com.sgp.erp.model.Student;
 import com.sgp.erp.model.enums.Section;
 import com.sgp.erp.repository.StudentRepository;
@@ -65,7 +66,7 @@ public class StudentDao {
             while ((nextRecord = csvReader.readNext()) != null) {
                 String registrationNumber = nextRecord[0];
                 String name = nextRecord[1];
-               String department = nextRecord[2];
+                String department = nextRecord[2];
                 byte sem = Byte.parseByte(nextRecord[3]);
                 Section section = Section.valueOf(nextRecord[4]);
 
@@ -88,6 +89,24 @@ public class StudentDao {
         } catch (IOException | CsvValidationException e) {
             throw new RuntimeException("Failed to process CSV file.");
         }
+    }
+
+    public Student update(String registrationNumber, Student student) {
+        Optional<Student> existingStudent = studentRepository.findByRegistrationNumber(registrationNumber);
+        if (existingStudent.isPresent()) {
+            Student updateExistingStudent = existingStudent.get();
+
+            updateExistingStudent.setName(student.getName());
+            updateExistingStudent.setDepartment(student.getDepartment());
+            updateExistingStudent.setSem(student.getSem());
+            updateExistingStudent.setSection(student.getSection());
+            return studentRepository.save(updateExistingStudent);
+        }
+        return null;
+    }
+
+    public Optional<List<Student>> findByDepartment(String department) {
+        return studentRepository.findByDepartment(department);
     }
 
 }

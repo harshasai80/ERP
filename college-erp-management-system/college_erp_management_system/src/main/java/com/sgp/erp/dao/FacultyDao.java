@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.sgp.erp.exception.FacultyNotFoundException;
 import com.sgp.erp.model.Faculty;
 import com.sgp.erp.model.FacultySubject;
 import com.sgp.erp.repository.FacultyRepository;
@@ -33,4 +34,17 @@ public class FacultyDao {
         return facultyRepository.findByDepartment(department);
     }
 
+    public Faculty update(String email, Faculty faculty) {
+        Optional<Faculty> existingFaculty = facultyRepository.findByEmail(email);
+        if (existingFaculty.isPresent()) {
+            Faculty updateExistingFaculty = existingFaculty.get();
+
+            updateExistingFaculty.setName(faculty.getName());
+            updateExistingFaculty.setDepartment(faculty.getDepartment());
+            updateExistingFaculty.setRole(faculty.getRole());
+            updateExistingFaculty.setEmail(faculty.getEmail());
+            return facultyRepository.save(updateExistingFaculty);
+        }
+        return null;
+    }
 }

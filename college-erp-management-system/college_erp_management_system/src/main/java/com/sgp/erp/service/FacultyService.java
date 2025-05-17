@@ -45,4 +45,28 @@ public class FacultyService {
         throw new FacultyNotFoundException();
     }
 
+    public ResponseEntity<ResponseStructure<Faculty>> updateFaculty(String email, Faculty faculty) {
+        ResponseStructure<Faculty> structure = new ResponseStructure<Faculty>();
+        Faculty updatedFaculty = facultyDao.update(email, faculty);
+        if (updatedFaculty != null) {
+            structure.setData(updatedFaculty);
+            structure.setMessage("Faculty updated successfully");
+            structure.setStatus(HttpStatus.OK.value());
+            return new ResponseEntity<ResponseStructure<Faculty>>(structure, HttpStatus.OK);
+        }
+        throw new FacultyNotFoundException();
+    }
+
+    public ResponseEntity<ResponseStructure<Faculty>> getFacultyByEmail(String email) {
+        ResponseStructure<Faculty> structure = new ResponseStructure<Faculty>();
+        Optional<Faculty> faculty = facultyDao.findByEmail(email);
+        if (faculty.isPresent()) {
+            structure.setData(faculty.get());
+            structure.setMessage("Faculty found");
+            structure.setStatus(HttpStatus.OK.value());
+            return new ResponseEntity<ResponseStructure<Faculty>>(structure, HttpStatus.OK);
+        }
+        throw new FacultyNotFoundException();
+    }
+
 }

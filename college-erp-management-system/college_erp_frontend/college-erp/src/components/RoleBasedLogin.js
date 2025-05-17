@@ -13,9 +13,12 @@ export default function RoleBasedLogin() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
     try {
       const response = await Api.post(
-        `/auth/login?email=${email}&password=${password}`,
+        `/auth/login?email=${
+          email.includes("@gmail.com") === false ? email + "@gmail.com" : email
+        }&password=${password}`,
         null,
         {
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -89,7 +92,7 @@ export default function RoleBasedLogin() {
               <input
                 type="text"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value.trim())}
                 className="w-full p-3 rounded-lg bg-gray-900 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
                 placeholder="Enter your email"
                 required

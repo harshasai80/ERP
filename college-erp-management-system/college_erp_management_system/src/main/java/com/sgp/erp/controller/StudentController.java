@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
@@ -40,21 +41,31 @@ public class StudentController {
     }
 
     @GetMapping("/all")
-public ResponseEntity<ResponseStructure<List<Student>>> findAllStudentsByDepartmentAndSemesterAndSection(
-        @RequestParam String department,
-        @RequestParam Byte semester,
-        @RequestParam Section section,
-        @RequestParam(required = false) String startRegNo,
-        @RequestParam(required = false) String endRegNo) {
+    public ResponseEntity<ResponseStructure<List<Student>>> findAllStudentsByDepartmentAndSemesterAndSection(
+            @RequestParam String department,
+            @RequestParam Byte semester,
+            @RequestParam Section section,
+            @RequestParam(required = false) String startRegNo,
+            @RequestParam(required = false) String endRegNo) {
 
-    return studentService.findAllStudentsByDepartmentAndSemesterAndSection(
-            department, semester, section, startRegNo, endRegNo);
-}
-
+        return studentService.findAllStudentsByDepartmentAndSemesterAndSection(
+                department, semester, section, startRegNo, endRegNo);
+    }
 
     @PostMapping("/upload")
     public ResponseEntity<ResponseStructure<String>> uploadStudents(@RequestParam MultipartFile file) {
         return studentService.uploadStudent(file);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<ResponseStructure<Student>> updateStudent(@RequestParam String registrationNumber,
+            @RequestBody Student student) {
+        return studentService.updateStudent(registrationNumber, student);
+    }
+
+    @GetMapping("/department")
+    public ResponseEntity<ResponseStructure<List<Student>>> findByDepartment(@RequestParam String department) {
+        return studentService.findByDepartment(department);
     }
 
 }
