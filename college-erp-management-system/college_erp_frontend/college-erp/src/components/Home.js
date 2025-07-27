@@ -122,7 +122,7 @@ const Home = () => {
           {/* Left */}
           <div className="flex flex-col justify-center items-center">
             <motion.h2
-              className="text-3xl sm:text-5xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-emerald-200 leading-tight text-center md:text-left"
+              className="text-3xl sm:text-5xl pb-3 font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-emerald-200 leading-tight text-center md:text-left"
               initial={{ scale: 0.95 }}
               animate={{ scale: 1 }}
               transition={{ duration: 0.5 }}
@@ -206,7 +206,7 @@ const Home = () => {
               {["Contact", "About", "Privacy Policy"].map((item, idx) => (
                 <a
                   key={idx}
-                  href="#"
+                  href={`#${item.toLowerCase()}`}
                   className="text-gray-400 hover:text-white text-sm transition"
                 >
                   {item}

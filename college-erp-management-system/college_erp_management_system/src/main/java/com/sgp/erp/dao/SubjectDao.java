@@ -37,7 +37,7 @@ public class SubjectDao {
 
             String[] nextRecord;
             csvReader.readNext();
-
+            System.out.println("Processing CSV file...");
             while ((nextRecord = csvReader.readNext()) != null) {
                 String subjectCode = nextRecord[0];
                 String subjectName = nextRecord[1];
@@ -54,7 +54,15 @@ public class SubjectDao {
                 subject.setMaxMarks(maxMarks);
                 subject.setValue(value);
 
-                subjectRepository.save(subject);
+                Subject existingSubject = subjectRepository.findBySubjectCode(subjectCode);
+                if (existingSubject != null) {
+                    System.out.println("Subject with code " + subjectCode + " already exists.");
+                    continue;
+                } else {
+                    System.out.println("Saving subject...");
+                    subjectRepository.save(subject);
+                }
+
             }
             return true;
         } catch (IOException | CsvValidationException e) {

@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Alert from "./Alert";
 import Api from "../../Api";
+import HourDropdown from "./HourDropDown";
 
 function AttendanceTab({ faculty }) {
   const [department, setDepartment] = useState("");
@@ -18,13 +19,7 @@ function AttendanceTab({ faculty }) {
   const [subjects, setSubjects] = useState([]);
   const [alert, setAlert] = useState({ show: false, message: "", type: "" });
 
-  useEffect(() => {
-    if (department && semester) {
-      fetchSubjects();
-    }
-  }, [department, semester]);
-
-  const fetchSubjects = async () => {
+  const fetchSubjects = useCallback(async () => {
     try {
       const response = await Api.get(`/subjects/all?facultyId=${faculty.id}`);
       const data = response.data?.data || [];
@@ -34,7 +29,13 @@ function AttendanceTab({ faculty }) {
       setSubjects([]);
       showAlert("Failed to load subjects", "error");
     }
-  };
+  }, [faculty.id]);
+
+  useEffect(() => {
+    if (department && semester) {
+      fetchSubjects();
+    }
+  }, [department, semester, fetchSubjects]);
 
   useEffect(() => {
     if (subjectId) {
@@ -47,7 +48,7 @@ function AttendanceTab({ faculty }) {
         }
       }
     }
-  }, [subjectId]);
+  }, [subjectId, subjects]);
 
   const fetchStudents = async (selectedBatch = null) => {
     try {
@@ -264,23 +265,32 @@ function AttendanceTab({ faculty }) {
       </div>
 
       <div className="mb-6 grid grid-cols-3 gap-4">
-        <input
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-          className="p-2.5 border border-emerald-500 rounded bg-gray-700 text-white"
-        />
-        <input
-          type="time"
+        <div>
+          <label className="block mb-1 text-sm text-white">Date: </label>
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            max={new Date().toISOString().split("T")[0]}
+            className="w-full p-2.5 border border-emerald-500 rounded bg-gray-700 text-white"
+          />
+        </div>
+        <HourDropdown
+          label="Start Time"
           value={startTime}
-          onChange={(e) => setStartTime(e.target.value)}
-          className="p-2.5 border border-emerald-500 rounded bg-gray-700 text-white"
+          onChange={setStartTime}
+          startTime={null}
+          isEndTime={false}
+          semester={semester}
         />
-        <input
-          type="time"
+
+        <HourDropdown
+          label="End Time"
           value={endTime}
-          onChange={(e) => setEndTime(e.target.value)}
-          className="p-2.5 border border-emerald-500 rounded bg-gray-700 text-white"
+          onChange={setEndTime}
+          startTime={startTime}
+          isEndTime={true}
+          semester={semester}
         />
       </div>
 

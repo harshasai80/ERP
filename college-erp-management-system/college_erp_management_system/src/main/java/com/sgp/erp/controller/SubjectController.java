@@ -40,7 +40,7 @@ public class SubjectController {
         return subjectService.findByDepartmentAndSemester(department, semester);
     }
 
-    @GetMapping("/upload")
+    @PostMapping("/upload")
     public ResponseEntity<ResponseStructure<String>> uploadSubjectsCSV(@RequestParam("file") MultipartFile file) {
         return subjectService.uploadSubjectsCSV(file);
     }

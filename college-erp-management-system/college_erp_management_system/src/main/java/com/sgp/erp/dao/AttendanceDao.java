@@ -33,27 +33,30 @@ public class AttendanceDao {
 
     public List<Attendance> getAttendanceByRegisterNoAndDateRange(String registerNo, LocalDate startDate,
             LocalDate endDate) {
-        return attendanceRepository.findAttendanceByRegistrationNumberAndDateRange(registerNo, startDate, endDate, pageable);
+        return attendanceRepository.findAttendanceByRegistrationNumberAndDateRange(registerNo, startDate, endDate,
+                pageable);
     }
 
     public List<Attendance> addAttendanceRecords(List<Map<String, Object>> attendanceData) {
         List<Attendance> savedAttendances = new ArrayList<>();
-    
+
         for (Map<String, Object> entry : attendanceData) {
             try {
                 String registerNo = entry.get("registrationNumber").toString();
                 LocalDate date = LocalDate.parse(entry.get("date").toString());
                 Integer subjectId = Integer.parseInt(entry.get("subjectId").toString());
-                String batch = entry.get("batch") != null ? entry.get("batch").toString() : null;
-    
+                String batch = (entry.get("batch") == null || entry.get("batch").toString().trim().isEmpty())
+                        ? null
+                        : entry.get("batch").toString();
+
                 @SuppressWarnings("unchecked")
                 List<Map<String, Object>> sessions = (List<Map<String, Object>>) entry.get("sessions");
-    
+
                 Optional<Student> studentOpt = studentRepository.findByRegistrationNumber(registerNo);
                 if (studentOpt.isEmpty()) {
                     throw new RuntimeException("Student with register number " + registerNo + " not found.");
                 }
-    
+
                 Student student = studentOpt.get();
                 Optional<Attendance> attendanceOpt = attendanceRepository.findByStudentAndAttendanceDate(student, date);
                 Attendance attendance = attendanceOpt.orElseGet(() -> {
@@ -63,40 +66,42 @@ public class AttendanceDao {
                     a.setSessions("[]");
                     return a;
                 });
-    
-                // Parse current sessions JSON
+
+                // Parse existing session JSON
                 List<Map<String, Object>> existingSessions = objectMapper.readValue(
-                        attendance.getSessions(), new TypeReference<>() {});
-    
-                // Check for duplicate session
+                        attendance.getSessions(), new TypeReference<>() {
+                        });
+
                 for (Map<String, Object> newSession : sessions) {
                     newSession.put("subjectId", subjectId);
                     newSession.put("batch", batch);
-    
-                    boolean isDuplicate = existingSessions.stream().anyMatch(existing -> 
-                        Objects.equals(existing.get("subjectId"), newSession.get("subjectId")) &&
-                        Objects.equals(existing.get("batch"), newSession.get("batch")) &&
-                        Objects.equals(existing.get("startTime"), newSession.get("startTime")) &&
-                        Objects.equals(existing.get("endTime"), newSession.get("endTime"))
-                    );
-    
+
+                    Integer newSessionNumber = (Integer) newSession.get("session");
+
+                    boolean isDuplicate = existingSessions.stream()
+                            .anyMatch(existing -> Objects.equals(existing.get("subjectId"), newSession.get("subjectId"))
+                                    &&
+                                    Objects.equals(existing.get("batch"), newSession.get("batch")) &&
+                                    Objects.equals(existing.get("session"), newSessionNumber));
+
                     if (isDuplicate) {
-                        throw new DuplicateDataEntryException("Duplicate session detected for student " + registerNo + " on " + date);
+                        throw new DuplicateDataEntryException(
+                                "Duplicate session detected for student " + registerNo + " on " + date);
                     }
                 }
-    
-                // No duplicates, so add new sessions
+
+                // Add the new sessions to existing
                 existingSessions.addAll(sessions);
                 attendance.setSessions(objectMapper.writeValueAsString(existingSessions));
-    
+
                 savedAttendances.add(attendance);
-    
+
             } catch (Exception e) {
                 throw new RuntimeException("Error processing attendance record: " + entry, e);
             }
         }
-    
+
         return attendanceRepository.saveAll(savedAttendances);
     }
-    
+
 }
