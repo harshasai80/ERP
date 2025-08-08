@@ -17,26 +17,20 @@ const HourDropdown = ({
   isEndTime,
   semester,
 }) => {
-  const now = new Date();
-  const currentHour = now.getHours();
   const minHour = 9;
-
   const lunch = lunchBreaks[semester] || { start: 13, end: 14 };
   const parsedStart = startTime ? parseInt(startTime.split(":")[0]) : null;
 
   const options = [];
   for (let hour = minHour; hour <= 18; hour++) {
-    const isFuture = hour > currentHour;
     const isLunch = hour >= lunch.start && hour < lunch.end;
     const isBeforeStart =
       isEndTime && parsedStart !== null && hour <= parsedStart;
 
-    const time = isLunch
-      ? `${String(hour).padStart(2, "0")}:00`
-      : `${String(hour).padStart(2, "0")}:00`;
+    const time = `${String(hour).padStart(2, "0")}:00`;
 
-    // Only disable lunch for startTime
-    const isDisabled = isFuture || isBeforeStart || (!isEndTime && isLunch);
+    // Only block lunch for start time, and enforce start < end
+    const isDisabled = isBeforeStart || (!isEndTime && isLunch);
 
     options.push(
       <option key={time} value={time} disabled={isDisabled}>
