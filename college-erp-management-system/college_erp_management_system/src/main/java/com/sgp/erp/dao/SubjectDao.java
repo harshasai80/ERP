@@ -36,9 +36,12 @@ public class SubjectDao {
                 CSVReader csvReader = new CSVReader(reader)) {
 
             String[] nextRecord;
-            csvReader.readNext();
+            csvReader.skip(5); // Skip the first 5 lines if they are headers or comments
             System.out.println("Processing CSV file...");
             while ((nextRecord = csvReader.readNext()) != null) {
+                if (nextRecord.length < 6) {
+                    throw new RuntimeException("Insufficient fields in CSV file. Expected at least 6 fields.");
+                }
                 String subjectCode = nextRecord[0];
                 String subjectName = nextRecord[1];
                 String department = nextRecord[2];

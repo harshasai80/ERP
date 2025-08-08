@@ -47,18 +47,22 @@ public class UsersService {
                 CSVReader csvReader = new CSVReader(reader)) {
 
             String[] nextRecord;
-            csvReader.readNext(); // Skip header row
-
+            csvReader.skip(5); // Skip header row
             while ((nextRecord = csvReader.readNext()) != null) {
+                if (nextRecord.length < 4) {
+                    throw new RuntimeException("Insufficient fields in CSV file. Expected at least 4 fields.");
+                }
                 String name = nextRecord[0];
                 String email = nextRecord[1];
                 String department = nextRecord[2];
                 String roleStr = nextRecord[3];
-
+                
                 Roles role;
                 try {
                     role = Roles.valueOf(roleStr.toUpperCase()); // Convert string to enum
+                    System.out.println("Role: " + role);
                 } catch (IllegalArgumentException e) {
+                    System.err.println(e.getMessage());
                     throw new RuntimeException("Invalid role in CSV: " + roleStr);
                 }
 
@@ -73,11 +77,12 @@ public class UsersService {
                 Faculty faculty = new Faculty();
                 faculty.setName(name);
                 faculty.setEmail(email);
-                faculty.setDepartment(department);
+                faculty.setDepartment(department.toUpperCase());
                 faculty.setRole(role);
 
                 facultyRepository.save(faculty);
                 // emailService.sendPasswordResetEmail(users.getEmail(), users.getResetToken());
+                System.out.println("Faculty added: " + faculty.getName() + ", Email: " + faculty.getEmail());
             }
             System.out.println("csv file uploaded");
 

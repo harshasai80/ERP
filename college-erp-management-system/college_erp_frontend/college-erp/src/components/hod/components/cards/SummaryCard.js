@@ -1,5 +1,4 @@
 // src/components/cards/SummaryCard.js
-import React from 'react';
 
 const SummaryCard = ({ title, value, icon, className = '' }) => {
   return (
