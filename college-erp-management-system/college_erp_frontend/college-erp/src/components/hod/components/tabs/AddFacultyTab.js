@@ -74,25 +74,34 @@ const AddFacultyTab = ({ onClose }) => {
         </div>
         <div>
           <label className="block mb-1 text-sm font-medium">Department</label>
-          <input
-            type="text"
+          <select
             name="department"
             value={formData.department}
             onChange={handleChange}
             className="w-full p-2 bg-gray-800 text-white border border-gray-700 rounded"
             required
-          />
+          >
+            <option value="">Select Department</option>
+            <option value="DCS">Computer Science</option>
+            <option value="DEEE">Electrical Engineering</option>
+            <option value="DME">Mechanical Engineering</option>
+            <option value="DCE">Civil Engineering</option>
+            <option value="DMT">Metallurgical Engineering</option>
+          </select>
         </div>
         <div>
           <label className="block mb-1 text-sm font-medium">Role</label>
-          <input
-            type="text"
+          <select
             name="role"
             value={formData.role}
             onChange={handleChange}
             className="w-full p-2 bg-gray-800 text-white border border-gray-700 rounded"
             required
-          />
+          >
+            <option value="">Select Role</option>
+            <option value="HOD">Head of Department</option>
+            <option value="FACULTY">Faculty</option>
+          </select>
         </div>
         <div className="flex justify-end gap-3">
           <button

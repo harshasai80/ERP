@@ -166,6 +166,19 @@ const FacultyList = ({ department }) => {
     ),
   }));
 
+  const DownloadFacultyCSV = () => {
+    const link = document.createElement("a");
+    link.href = "/csv files/facultycsv.csv"; // Adjust path as needed
+    link.download = "facultycsv.csv";
+    link.click();
+  };
+  const DownloadSubjectCSV = () => {
+    const link = document.createElement("a");
+    link.href = "/csv files/subjectcsv.csv"; // Adjust path as needed
+    link.download = "subjectcsv.csv";
+    link.click();
+  };
+
   return (
     <div className="p-6 max-w-6xl mx-auto text-white">
       {showAddFaculty ? (
@@ -219,7 +232,12 @@ const FacultyList = ({ department }) => {
                     </button>
                   </div>
                 )}
-
+                <button
+                  className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 w-full"
+                  onClick={DownloadFacultyCSV}
+                >
+                Download Sample CSV
+                </button>
                 {selectedFile && (
                   <button
                     className="mt-2 px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 w-full"
@@ -265,6 +283,12 @@ const FacultyList = ({ department }) => {
                   {uploadingSubject ? "Uploading..." : "Upload File"}
                 </button>
               )}
+              <button
+                  className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 w-full"
+                  onClick={DownloadSubjectCSV}
+                >
+                Download Sample CSV
+                </button>
               <button
                 className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 w-full"
                 onClick={() => setShowSubjectUpload(false)}

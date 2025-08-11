@@ -61,9 +61,12 @@ public class StudentDao {
                 CSVReader csvReader = new CSVReader(reader)) {
 
             String[] nextRecord;
-            csvReader.readNext();
+            csvReader.skip(5);
 
             while ((nextRecord = csvReader.readNext()) != null) {
+                if (nextRecord.length < 5) {
+                    throw new RuntimeException("Insufficient fields in CSV file. Expected at least 5 fields.");
+                }
                 String registrationNumber = nextRecord[0];
                 String name = nextRecord[1];
                 String department = nextRecord[2];
