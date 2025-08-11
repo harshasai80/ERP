@@ -1,0 +1,242 @@
+import React from "react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+
+export default function About() {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+        duration: 0.6
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6 }
+    }
+  };
+
+  const courses = [
+    ["Diploma in Computer Science & Engineering", "6 Semesters", "120", "1992"],
+    ["Diploma in Mechanical Engineering", "6 Semesters", "240", "1994"],
+    ["Diploma in Electrical & Electronics Engineering", "6 Semesters", "240", "1994"],
+    ["Diploma in Metallurgy", "6 Semesters", "60", "2006"],
+    ["Diploma in Civil Engineering", "6 Semesters", "60", "2008"],
+  ];
+
+  const commitments = [
+    "Become a centre of excellence in Engineering & Technology",
+    "Enhance industry-institute interface",
+    "Strengthen the teaching/learning process by training/developing staff",
+    "Modernize/upgrade laboratories",
+    "Establish Alumni Network"
+  ];
+
+  return (
+    <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 min-h-screen text-white">
+      {/* Navbar */}
+      <header className="bg-gradient-to-r from-emerald-700 via-emerald-800 to-emerald-900 text-white py-6 px-6 shadow-2xl sticky top-0 z-50 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <motion.div 
+            className="flex items-center gap-4"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <motion.img
+              src="/logo128.png"
+              alt="SGP Logo"
+              className="w-14 h-14 rounded-lg shadow-lg"
+              whileHover={{ scale: 1.05, rotate: 5 }}
+              transition={{ duration: 0.3 }}
+            />
+            <div>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-emerald-200 bg-clip-text text-transparent">
+                Sanjay Gandhi Polytechnic
+              </h1>
+              <p className="text-emerald-200 text-sm opacity-90">Excellence in Technical Education</p>
+            </div>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <Link
+              to="/"
+              className="bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 px-6 py-3 rounded-xl text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+            >
+              ← Back to Home
+            </Link>
+          </motion.div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <motion.section
+        className="relative py-20 px-6 bg-gradient-to-r from-emerald-900/20 to-blue-900/20"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-blue-500/10 backdrop-blur-3xl"></div>
+        <div className="relative max-w-4xl mx-auto text-center">
+          <motion.h1
+            className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-emerald-400 via-blue-400 to-purple-400 bg-clip-text text-transparent"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            About SGP
+          </motion.h1>
+          <motion.p
+            className="text-xl text-gray-300 leading-relaxed"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            Pioneering technical education since 1992
+          </motion.p>
+        </div>
+      </motion.section>
+
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto p-6 space-y-16">
+        {/* About Content */}
+        <motion.section
+          className="grid lg:grid-cols-2 gap-12 items-center"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <motion.div className="space-y-6" variants={itemVariants}>
+            <div className="bg-gradient-to-br from-gray-800 to-gray-900 p-8 rounded-2xl shadow-2xl border border-gray-700">
+              <h2 className="text-3xl font-bold mb-6 text-emerald-400">Our Story</h2>
+              <p className="mb-4 leading-relaxed text-gray-300 text-lg">
+                Sanjay Gandhi Polytechnic, Ballari was the first premier private
+                co-educational Polytechnic established in the year <span className="text-emerald-400 font-semibold">1992</span> to provide
+                quality technical education, affording young men and women the
+                opportunity to equip themselves for employment.
+              </p>
+              <p className="leading-relaxed text-gray-300 text-lg">
+                The Institute is recognised by the Government of Karnataka, the All
+                India Council for Technical Education (AICTE), New Delhi and is
+                affiliated to the Directorate of Technical Education, Bangalore.
+              </p>
+            </div>
+          </motion.div>
+
+          <motion.div variants={itemVariants}>
+            <div className="bg-gradient-to-br from-emerald-900/30 to-blue-900/30 p-8 rounded-2xl shadow-2xl border border-emerald-500/20">
+              <h3 className="text-2xl font-semibold mb-6 text-emerald-400">Our Commitment</h3>
+              <div className="space-y-4">
+                {commitments.map((commitment, index) => (
+                  <motion.div
+                    key={index}
+                    className="flex items-start gap-3 group"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                  >
+                    <div className="w-2 h-2 bg-emerald-400 rounded-full mt-2 group-hover:bg-emerald-300 transition-colors"></div>
+                    <p className="text-gray-300 group-hover:text-white transition-colors leading-relaxed">
+                      {commitment}
+                    </p>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        </motion.section>
+
+        {/* Courses Section */}
+        <motion.section
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <motion.div variants={itemVariants} className="text-center mb-12">
+            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">
+              Courses Offered
+            </h2>
+            <p className="text-gray-400 text-lg">Comprehensive technical education programs</p>
+          </motion.div>
+
+          <motion.div
+            variants={itemVariants}
+            className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl shadow-2xl overflow-hidden border border-gray-700"
+          >
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-gradient-to-r from-emerald-700 to-emerald-800 text-white">
+                    <th className="p-4 text-left font-semibold">Programme</th>
+                    <th className="p-4 text-left font-semibold">Duration</th>
+                    <th className="p-4 text-left font-semibold">Intake Capacity</th>
+                    <th className="p-4 text-left font-semibold">Year Started</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {courses.map((row, i) => (
+                    <motion.tr
+                      key={i}
+                      className="hover:bg-gray-700/50 border-b border-gray-700 transition-colors"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: i * 0.1 }}
+                    >
+                      <td className="p-4 font-medium text-emerald-300">{row[0]}</td>
+                      <td className="p-4 text-gray-300">{row[1]}</td>
+                      <td className="p-4 text-gray-300 font-semibold">{row[2]}</td>
+                      <td className="p-4 text-blue-400 font-semibold">{row[3]}</td>
+                    </motion.tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </motion.div>
+        </motion.section>
+
+        {/* Stats Section */}
+        <motion.section
+          className="grid md:grid-cols-4 gap-6"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {[
+            { number: "30+", label: "Years of Excellence" },
+            { number: "5", label: "Engineering Programs" },
+            { number: "720", label: "Total Intake Capacity" },
+            { number: "1992", label: "Established" }
+          ].map((stat, index) => (
+            <motion.div
+              key={index}
+              variants={itemVariants}
+              className="bg-gradient-to-br from-emerald-900/40 to-blue-900/40 p-6 rounded-xl text-center border border-emerald-500/20 hover:border-emerald-500/40 transition-colors"
+            >
+              <h3 className="text-3xl font-bold text-emerald-400 mb-2">{stat.number}</h3>
+              <p className="text-gray-300">{stat.label}</p>
+            </motion.div>
+          ))}
+        </motion.section>
+      </main>
+
+      {/* Footer */}
+      <footer className="mt-20 bg-gradient-to-r from-gray-900 to-black py-8 px-6 border-t border-gray-700">
+        <div className="max-w-7xl mx-auto text-center">
+          <p className="text-gray-400">
+            © 2024 Sanjay Gandhi Polytechnic. All rights reserved.
+          </p>
+        </div>
+      </footer>
+    </div>
+  );
+}
