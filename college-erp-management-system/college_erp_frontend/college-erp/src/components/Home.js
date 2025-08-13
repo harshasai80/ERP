@@ -210,7 +210,7 @@ const Home = () => {
               {[
                 { name: "Contact", path: "/contact-details" },
                 { name: "About", path: "/about" },
-                { name: "Privacy Policy", path: "/privacy-policy" }
+                { name: "Privacy Policy", path: "/#" }
               ].map((item, idx) => (
               <button
                 key={idx}

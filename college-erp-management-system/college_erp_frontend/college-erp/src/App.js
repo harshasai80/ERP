@@ -10,7 +10,8 @@ import FacultyDashboard from "./components/dashboard/FacultyDashboard";
 import PrincipalDashboard from "./components/dashboard/PrincipalDashboard";
 import ResetPassword from "./components/ResetPassword";
 import ResetSuccess from "./components/ResetSuccess";
-import About from "./components/About";
+import About from "./components/common/About";
+import Contact from "./components/common/Contact";
 
 // import Admin from "./components/Admin";
 
@@ -28,6 +29,7 @@ const App = () => {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/reset-success" element={<ResetSuccess />} />
         <Route path="/about" element={<About />} />
+        <Route path="/contact-details" element={<Contact />} />
       </Routes>
     </BrowserRouter>
   );
