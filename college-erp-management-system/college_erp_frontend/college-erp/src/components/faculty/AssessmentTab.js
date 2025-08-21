@@ -34,7 +34,7 @@ function AssessmentTab({ faculty }) {
         })
         .catch((err) => console.error(err));
     }
-  }, [department, semester]);
+  }, [department, semester, faculty.id]);
 
   useEffect(() => {
     if (department && semester && section) {

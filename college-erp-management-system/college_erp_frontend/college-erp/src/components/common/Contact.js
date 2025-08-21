@@ -1,12 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { 
-  MapPinIcon, 
-  PhoneIcon, 
+import {
+  MapPinIcon,
+  PhoneIcon,
   EnvelopeIcon,
   BuildingOfficeIcon,
-  ClockIcon
+  ClockIcon,
 } from "@heroicons/react/24/outline";
 
 export default function Contact() {
@@ -16,9 +16,9 @@ export default function Contact() {
       opacity: 1,
       transition: {
         staggerChildren: 0.2,
-        duration: 0.6
-      }
-    }
+        duration: 0.6,
+      },
+    },
   };
 
   const itemVariants = {
@@ -26,8 +26,8 @@ export default function Contact() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.6 }
-    }
+      transition: { duration: 0.6 },
+    },
   };
 
   const contactInfo = [
@@ -36,29 +36,24 @@ export default function Contact() {
       title: "Address",
       details: [
         '"Sanjay Gandhi Polytechnic"',
-        'Ballari - 583104,',
-        'Karnataka State'
+        "Ballari - 583104,",
+        "Karnataka State",
       ],
-      color: "text-emerald-400"
+      color: "text-emerald-400",
     },
     {
       icon: PhoneIcon,
       title: "Phone Numbers",
-      details: [
-        "08392 266331",
-        "08392 267833",
-        "9008066235",
-        "8197778607"
-      ],
-      color: "text-blue-400"
+      details: ["08392 266331", "08392 267833", "9008066235", "8197778607"],
+      color: "text-blue-400",
     },
     {
       icon: EnvelopeIcon,
       title: "Email",
       details: ["sgpbellary@gmail.com"],
       color: "text-purple-400",
-      isEmail: true
-    }
+      isEmail: true,
+    },
   ];
 
   return (
@@ -66,7 +61,7 @@ export default function Contact() {
       {/* Navbar */}
       <header className="bg-gradient-to-r from-emerald-700 via-emerald-800 to-emerald-900 text-white py-6 px-6 shadow-2xl sticky top-0 z-50 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <motion.div 
+          <motion.div
             className="flex items-center gap-4"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -83,7 +78,9 @@ export default function Contact() {
               <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-emerald-200 bg-clip-text text-transparent">
                 Sanjay Gandhi Polytechnic
               </h1>
-              <p className="text-emerald-200 text-sm opacity-90">Get in Touch with Us</p>
+              <p className="text-emerald-200 text-sm opacity-90">
+                Get in Touch with Us
+              </p>
             </div>
           </motion.div>
           <motion.div
@@ -145,17 +142,24 @@ export default function Contact() {
               className="bg-gradient-to-br from-gray-800 to-gray-900 p-8 rounded-2xl shadow-2xl border border-gray-700 hover:border-emerald-500/30 transition-all duration-300 group"
             >
               <div className="flex items-center gap-4 mb-6">
-                <div className={`p-3 rounded-lg bg-gradient-to-r from-gray-700 to-gray-600 group-hover:from-emerald-600 group-hover:to-emerald-500 transition-all duration-300`}>
+                <div
+                  className={`p-3 rounded-lg bg-gradient-to-r from-gray-700 to-gray-600 group-hover:from-emerald-600 group-hover:to-emerald-500 transition-all duration-300`}
+                >
                   <info.icon className={`w-6 h-6 ${info.color}`} />
                 </div>
-                <h3 className="text-xl font-semibold text-white">{info.title}</h3>
+                <h3 className="text-xl font-semibold text-white">
+                  {info.title}
+                </h3>
               </div>
               <div className="space-y-2">
                 {info.details.map((detail, i) => (
-                  <p key={i} className="text-gray-300 group-hover:text-white transition-colors">
+                  <p
+                    key={i}
+                    className="text-gray-300 group-hover:text-white transition-colors"
+                  >
                     {info.isEmail ? (
-                      <a 
-                        href={`mailto:${detail}`} 
+                      <a
+                        href={`mailto:${detail}`}
                         className="hover:text-emerald-400 transition-colors underline"
                       >
                         {detail}
@@ -183,15 +187,20 @@ export default function Contact() {
           >
             <div className="flex items-center gap-4 mb-6">
               <BuildingOfficeIcon className="w-8 h-8 text-emerald-400" />
-              <h3 className="text-2xl font-bold text-white">Visit Our Campus</h3>
+              <h3 className="text-2xl font-bold text-white">
+                Visit Our Campus
+              </h3>
             </div>
             <p className="text-gray-300 mb-4 leading-relaxed">
-              Come and explore our state-of-the-art facilities, laboratories, and campus infrastructure. 
-              Our doors are always open for prospective students and their families.
+              Come and explore our state-of-the-art facilities, laboratories,
+              and campus infrastructure. Our doors are always open for
+              prospective students and their families.
             </p>
             <div className="flex items-center gap-2 text-emerald-400">
               <ClockIcon className="w-5 h-5" />
-              <span className="text-sm">Campus visits available Monday - Saturday, 9 AM - 5 PM</span>
+              <span className="text-sm">
+                Campus visits available Monday - Saturday, 9 AM - 5 PM
+              </span>
             </div>
           </motion.div>
 
@@ -201,11 +210,14 @@ export default function Contact() {
           >
             <div className="flex items-center gap-4 mb-6">
               <EnvelopeIcon className="w-8 h-8 text-purple-400" />
-              <h3 className="text-2xl font-bold text-white">Get Quick Responses</h3>
+              <h3 className="text-2xl font-bold text-white">
+                Get Quick Responses
+              </h3>
             </div>
             <p className="text-gray-300 mb-4 leading-relaxed">
-              For admissions, course information, or general inquiries, reach out to us via phone or email. 
-              Our team is ready to assist you with all your questions.
+              For admissions, course information, or general inquiries, reach
+              out to us via phone or email. Our team is ready to assist you with
+              all your questions.
             </p>
             <div className="flex flex-wrap gap-2">
               <span className="bg-purple-500/20 text-purple-300 px-3 py-1 rounded-full text-sm">

@@ -12,8 +12,11 @@ import com.sgp.erp.dao.FacultyDao;
 import com.sgp.erp.dto.ResponseStructure;
 import com.sgp.erp.exception.FacultyNotFoundException;
 import com.sgp.erp.exception.SubjectNotAssignedException;
+import com.sgp.erp.exception.UserNotDeletedException;
 import com.sgp.erp.model.Faculty;
 import com.sgp.erp.model.FacultySubject;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class FacultyService {
@@ -79,6 +82,19 @@ public class FacultyService {
             return new ResponseEntity<ResponseStructure<List<Faculty>>>(structure, HttpStatus.OK);
         }
         throw new FacultyNotFoundException();
+    }
+
+    @Transactional
+    public ResponseEntity<ResponseStructure<String>> deleteFaculty(String email) {
+        ResponseStructure<String> structure = new ResponseStructure<String>();
+        boolean res = facultyDao.deleteFaculty(email);
+        if (res) {
+            structure.setData("Faculty Deleted successfully");
+            structure.setMessage("Faculty Deleted successfully");
+            structure.setStatus(HttpStatus.OK.value());
+            return new ResponseEntity<ResponseStructure<String>>(structure, HttpStatus.OK);
+        }
+        throw new UserNotDeletedException("Faculty Not Deleted...");
     }
 
 }

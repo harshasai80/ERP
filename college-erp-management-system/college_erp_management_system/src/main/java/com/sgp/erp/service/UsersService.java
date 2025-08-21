@@ -18,6 +18,7 @@ import com.sgp.erp.dao.UsersDAO;
 import com.sgp.erp.dto.ResponseStructure;
 import com.sgp.erp.exception.InvalidCredentials;
 import com.sgp.erp.exception.UserDoesExistException;
+import com.sgp.erp.exception.UserNotDeletedException;
 import com.sgp.erp.model.Faculty;
 import com.sgp.erp.model.Users;
 import com.sgp.erp.model.enums.Roles;
@@ -56,7 +57,7 @@ public class UsersService {
                 String email = nextRecord[1];
                 String department = nextRecord[2];
                 String roleStr = nextRecord[3];
-                
+
                 Roles role;
                 try {
                     role = Roles.valueOf(roleStr.toUpperCase()); // Convert string to enum
@@ -118,5 +119,18 @@ public class UsersService {
         }
 
         throw new InvalidCredentials();
+    }
+
+    @Transactional
+    public ResponseEntity<ResponseStructure<String>> deleteUser(String email) {
+        ResponseStructure<String> structure = new ResponseStructure<String>();
+        boolean res = usersDAO.deleteUser(email);
+        if (res) {
+            structure.setData("User Deleted successfully");
+            structure.setMessage("User Deleted successfully");
+            structure.setStatus(HttpStatus.OK.value());
+            return new ResponseEntity<ResponseStructure<String>>(structure, HttpStatus.OK);
+        }
+        throw new UserNotDeletedException();
     }
 }

@@ -15,4 +15,6 @@ public interface FacultyRepository extends JpaRepository<Faculty, Long> {
 
     Optional<List<Faculty>> findByDepartment(String department);
 
+    Integer deleteByEmail(String email);
+
 }

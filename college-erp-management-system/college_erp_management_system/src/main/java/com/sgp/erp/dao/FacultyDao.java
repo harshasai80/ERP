@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.sgp.erp.exception.FacultyNotFoundException;
 import com.sgp.erp.model.Faculty;
 import com.sgp.erp.model.FacultySubject;
 import com.sgp.erp.repository.FacultyRepository;
@@ -54,5 +55,10 @@ public class FacultyDao {
         } else {
             throw new FacultyNotFoundException("No faculties found...");
         }
+    }
+
+    public boolean deleteFaculty(String email) {
+        Integer result = facultyRepository.deleteByEmail(email);
+        return result > 0; // Returns true if at least one record was deleted
     }
 }

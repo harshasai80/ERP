@@ -113,8 +113,19 @@ const FacultyList = ({ department }) => {
     setShowModal(true);
   };
 
-  const handleDelete = (facultyId) => {
-    alert(`Delete faculty with ID: ${facultyId}`);
+  const handleDelete = async (faculty) => {
+    alert(`Do You want to delete "${faculty.name}"?`);
+    try {
+      const response = await Api.delete(
+        `/faculty/delete?email=${faculty.email}`
+      );
+      if (response.status === 200) {
+        alert("Faculty deleted successfully!");
+        fetchFaculties();
+      }
+    } catch (error) {
+      alert("Failed to delete faculty.");
+    }
   };
 
   const columns = [
@@ -129,15 +140,15 @@ const FacultyList = ({ department }) => {
     email: faculty.email,
     department: faculty.department.toUpperCase(),
     actions: (
-      <div className="flex gap-2 justify-center">
+      <div className="flex flex-row gap-1 justify-center items-center">
         <button
-          className="px-2 py-1 text-black bg-yellow-400 rounded hover:bg-yellow-500"
+          className="px-2 py-1 text-xs text-black bg-yellow-400 rounded hover:bg-yellow-500 min-w-[45px]"
           onClick={() => handleEdit(faculty)}
         >
           Edit
         </button>
         <button
-          className="px-2 py-1 text-white bg-red-600 rounded hover:bg-red-700"
+          className="px-2 py-1 text-xs text-white bg-red-600 rounded hover:bg-red-700 min-w-[50px]"
           onClick={() => handleDelete(faculty)}
         >
           Delete
@@ -160,22 +171,24 @@ const FacultyList = ({ department }) => {
   };
 
   return (
-    <div className="p-6 max-w-6xl mx-auto text-white">
+    <div className="p-3 sm:p-6 max-w-6xl mx-auto text-white">
       {showAddFaculty ? (
         <AddFacultyTab onClose={() => setShowAddFaculty(false)} />
       ) : (
         <>
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-bold">Faculty List</h1>
-            <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
+            <h1 className="text-2xl sm:text-3xl font-bold text-center sm:text-left">
+              Faculty List
+            </h1>
+            <div className="flex flex-col sm:flex-row gap-3">
               <button
-                className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 rounded-lg text-white"
+                className="px-4 sm:px-5 py-2 bg-emerald-600 hover:bg-emerald-700 rounded-lg text-white text-sm sm:text-base"
                 onClick={handleAddFaculty}
               >
                 Add New Faculty
               </button>
               <button
-                className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-white"
+                className="px-4 sm:px-5 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-white text-sm sm:text-base"
                 onClick={handleAddSubjects}
               >
                 Add Subjects (CSV)
@@ -185,12 +198,12 @@ const FacultyList = ({ department }) => {
 
           {/* Upload Faculty CSV / Add Individually Options */}
           {showUpload && (
-            <div className="mb-5 p-5 bg-gradient-to-br from-gray-900 to-gray-800 shadow-lg rounded-xl flex flex-col items-center gap-3 w-96 mx-auto">
-              <p className="text-lg font-semibold text-white">
+            <div className="mb-5 p-4 sm:p-5 bg-gradient-to-br from-gray-900 to-gray-800 shadow-lg rounded-xl flex flex-col items-center gap-3 w-full max-w-md mx-auto">
+              <p className="text-base sm:text-lg font-semibold text-white text-center">
                 Choose an option:
               </p>
               <button
-                className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 w-full"
+                className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 w-full text-sm sm:text-base"
                 onClick={() => {
                   setShowAddFaculty(true);
                   setShowUpload(false);
@@ -202,10 +215,10 @@ const FacultyList = ({ department }) => {
               <div className="w-full text-center">
                 <DragDropCSVUpload onChange={handleFileUpload} />
                 {selectedFile && (
-                  <div className="mt-2 p-2 bg-gray-800 border border-gray-700 rounded text-white flex justify-between items-center">
-                    <span>{selectedFile.name}</span>
+                  <div className="mt-2 p-2 bg-gray-800 border border-gray-700 rounded text-white flex justify-between items-center text-sm">
+                    <span className="truncate pr-2">{selectedFile.name}</span>
                     <button
-                      className="ml-2 text-red-500 hover:text-red-700"
+                      className="ml-2 text-red-500 hover:text-red-700 flex-shrink-0"
                       onClick={() => setSelectedFile(null)}
                     >
                       ×
@@ -213,14 +226,14 @@ const FacultyList = ({ department }) => {
                   </div>
                 )}
                 <button
-                  className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 w-full"
+                  className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 w-full text-sm sm:text-base"
                   onClick={DownloadFacultyCSV}
                 >
-                Download Sample CSV
+                  Download Sample CSV
                 </button>
                 {selectedFile && (
                   <button
-                    className="mt-2 px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 w-full"
+                    className="mt-2 px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 w-full text-sm sm:text-base"
                     onClick={handleUpload}
                     disabled={uploading}
                   >
@@ -230,7 +243,7 @@ const FacultyList = ({ department }) => {
               </div>
 
               <button
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 w-full"
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 w-full text-sm sm:text-base"
                 onClick={() => setShowUpload(false)}
               >
                 Cancel
@@ -240,14 +253,16 @@ const FacultyList = ({ department }) => {
 
           {/* Upload Subject CSV Only */}
           {showSubjectUpload && (
-            <div className="mb-5 p-5 bg-gray-900 shadow-lg rounded-xl flex flex-col items-center gap-3 w-96 mx-auto">
-              <p className="text-lg font-semibold">Upload Subject CSV</p>
+            <div className="mb-5 p-4 sm:p-5 bg-gray-900 shadow-lg rounded-xl flex flex-col items-center gap-3 w-full max-w-md mx-auto">
+              <p className="text-base sm:text-lg font-semibold text-center">
+                Upload Subject CSV
+              </p>
               <DragDropCSVUpload onChange={handleSubjectFileUpload} />
               {subjectFile && (
-                <div className="mt-2 p-2 bg-gray-800 border border-gray-700 rounded text-white flex justify-between items-center w-full">
-                  <span>{subjectFile.name}</span>
+                <div className="mt-2 p-2 bg-gray-800 border border-gray-700 rounded text-white flex justify-between items-center w-full text-sm">
+                  <span className="truncate pr-2">{subjectFile.name}</span>
                   <button
-                    className="ml-2 text-red-500 hover:text-red-700"
+                    className="ml-2 text-red-500 hover:text-red-700 flex-shrink-0"
                     onClick={() => setSubjectFile(null)}
                   >
                     ×
@@ -256,7 +271,7 @@ const FacultyList = ({ department }) => {
               )}
               {subjectFile && (
                 <button
-                  className="mt-2 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 w-full"
+                  className="mt-2 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 w-full text-sm sm:text-base"
                   onClick={handleSubjectUpload}
                   disabled={uploadingSubject}
                 >
@@ -264,13 +279,13 @@ const FacultyList = ({ department }) => {
                 </button>
               )}
               <button
-                  className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 w-full"
-                  onClick={DownloadSubjectCSV}
-                >
+                className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 w-full text-sm sm:text-base"
+                onClick={DownloadSubjectCSV}
+              >
                 Download Sample CSV
-                </button>
+              </button>
               <button
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 w-full"
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 w-full text-sm sm:text-base"
                 onClick={() => setShowSubjectUpload(false)}
               >
                 Cancel

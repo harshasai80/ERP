@@ -54,22 +54,27 @@ public class UsersDAO {
     @Transactional
     public Faculty addUser(Faculty faculty) {
         // try {
-                Users users = new Users();
-                users.setEmail(faculty.getEmail());
-                System.out.println("459"+faculty.getDepartment().toLowerCase());
-                users.setPassword(passwordEncoder.encode("459"+faculty.getDepartment().toLowerCase()));
-                // users.setResetToken(UUID.randomUUID().toString());
+        Users users = new Users();
+        users.setEmail(faculty.getEmail());
+        System.out.println("459" + faculty.getDepartment().toLowerCase());
+        users.setPassword(passwordEncoder.encode("459" + faculty.getDepartment().toLowerCase()));
+        // users.setResetToken(UUID.randomUUID().toString());
 
-                userRepository.save(users);
+        userRepository.save(users);
 
-                facultyRepository.save(faculty);
-                // emailService.sendPasswordResetEmail(users.getEmail(), users.getResetToken());
+        facultyRepository.save(faculty);
+        // emailService.sendPasswordResetEmail(users.getEmail(), users.getResetToken());
 
-                return faculty;
+        return faculty;
 
         // } catch (MessagingException e) {
-        //     throw new RuntimeException("Failed to send password reset email.");
+        // throw new RuntimeException("Failed to send password reset email.");
         // }
+    }
+
+    public boolean deleteUser(String email) {
+        Integer result = userRepository.deleteByEmail(email);
+        return result > 0; // Returns true if at least one record was deleted
     }
 
 }

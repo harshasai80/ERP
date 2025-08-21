@@ -91,4 +91,14 @@ public class ErpProjectExceptionHandler extends ResponseEntityExceptionHandler {
         structure.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         return new ResponseEntity<>(structure, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(UserNotDeletedException.class)
+    public ResponseEntity<ResponseStructure<String>> handleUNDE(Exception ex) {
+        ResponseStructure<String> structure = new ResponseStructure<>();
+        structure.setData(null);
+        structure.setMessage(ex.getMessage());
+        structure.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        return new ResponseEntity<>(structure, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }
