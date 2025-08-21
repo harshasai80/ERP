@@ -69,4 +69,16 @@ public class FacultyService {
         throw new FacultyNotFoundException();
     }
 
+    public ResponseEntity<ResponseStructure<List<Faculty>>> getAllFaculties() {
+        ResponseStructure<List<Faculty>> structure = new ResponseStructure<List<Faculty>>();
+        List<Faculty> faculties = facultyDao.getAllFaculties();
+        if (!faculties.isEmpty()) {
+            structure.setData(faculties);
+            structure.setMessage("Faculties found");
+            structure.setStatus(HttpStatus.OK.value());
+            return new ResponseEntity<ResponseStructure<List<Faculty>>>(structure, HttpStatus.OK);
+        }
+        throw new FacultyNotFoundException();
+    }
+
 }

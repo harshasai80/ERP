@@ -2,7 +2,6 @@ package com.sgp.erp.config;
 
 import java.util.Base64;
 
-import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
 import io.jsonwebtoken.security.Keys;

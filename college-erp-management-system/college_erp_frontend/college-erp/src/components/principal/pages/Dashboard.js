@@ -1,16 +1,77 @@
-import React from 'react';
-import SummaryCard from '../components/cards/SummaryCard';
+import React, { useEffect, useState } from "react";
+import SummaryCard from "../components/cards/SummaryCard";
+import { motion } from "framer-motion";
+import Api from "../../../Api"; // Make sure this path matches your project structure
 
-const Dashboard = () => {
+const Dashboard = ({ department }) => {
+  const [facultyCount, setFacultyCount] = useState(0);
+  const [studentCount, setStudentCount] = useState(0);
+
+  useEffect(() => {
+    const fetchFacultyCount = async () => {
+      try {
+        const response = await Api.get("/faculty/all-faculties", {
+          params: { department },
+        });
+        const nonHodFaculties = response.data.data.filter(
+          (faculty) => faculty.department !== "SGP"
+        );
+        setFacultyCount(nonHodFaculties.length || 0);
+      } catch (error) {
+        console.error("Failed to fetch faculty data:", error);
+      }
+    };
+
+    const fetchStudentCount = async () => {
+      try {
+        const response = await Api.get("/student/all-students");
+        const students = response.data.data;
+        setStudentCount(students.length || 0);
+      } catch (error) {
+        console.error("Failed to fetch student data:", error);
+      }
+    };
+
+    fetchFacultyCount();
+    fetchStudentCount();
+  }, [department]);
+
   return (
-    <div className="p-8 max-w-7xl mx-auto bg-gray-50 min-h-screen flex flex-col items-center">
-      <h1 className="text-4xl font-extrabold mb-8 text-center text-gray-800">HOD Dashboard</h1>
-      
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className="p-8 max-w-7xl mx-auto bg-gradient-to-b from-gray-900 to-black min-h-screen flex flex-col items-center text-white"
+    >
+      <h1 className="text-4xl font-extrabold mb-10 text-center text-white drop-shadow-xl">
+        Principal Dashboard
+      </h1>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-10 w-full max-w-3xl justify-center">
-        <SummaryCard title="Total Faculty" value="45" icon="👨‍🏫" className="shadow-md p-6 rounded-xl bg-white hover:shadow-lg transition" />
-        <SummaryCard title="Total Students" value="1,250" icon="👨‍🎓" className="shadow-md p-6 rounded-xl bg-white hover:shadow-lg transition" />
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          transition={{ type: "spring", stiffness: 300 }}
+        >
+          <SummaryCard
+            title="Total Faculty"
+            value={facultyCount.toString()}
+            icon="👨‍🏫"
+            className="shadow-md p-6 rounded-2xl bg-gray-800 hover:shadow-lg transition text-white"
+          />
+        </motion.div>
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          transition={{ type: "spring", stiffness: 300 }}
+        >
+          <SummaryCard
+            title="Total Students"
+            value={studentCount.toString()}
+            icon="👨‍🎓"
+            className="shadow-md p-6 rounded-2xl bg-gray-800 hover:shadow-lg transition text-white"
+          />
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

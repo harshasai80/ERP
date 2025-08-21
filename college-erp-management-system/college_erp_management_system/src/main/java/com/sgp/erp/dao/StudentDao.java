@@ -111,4 +111,18 @@ public class StudentDao {
         return studentRepository.findByDepartment(department);
     }
 
+    public List<Student> getAllStudents() {
+        List<Student> students = studentRepository.findAll();
+        if (!students.isEmpty()) {
+            return students;
+        } else {
+            throw new RuntimeException("No students found.");
+        }
+    }
+
+    public boolean deleteStudent(String registrationNumber) {
+        Integer result = studentRepository.deleteByRegistrationNumber(registrationNumber);
+        return result > 0; // Returns true if at least one record was deleted
+    }
+
 }

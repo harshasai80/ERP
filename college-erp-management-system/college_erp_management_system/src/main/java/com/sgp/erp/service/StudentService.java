@@ -13,9 +13,12 @@ import org.springframework.web.multipart.MultipartFile;
 import com.sgp.erp.dao.StudentDao;
 import com.sgp.erp.dto.ResponseStructure;
 import com.sgp.erp.exception.StudentDoesExistException;
+import com.sgp.erp.exception.StudentNotDeletedException;
 import com.sgp.erp.exception.StudentNotFoundException;
 import com.sgp.erp.model.Student;
 import com.sgp.erp.model.enums.Section;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class StudentService {
@@ -112,4 +115,28 @@ public class StudentService {
         throw new StudentNotFoundException();
     }
 
+    public ResponseEntity<ResponseStructure<List<Student>>> getAllStudents() {
+        ResponseStructure<List<Student>> structure = new ResponseStructure<List<Student>>();
+        List<Student> students = studentDao.getAllStudents();
+        if (!students.isEmpty()) {
+            structure.setData(students);
+            structure.setMessage("Students found");
+            structure.setStatus(HttpStatus.OK.value());
+            return new ResponseEntity<ResponseStructure<List<Student>>>(structure, HttpStatus.OK);
+        }
+        throw new StudentNotFoundException();
+    }
+
+    @Transactional
+    public ResponseEntity<ResponseStructure<String>> deleteStudent(String registrationNumber) {
+        ResponseStructure<String> structure = new ResponseStructure<String>();
+        boolean res = studentDao.deleteStudent(registrationNumber);
+        if (res) {
+            structure.setData("Student deleted successfully");
+            structure.setMessage("Student deleted successfully");
+            structure.setStatus(HttpStatus.OK.value());
+            return new ResponseEntity<ResponseStructure<String>>(structure, HttpStatus.OK);
+        }
+        throw new StudentNotDeletedException();
+    }
 }

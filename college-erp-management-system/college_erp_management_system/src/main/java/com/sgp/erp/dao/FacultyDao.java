@@ -46,4 +46,13 @@ public class FacultyDao {
         }
         return null;
     }
+
+    public List<Faculty> getAllFaculties() {
+        List<Faculty> faculties = facultyRepository.findAll();
+        if (!faculties.isEmpty()) {
+            return faculties;
+        } else {
+            throw new FacultyNotFoundException("No faculties found...");
+        }
+    }
 }

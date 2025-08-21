@@ -1,17 +1,116 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Api from "../../../../Api";
 import DataTable from "../../components/tables/DataTable";
+import DragDropCSVUpload from "../../../DragDropFileUpload";
+import AddFacultyTab from "../../components/tabs/AddFacultyTab";
+import EditFacultyModal from "./EditFacultyModal";
 
-const FacultyList = () => {
+const FacultyList = ({ department }) => {
+  const [faculties, setFaculties] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const [showUpload, setShowUpload] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [showAddFaculty, setShowAddFaculty] = useState(false);
 
-  const handleView = (facultyId) => {
-    alert(`View details for faculty ID: ${facultyId}`);
+  const [showSubjectUpload, setShowSubjectUpload] = useState(false);
+  const [subjectFile, setSubjectFile] = useState(null);
+  const [uploadingSubject, setUploadingSubject] = useState(false);
+
+  const [selectedFaculty, setSelectedFaculty] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    fetchFaculties();
+  }, [department]);
+
+  const fetchFaculties = async () => {
+    setLoading(true);
+    try {
+      const response = await Api.get("/faculty/all-faculties");
+      const HodFaculties = response.data.data.filter(
+        (faculty) => faculty.department !== "SGP"
+      );
+      setFaculties(HodFaculties);
+    } catch (error) {
+      console.error("Error fetching faculties:", error);
+      alert("Failed to fetch faculty data.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleEdit = (facultyId) => {
-    alert(`Edit faculty with ID: ${facultyId}`);
+  const handleAddFaculty = () => {
+    setShowSubjectUpload(false); // close subject panel
+    setShowUpload(true);
+  };
+
+  const handleAddSubjects = () => {
+    setShowUpload(false); // close faculty panel
+    setShowAddFaculty(false); // in case AddFacultyTab is open
+    setShowSubjectUpload(true);
+  };
+
+  const handleFileUpload = (file) => {
+    if (file.target) {
+      setSelectedFile(file.target.files[0]);
+    } else {
+      setSelectedFile(file);
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile) return;
+    setUploading(true);
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+    try {
+      await Api.post("/faculty/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      alert("CSV file uploaded successfully!");
+      fetchFaculties();
+    } catch (error) {
+      console.error("Upload failed:", error);
+      alert("Failed to upload CSV file.");
+    } finally {
+      setUploading(false);
+      setSelectedFile(null);
+    }
+  };
+
+  const handleSubjectFileUpload = (file) => {
+    if (file.target) {
+      setSubjectFile(file.target.files[0]);
+    } else {
+      setSubjectFile(file);
+    }
+  };
+
+  const handleSubjectUpload = async () => {
+    if (!subjectFile) return;
+    setUploadingSubject(true);
+    const formData = new FormData();
+    formData.append("file", subjectFile);
+    try {
+      await Api.post("/subjects/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      alert("Subject CSV uploaded successfully!");
+    } catch (error) {
+      console.error("Subject upload failed:", error);
+      alert("Failed to upload subject CSV.");
+    } finally {
+      setUploadingSubject(false);
+      setSubjectFile(null);
+    }
+  };
+
+  const handleEdit = (faculty) => {
+    setSelectedFaculty(faculty);
+    console.log("Edit faculty:", faculty);
+    setShowModal(true);
   };
 
   const handleDelete = (facultyId) => {
@@ -19,153 +118,182 @@ const FacultyList = () => {
   };
 
   const columns = [
-    "ID",
-    "Name",
-    "Department",
-    "Position",
-    "Contact",
-    "Actions",
+    { name: "Name", center: true },
+    { name: "Email", center: true },
+    { name: "Department", center: true },
+    { name: "Actions", center: true },
   ];
 
-  const facultyData = [
-    {
-      id: "F001",
-      name: "Dr. John Smith",
-      department: "Mathematics",
-      position: "Senior Professor",
-      contact: "john.smith@school.edu",
-      actions: (
-        <div className="flex gap-2 justify-center">
-          <button
-            className="px-2 py-1 text-white bg-blue-500 rounded hover:bg-blue-600"
-            onClick={() => handleView("F001")}
-          >
-            View
-          </button>
-          <button
-            className="px-2 py-1 text-black bg-yellow-400 rounded hover:bg-yellow-500"
-            onClick={() => handleEdit("F001")}
-          >
-            Edit
-          </button>
-          <button
-            className="px-2 py-1 text-white bg-red-500 rounded hover:bg-red-600"
-            onClick={() => handleDelete("F001")}
-          >
-            Delete
-          </button>
-        </div>
-      ),
-    },
-    {
-      id: "F002",
-      name: "Prof. Sarah Johnson",
-      department: "Science",
-      position: "HOD",
-      contact: "sarah.j@school.edu",
-      actions: (
-        <div className="flex gap-2 justify-center">
-          <button
-            className="px-2 py-1 text-white bg-blue-500 rounded hover:bg-blue-600"
-            onClick={() => handleView("F002")}
-          >
-            View
-          </button>
-          <button
-            className="px-2 py-1 text-black bg-yellow-400 rounded hover:bg-yellow-500"
-            onClick={() => handleEdit("F002")}
-          >
-            Edit
-          </button>
-          <button
-            className="px-2 py-1 text-white bg-red-500 rounded hover:bg-red-600"
-            onClick={() => handleDelete("F002")}
-          >
-            Delete
-          </button>
-        </div>
-      ),
-    },
-  ];
+  const facultyData = faculties.map((faculty) => ({
+    name: faculty.name.toUpperCase(),
+    email: faculty.email,
+    department: faculty.department.toUpperCase(),
+    actions: (
+      <div className="flex gap-2 justify-center">
+        <button
+          className="px-2 py-1 text-black bg-yellow-400 rounded hover:bg-yellow-500"
+          onClick={() => handleEdit(faculty)}
+        >
+          Edit
+        </button>
+        <button
+          className="px-2 py-1 text-white bg-red-600 rounded hover:bg-red-700"
+          onClick={() => handleDelete(faculty)}
+        >
+          Delete
+        </button>
+      </div>
+    ),
+  }));
 
-  const handleAddFaculty = () => {
-    setShowUpload(true);
+  const DownloadFacultyCSV = () => {
+    const link = document.createElement("a");
+    link.href = "/csv files/facultycsv.csv"; // Adjust path as needed
+    link.download = "facultycsv.csv";
+    link.click();
   };
-
-  const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
-  };
-
-  const handleUpload = async () => {
-    if (selectedFile) {
-      const formData = new FormData();
-      formData.append("file", selectedFile);
-
-      try {
-        const response = await Api.post("/faculty/upload", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-        console.log(response.data);
-        alert(`File uploaded successfully: ${response.data}`);
-      } catch (error) {
-        alert(
-          `Upload failed: ${error.response?.data?.message || error.message}`
-        );
-      }
-    }
+  const DownloadSubjectCSV = () => {
+    const link = document.createElement("a");
+    link.href = "/csv files/subjectcsv.csv"; // Adjust path as needed
+    link.download = "subjectcsv.csv";
+    link.click();
   };
 
   return (
-    <div className="p-5 max-w-5xl mx-auto">
-      <div className="flex justify-between items-center mb-5">
-        <h1 className="text-2xl font-bold text-gray-800">Faculty List</h1>
-        <button
-          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-          onClick={handleAddFaculty}
-        >
-          Add New Faculty
-        </button>
-      </div>
+    <div className="p-6 max-w-6xl mx-auto text-white">
+      {showAddFaculty ? (
+        <AddFacultyTab onClose={() => setShowAddFaculty(false)} />
+      ) : (
+        <>
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-3xl font-bold">Faculty List</h1>
+            <div className="flex gap-3">
+              <button
+                className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 rounded-lg text-white"
+                onClick={handleAddFaculty}
+              >
+                Add New Faculty
+              </button>
+              <button
+                className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-white"
+                onClick={handleAddSubjects}
+              >
+                Add Subjects (CSV)
+              </button>
+            </div>
+          </div>
 
-      {showUpload && (
-        <div className="mb-5 p-4 border border-gray-300 rounded bg-white shadow-md">
-          <h2 className="text-lg font-semibold mb-2">Upload Faculty CSV</h2>
-          <input
-            type="file"
-            accept=".csv"
-            className="p-2 border border-gray-300 rounded w-full"
-            onChange={handleFileChange}
-          />
-          {selectedFile && (
-            <button
-              className="mt-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-              onClick={handleUpload}
-            >
-              Upload
-            </button>
+          {/* Upload Faculty CSV / Add Individually Options */}
+          {showUpload && (
+            <div className="mb-5 p-5 bg-gradient-to-br from-gray-900 to-gray-800 shadow-lg rounded-xl flex flex-col items-center gap-3 w-96 mx-auto">
+              <p className="text-lg font-semibold text-white">
+                Choose an option:
+              </p>
+              <button
+                className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 w-full"
+                onClick={() => {
+                  setShowAddFaculty(true);
+                  setShowUpload(false);
+                }}
+              >
+                Add Individually
+              </button>
+
+              <div className="w-full text-center">
+                <DragDropCSVUpload onChange={handleFileUpload} />
+                {selectedFile && (
+                  <div className="mt-2 p-2 bg-gray-800 border border-gray-700 rounded text-white flex justify-between items-center">
+                    <span>{selectedFile.name}</span>
+                    <button
+                      className="ml-2 text-red-500 hover:text-red-700"
+                      onClick={() => setSelectedFile(null)}
+                    >
+                      ×
+                    </button>
+                  </div>
+                )}
+                <button
+                  className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 w-full"
+                  onClick={DownloadFacultyCSV}
+                >
+                Download Sample CSV
+                </button>
+                {selectedFile && (
+                  <button
+                    className="mt-2 px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 w-full"
+                    onClick={handleUpload}
+                    disabled={uploading}
+                  >
+                    {uploading ? "Uploading..." : "Upload File"}
+                  </button>
+                )}
+              </div>
+
+              <button
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 w-full"
+                onClick={() => setShowUpload(false)}
+              >
+                Cancel
+              </button>
+            </div>
           )}
-        </div>
+
+          {/* Upload Subject CSV Only */}
+          {showSubjectUpload && (
+            <div className="mb-5 p-5 bg-gray-900 shadow-lg rounded-xl flex flex-col items-center gap-3 w-96 mx-auto">
+              <p className="text-lg font-semibold">Upload Subject CSV</p>
+              <DragDropCSVUpload onChange={handleSubjectFileUpload} />
+              {subjectFile && (
+                <div className="mt-2 p-2 bg-gray-800 border border-gray-700 rounded text-white flex justify-between items-center w-full">
+                  <span>{subjectFile.name}</span>
+                  <button
+                    className="ml-2 text-red-500 hover:text-red-700"
+                    onClick={() => setSubjectFile(null)}
+                  >
+                    ×
+                  </button>
+                </div>
+              )}
+              {subjectFile && (
+                <button
+                  className="mt-2 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 w-full"
+                  onClick={handleSubjectUpload}
+                  disabled={uploadingSubject}
+                >
+                  {uploadingSubject ? "Uploading..." : "Upload File"}
+                </button>
+              )}
+              <button
+                  className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 w-full"
+                  onClick={DownloadSubjectCSV}
+                >
+                Download Sample CSV
+                </button>
+              <button
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 w-full"
+                onClick={() => setShowSubjectUpload(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          )}
+
+          {showModal && (
+            <EditFacultyModal
+              show={showModal}
+              faculty={selectedFaculty}
+              onUpdate={fetchFaculties}
+              onClose={() => setShowModal(false)}
+            />
+          )}
+
+          {loading ? (
+            <p className="text-center text-gray-300">Loading faculty data...</p>
+          ) : (
+            <DataTable columns={columns} data={facultyData} />
+          )}
+        </>
       )}
-
-      <div className="flex gap-3 mb-5">
-        <input
-          type="text"
-          placeholder="Search faculty..."
-          className="flex-1 p-2 border border-gray-300 rounded"
-        />
-        <select className="p-2 border border-gray-300 rounded">
-          <option value="">All Departments</option>
-          <option value="Mathematics">Mathematics</option>
-          <option value="Science">Science</option>
-          <option value="English">English</option>
-          <option value="History">History</option>
-          <option value="Computer Science">Computer Science</option>
-        </select>
-      </div>
-
-      <DataTable columns={columns} data={facultyData} />
     </div>
   );
 };

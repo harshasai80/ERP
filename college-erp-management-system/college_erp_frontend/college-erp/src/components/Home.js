@@ -15,6 +15,10 @@ const Home = () => {
     }, 1); // Delay before restarting the animation
   };
 
+  const handleNavigation = (path) => {
+  navigate(path);
+};
+
   const handleHoverEnd = () => {
     setGifSrc("/home.gif"); // Optionally reset to a specific GIF after hover ends
   };
@@ -205,16 +209,20 @@ const Home = () => {
               </p>
             </div>
             <div className="flex space-x-6">
-              {["Contact", "About", "Privacy Policy"].map((item, idx) => (
-                <a
-                  key={idx}
-                  href={`#${item.toLowerCase()}`}
-                  className="text-gray-400 hover:text-white text-sm transition"
-                >
-                  {item}
-                </a>
-              ))}
-            </div>
+              {[
+                { name: "Contact", path: "/contact-details" },
+                { name: "About", path: "/about" },
+                { name: "Privacy Policy", path: "/#" }
+              ].map((item, idx) => (
+              <button
+                key={idx}
+                onClick={() => handleNavigation(item.path)}
+                className="text-gray-400 hover:text-white text-sm transition cursor-pointer"
+              >
+                {item.name}
+              </button>
+            ))}
+          </div>
           </div>
           <p className="text-center mt-6 text-xs text-gray-500">
             © 2025 Sanjay Gandhi Polytechnic. All rights reserved.

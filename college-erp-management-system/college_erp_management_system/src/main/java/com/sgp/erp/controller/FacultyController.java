@@ -68,4 +68,9 @@ public class FacultyController {
         return facultyService.updateFaculty(email, faculty);
     }
 
+    @GetMapping("/all-faculties")
+    public ResponseEntity<ResponseStructure<List<Faculty>>> getAllFaculties() {
+        return facultyService.getAllFaculties();
+    }
+
 }

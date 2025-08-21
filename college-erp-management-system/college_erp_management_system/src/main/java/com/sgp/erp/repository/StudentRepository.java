@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -19,4 +20,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     Optional<List<Student>> findByDepartment(String department);
 
+    @Modifying
+    @Query("DELETE FROM Student s WHERE s.registrationNumber = ?1")
+    Integer deleteByRegistrationNumber(String registrationNumber);
 }
