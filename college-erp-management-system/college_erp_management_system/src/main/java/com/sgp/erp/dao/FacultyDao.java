@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.sgp.erp.exception.FacultyNotFoundException;
 import com.sgp.erp.model.Faculty;
 import com.sgp.erp.model.FacultySubject;
 import com.sgp.erp.repository.FacultyRepository;

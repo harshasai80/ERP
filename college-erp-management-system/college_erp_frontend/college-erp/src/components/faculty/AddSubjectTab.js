@@ -183,6 +183,7 @@ function AddSubjectTab({ faculty }) {
           className="p-3 bg-gray-900 border border-gray-600 rounded-md"
         >
           <option value="">Select Department</option>
+          <option value="COMMON">COMMON SUBJECTS</option>
           <option value="DCS">Diploma in Computer Science Engineering</option>
           <option value="DEEE">
             Diploma in Electrical and Electronics Engineering

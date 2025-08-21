@@ -63,7 +63,8 @@ public class FacultyController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<ResponseStructure<Faculty>> updateFaculty(@RequestParam String email, @RequestBody Faculty faculty) {
+    public ResponseEntity<ResponseStructure<Faculty>> updateFaculty(@RequestParam String email,
+            @RequestBody Faculty faculty) {
         return facultyService.updateFaculty(email, faculty);
     }
 
