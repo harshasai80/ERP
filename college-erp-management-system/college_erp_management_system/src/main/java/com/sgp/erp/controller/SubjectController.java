@@ -41,7 +41,7 @@ public class SubjectController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<ResponseStructure<String>> uploadSubjectsCSV(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<ResponseStructure<String>> uploadSubjectsCSV(@RequestParam MultipartFile file) {
         return subjectService.uploadSubjectsCSV(file);
     }
 

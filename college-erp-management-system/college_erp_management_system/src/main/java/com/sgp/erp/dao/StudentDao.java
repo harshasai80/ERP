@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
-import com.sgp.erp.model.Faculty;
 import com.sgp.erp.model.Student;
 import com.sgp.erp.model.enums.Section;
 import com.sgp.erp.repository.StudentRepository;
@@ -110,6 +109,20 @@ public class StudentDao {
 
     public Optional<List<Student>> findByDepartment(String department) {
         return studentRepository.findByDepartment(department);
+    }
+
+    public List<Student> getAllStudents() {
+        List<Student> students = studentRepository.findAll();
+        if (!students.isEmpty()) {
+            return students;
+        } else {
+            throw new RuntimeException("No students found.");
+        }
+    }
+
+    public boolean deleteStudent(String registrationNumber) {
+        Integer result = studentRepository.deleteByRegistrationNumber(registrationNumber);
+        return result > 0; // Returns true if at least one record was deleted
     }
 
 }

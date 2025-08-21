@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,7 +32,7 @@ public class FacultyController {
     private FacultyService facultyService;
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadFacultyData(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> uploadFacultyData(@RequestParam MultipartFile file) {
         try {
             userService.uploadFacultyCSV(file);
             return ResponseEntity.ok("Faculty data uploaded successfully!");
@@ -66,6 +65,11 @@ public class FacultyController {
     @PutMapping("/update")
     public ResponseEntity<ResponseStructure<Faculty>> updateFaculty(@RequestParam String email, @RequestBody Faculty faculty) {
         return facultyService.updateFaculty(email, faculty);
+    }
+
+    @GetMapping("/all-faculties")
+    public ResponseEntity<ResponseStructure<List<Faculty>>> getAllFaculties() {
+        return facultyService.getAllFaculties();
     }
 
 }

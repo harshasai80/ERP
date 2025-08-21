@@ -2,19 +2,19 @@ package com.sgp.erp.exception;
 
 import java.io.Serial;
 
-public class FacultyNotFoundException extends RuntimeException {
+public class StudentNotDeletedException extends RuntimeException {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    public FacultyNotFoundException() {
+    public StudentNotDeletedException() {
     }
 
-    public FacultyNotFoundException(String message) {
+    public StudentNotDeletedException(String message) {
         super(message);
     }
 
     @Override
     public String getMessage() {
-        return "Faculty not found";
+        return "Student not deleted...";
     }
 }

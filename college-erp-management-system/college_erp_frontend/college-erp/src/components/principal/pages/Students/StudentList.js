@@ -3,77 +3,51 @@ import Api from "../../../../Api";
 import DataTable from "../../components/tables/DataTable";
 import AddStudentsTab from "../../components/tabs/AddStudentsTab";
 import DragDropCSVUpload from "../../../DragDropFileUpload";
+import EditStudentModal from "./EditStudentModal";
 
 const StudentList = () => {
   const [showAddStudent, setShowAddStudent] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [csvFile, setCsvFile] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [students, setStudents] = useState([]);
+  const [filters, setFilters] = useState({ semester: "", section: "" });
+  const [department, setDepartment] = useState("");
+
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   const columns = [
-    "ID",
+    "Registration Number",
     "Name",
-    "Class",
+    "Department",
+    "Semester",
     "Section",
-    "Guardian",
-    "Contact",
     "Actions",
   ];
 
-  const studentData = [
-    {
-      id: "S001",
-      name: "Alex Johnson",
-      class: "XI",
-      section: "A",
-      guardian: "Mark Johnson",
-      contact: "mark.j@mail.com",
-    },
-    {
-      id: "S002",
-      name: "Emma Williams",
-      class: "X",
-      section: "B",
-      guardian: "Lisa Williams",
-      contact: "lisa.w@mail.com",
-    },
-    {
-      id: "S003",
-      name: "James Brown",
-      class: "XII",
-      section: "A",
-      guardian: "Robert Brown",
-      contact: "robert.b@mail.com",
-    },
-    {
-      id: "S004",
-      name: "Sophia Davis",
-      class: "IX",
-      section: "C",
-      guardian: "Michael Davis",
-      contact: "michael.d@mail.com",
-    },
-    {
-      id: "S005",
-      name: "William Miller",
-      class: "XI",
-      section: "B",
-      guardian: "Jennifer Miller",
-      contact: "jennifer.m@mail.com",
-    },
-  ];
-
-  // Handles file selection from input or drag & drop
-  const handleFileUpload = (file) => {
-    if (file.target) {
-      setCsvFile(file.target.files[0]); // If input field is used
-    } else {
-      setCsvFile(file); // If drag & drop is used
+  const handleDelete = async (student) => {
+    try{
+        const response = await Api.delete( `/student/delete?registrationNumber=${student.registrationNumber}`);
+        if (response.status === 200) {
+          alert("Student deleted successfully!");
+          fetchStudents(); // Refresh the student list
+        }
+    }catch (error){
+        console.error("Error deleting student:", error);
+        alert("Failed to delete student.");
     }
-    console.log("Selected file:", file.target ? file.target.files[0] : file);
+  }
+
+  const handleEdit = (student) => {
+    setSelectedStudent(student);
+    setShowModal(true);
   };
 
-  // Handles file upload
+  const handleFileUpload = (file) => {
+    setCsvFile(file.target ? file.target.files[0] : file);
+  };
+
   const handleUpload = async () => {
     if (!csvFile) return;
 
@@ -82,13 +56,12 @@ const StudentList = () => {
     formData.append("file", csvFile);
 
     try {
-      const response = await Api.post("/student/upload", formData, {
+      await Api.post("/student/upload", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      console.log("Upload success:", response.data);
       alert("CSV file uploaded successfully!");
+      fetchStudents(); // Refresh after upload
     } catch (error) {
-      console.error("Upload failed:", error);
       alert("Failed to upload CSV file.");
     } finally {
       setUploading(false);
@@ -96,96 +69,194 @@ const StudentList = () => {
     }
   };
 
+  const fetchStudents = async () => {
+    const { semester, section } = filters;
+    if (!semester || !section) {
+      alert("Please select semester and section.");
+      return;
+    }
+
+    try {
+      const response = await Api.get("/student/all", {
+        params: {
+          department,
+          semester: parseInt(semester),
+          section,
+        },
+      });
+      const result = response.data?.data || [];
+      setStudents(result);
+    } catch (error) {
+      console.error("Error fetching students:", error);
+      alert("Failed to fetch student data.");
+    }
+  };
+
+  const DownloadStudentCSV = () => {
+    const link = document.createElement("a");
+    link.href = "/csv files/studentcsv.csv"; // Adjust path as needed
+    link.download = "studentcsv.csv";
+    link.click();
+  };
+
   return (
-    <div className="p-5 max-w-5xl mx-auto">
-      {showAddStudent ? (
-        <AddStudentsTab onClose={() => setShowAddStudent(false)} />
-      ) : (
-        <>
-          <div className="flex justify-between items-center mb-5">
-            <h1 className="text-2xl font-bold text-gray-800">Student List</h1>
-            <button
-              className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-              onClick={() => setShowOptions(true)}
-            >
-              Add New Student
-            </button>
-          </div>
-
-          {showOptions && (
-            <div className="mb-5 p-5 bg-white shadow-lg rounded-lg flex flex-col items-center gap-3 w-96 mx-auto">
-              <p className="text-lg font-semibold">Choose an option:</p>
+    <>
+      <div className="p-5 max-w-6xl mx-auto text-white">
+        {showAddStudent ? (
+          <AddStudentsTab onClose={() => setShowAddStudent(false)} />
+        ) : (
+          <>
+            <div className="flex justify-between items-center mb-5">
+              <h1 className="text-2xl font-bold">Student List</h1>
               <button
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 w-full"
-                onClick={() => {
-                  setShowAddStudent(true);
-                  setShowOptions(false);
-                }}
+                className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700"
+                onClick={() => setShowOptions(true)}
               >
-                Add Individually
-              </button>
-
-              {/* CSV Upload */}
-              <div className="w-full text-center">
-                <DragDropCSVUpload onChange={handleFileUpload} />
-
-                {csvFile && (
-                  <div className="mt-2 p-2 bg-green-200 border border-gray-300 rounded text-gray-700 flex justify-between items-center">
-                    <span>{csvFile.name}</span>
-                    <button
-                      className="ml-2 text-red-500 hover:text-red-700"
-                      onClick={() => setCsvFile(null)}
-                    >
-                      ×
-                    </button>
-                  </div>
-                )}
-
-                {csvFile && (
-                  <button
-                    className="mt-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 w-full"
-                    onClick={handleUpload}
-                    disabled={uploading}
-                  >
-                    {uploading ? "Uploading..." : "Upload File"}
-                  </button>
-                )}
-              </div>
-
-              <button
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 w-full"
-                onClick={() => setShowOptions(false)}
-              >
-                Cancel
+                Add New Student
               </button>
             </div>
-          )}
 
-          <div className="flex gap-3 mb-5">
-            <input
-              type="text"
-              placeholder="Search students..."
-              className="flex-1 p-2 border border-gray-300 rounded"
+            {showOptions && (
+              <div className="mb-5 p-5 bg-gray-800 rounded-xl flex flex-col items-center gap-3 w-96 mx-auto shadow-lg">
+                <p className="text-lg font-semibold">Choose an option:</p>
+                <button
+                  className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 w-full"
+                  onClick={() => {
+                    setShowAddStudent(true);
+                    setShowOptions(false);
+                  }}
+                >
+                  Add Individually
+                </button>
+
+                <div className="w-full text-center">
+                  <DragDropCSVUpload onChange={handleFileUpload} />
+
+                  {csvFile && (
+                    <div className="mt-2 p-2 bg-gray-700 border border-gray-600 rounded text-white flex justify-between items-center">
+                      <span>{csvFile.name}</span>
+                      <button
+                        className="ml-2 text-red-500 hover:text-red-700"
+                        onClick={() => setCsvFile(null)}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  )}
+
+                  {csvFile && (
+                    <button
+                      className="mt-2 px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 w-full"
+                      onClick={handleUpload}
+                      disabled={uploading}
+                    >
+                      {uploading ? "Uploading..." : "Upload File"}
+                    </button>
+                  )}
+                </div>
+
+                <button
+                  className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 w-full"
+                  onClick={DownloadStudentCSV}
+                >
+                Download Sample CSV
+                </button>
+
+                <button
+                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 w-full"
+                  onClick={() => setShowOptions(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
+
+            {/* Filter Section */}
+            <div className="flex flex-col sm:flex-row gap-3 mb-5 items-center">
+              <select
+                className="p-2 bg-gray-800 text-white border border-gray-700 rounded"
+                value={department}
+                onChange={(e) => setDepartment(e.target.value)}
+              >
+                <option value="">Department</option>
+                {["DCS", "DME", "DCE", "DEEE", "DMT"].map((dept) => (
+                  <option key={dept} value={dept}>
+                    {dept}
+                  </option>
+                ))}
+              </select>
+              <select
+                className="p-2 bg-gray-800 text-white border border-gray-700 rounded"
+                value={filters.semester}
+                onChange={(e) =>
+                  setFilters((prev) => ({ ...prev, semester: e.target.value }))
+                }
+              >
+                <option value="">Semester</option>
+                {[1, 2, 3, 4, 5, 6].map((sem) => (
+                  <option key={sem} value={sem}>
+                    {sem}
+                  </option>
+                ))}
+              </select>
+              <select
+                className="p-2 bg-gray-800 text-white border border-gray-700 rounded"
+                value={filters.section}
+                onChange={(e) =>
+                  setFilters((prev) => ({ ...prev, section: e.target.value }))
+                }
+              >
+                <option value="">Section</option>
+                {["A", "B", "C", "D"].map((sec) => (
+                  <option key={sec} value={sec}>
+                    {sec}
+                  </option>
+                ))}
+              </select>
+              <button
+                className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700"
+                onClick={fetchStudents}
+              >
+                Search
+              </button>
+            </div>
+
+            <DataTable
+              columns={columns}
+              data={students.map((s) => ({
+                registrationnumber: s.registrationNumber,
+                name: s.name,
+                department: s.department.toUpperCase(),
+                semester: s.sem,
+                section: s.section,
+                actions: (
+                  <div className="flex gap-2 justify-center">
+                    <button
+                      className="text-sm px-2 py-1 bg-blue-600 rounded hover:bg-blue-700"
+                      onClick={() => handleEdit(s)}
+                    >
+                      Edit
+                    </button>
+                    <button className="text-sm px-2 py-1 bg-red-600 rounded hover:bg-red-700"
+                    onClick={() => handleDelete(s)}>
+                      Delete
+                    </button>
+                  </div>
+                ),
+              }))}
             />
-            <select className="p-2 border border-gray-300 rounded">
-              <option value="">All Classes</option>
-              <option value="IX">Class IX</option>
-              <option value="X">Class X</option>
-              <option value="XI">Class XI</option>
-              <option value="XII">Class XII</option>
-            </select>
-            <select className="p-2 border border-gray-300 rounded">
-              <option value="">All Sections</option>
-              <option value="A">Section A</option>
-              <option value="B">Section B</option>
-              <option value="C">Section C</option>
-            </select>
-          </div>
-
-          <DataTable columns={columns} data={studentData} />
-        </>
+          </>
+        )}
+      </div>
+      {showModal && (
+        <EditStudentModal
+          show={showModal}
+          onClose={() => setShowModal(false)}
+          onUpdate={fetchStudents}
+          student={selectedStudent}
+        />
       )}
-    </div>
+    </>
   );
 };
 

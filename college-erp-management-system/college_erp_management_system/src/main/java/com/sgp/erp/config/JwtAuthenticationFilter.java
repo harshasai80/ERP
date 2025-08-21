@@ -1,7 +1,6 @@
 package com.sgp.erp.config;
 
 import java.io.IOException;
-import java.security.SignatureException;
 import java.util.Collections;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

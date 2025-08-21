@@ -1,64 +1,83 @@
 import React, { useState } from "react";
-import Navbar from "../principal/components/layout/Navbar";
+import { useLocation } from "react-router-dom";
 import Dashboard from "../principal/pages/Dashboard";
 import FacultyList from "../principal/pages/Faculty/FacultyList";
 import StudentList from "../principal/pages/Students/StudentList";
+import { motion } from "framer-motion";
+import Navbar from "../principal/components/layout/Navbar";
 
 const PrincipalDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
+  const location = useLocation();
+
+  const data = location.state?.data;
 
   const renderContent = () => {
     switch (activeTab) {
       case "faculty":
-        return <FacultyList />;
+        return <FacultyList department={data.department} />;
       case "students":
         return <StudentList />;
       default:
-        return <Dashboard />;
+        return <Dashboard department={data.department} />;
     }
   };
 
+
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* Navbar stretches full width */}
-      <div className="w-full bg-white shadow-md py-4">
-        <Navbar />
-      </div>
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-black to-gray-900 text-white font-sans">
+      <Navbar data={data} />
 
-      <main className="flex-1 p-5 bg-gray-100">
-        {/* Centered Tabs Navigation */}
-        <div className="flex justify-center mb-4 border-b">
-          <div className="flex space-x-4">
+      {/* Tab Buttons */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.3 }}
+        className="flex justify-center mt-6 border-b border-gray-700"
+      >
+        <div className="flex space-x-6">
+          {["dashboard", "faculty", "students"].map((tab) => (
             <button
-              className={`py-2 px-4 ${
-                activeTab === "dashboard" ? "border-b-2 border-blue-500 text-blue-600" : "text-gray-500"
-              }`}
-              onClick={() => setActiveTab("dashboard")}
+              key={tab}
+              className={`capitalize text-lg px-5 py-2 transition-all font-medium rounded-t-md 
+                ${
+                  activeTab === tab
+                    ? "bg-emerald-500 text-white"
+                    : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                }`}
+              onClick={() => setActiveTab(tab)}
             >
-              Dashboard
+              {tab}
             </button>
-            <button
-              className={`py-2 px-4 ${
-                activeTab === "faculty" ? "border-b-2 border-blue-500 text-blue-600" : "text-gray-500"
-              }`}
-              onClick={() => setActiveTab("faculty")}
-            >
-              Faculty
-            </button>
-            <button
-              className={`py-2 px-4 ${
-                activeTab === "students" ? "border-b-2 border-blue-500 text-blue-600" : "text-gray-500"
-              }`}
-              onClick={() => setActiveTab("students")}
-            >
-              Students
-            </button>
-          </div>
+          ))}
         </div>
+      </motion.div>
 
-        {/* Tab Content */}
-        {renderContent()}
+      {/* Content */}
+      <main className="flex-grow container mx-auto px-6 py-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="bg-gray-800 rounded-xl p-6 shadow-xl"
+        >
+          {renderContent()}
+        </motion.div>
       </main>
+
+      {/* Footer */}
+      <footer className="bg-gradient-to-r from-gray-800 to-gray-900 py-6 text-center text-gray-400 mt-auto">
+        <div className="container mx-auto px-6">
+          <h3 className="text-xl font-semibold text-white">Sanjay Gandhi Polytechnic Ballari</h3>
+          <p className="text-purple-300 mb-4">Excellence in Technical Education</p>
+          <div className="flex justify-center gap-6 text-sm">
+            <a href="/contact" className="hover:text-white">Contact</a>
+            <a href="/about" className="hover:text-white">About</a>
+            <a href="/privacy-policy" className="hover:text-white">Privacy Policy</a>
+          </div>
+          <p className="mt-4 text-sm">© 2025 Sanjay Gandhi Polytechnic. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   );
 };
