@@ -26,8 +26,8 @@ public class SecurityConfig {
 		this.jwtAuthenticationFilter = jwtAuthenticationFilter;
 	}
 
-	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
 				.csrf(csrf -> csrf.disable()) // Updated way to disable CSRF
 				//
@@ -42,18 +42,18 @@ public class SecurityConfig {
 		return http.build();
 	}
 
-	// Fix: Define AuthenticationManager Bean
-	@Bean
-	public AuthenticationManager authenticationManager(UserDetailsService userDetailsService) {
+    // Fix: Define AuthenticationManager Bean
+    @Bean
+    AuthenticationManager authenticationManager(UserDetailsService userDetailsService) {
 		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 		authProvider.setUserDetailsService(userDetailsService);
 		authProvider.setPasswordEncoder(passwordEncoder());
 		return new ProviderManager(List.of(authProvider));
 	}
 
-	// Fix: Define Password Encoder Bean
-	@Bean
-	public PasswordEncoder passwordEncoder() {
+    // Fix: Define Password Encoder Bean
+    @Bean
+    PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 

@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
-import com.sgp.erp.model.Faculty;
 import com.sgp.erp.model.Student;
 import com.sgp.erp.model.enums.Section;
 import com.sgp.erp.repository.StudentRepository;

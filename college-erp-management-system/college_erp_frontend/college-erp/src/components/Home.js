@@ -129,15 +129,17 @@ const Home = () => {
             >
               Welcome to <br /> Sanjay Gandhi Polytechnic <br /> ERP System
             </motion.h2>
+
+            {/* GIF - hidden on mobile, visible on md and above */}
             <motion.img
               src={gifSrc}
               alt="ERP Illustration"
-              className="w-[300px] h-[300px] md:w-[500px] md:h-[500px] object-contain rounded-3xl shadow-2xl"
+              className="hidden md:block w-[300px] h-[300px] md:w-[500px] md:h-[500px] object-contain rounded-3xl shadow-2xl"
               initial={{ rotateY: 20 }}
               animate={{ rotateY: 0 }}
               transition={{ duration: 1 }}
-              onMouseEnter={handleHoverStart} // Start animation on hover
-              onMouseLeave={handleHoverEnd} // Reset animation on hover end
+              onMouseEnter={handleHoverStart}
+              onMouseLeave={handleHoverEnd}
             />
           </div>
 
@@ -145,13 +147,6 @@ const Home = () => {
           <div className="text-center flex flex-col justify-center items-center">
             <div className="grid grid-cols-1 gap-6 w-full max-w-md">
               {[
-                {
-                  title: "Student Management",
-                  desc: "Access and manage student records effortlessly.",
-                  action: "Access",
-                  route: "/role-based-login",
-                  icon: "👨‍🎓",
-                },
                 {
                   title: "Attendance Tracking",
                   desc: "Track attendance with intuitive tools.",
@@ -165,6 +160,13 @@ const Home = () => {
                   action: "Results",
                   route: "/login/student",
                   icon: "📊",
+                },
+                {
+                  title: "Student Management",
+                  desc: "Access and manage student records effortlessly.",
+                  action: "Access",
+                  route: "/role-based-login",
+                  icon: "👨‍🎓",
                 },
               ].map(({ title, desc, action, route, icon }, i) => (
                 <motion.div
