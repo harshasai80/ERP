@@ -12,6 +12,9 @@ import ResetPassword from "./components/ResetPassword";
 import ResetSuccess from "./components/ResetSuccess";
 import About from "./components/common/About";
 import Contact from "./components/common/Contact";
+import Team from "./components/common/Team";
+import Rohan from "./components/portfolios/Rohan";
+import Zuber from "./components/portfolios/Zuber";
 
 const App = () => {
   return (
@@ -28,6 +31,9 @@ const App = () => {
         <Route path="/reset-success" element={<ResetSuccess />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact-details" element={<Contact />} />
+        <Route path="/team" element={<Team />} />
+        <Route path="/rohan" element={<Rohan />} />
+        <Route path="/zuber" element={<Zuber />} />
       </Routes>
     </BrowserRouter>
   );

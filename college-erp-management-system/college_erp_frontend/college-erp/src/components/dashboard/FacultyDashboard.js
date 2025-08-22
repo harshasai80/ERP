@@ -7,6 +7,7 @@ import AddSubjectTab from "../faculty/AddSubjectTab";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Marquee from "../common/Marquee";
+import Footer from "../common/Footer";
 
 
 const FacultyDashboard = () => {
@@ -219,10 +220,7 @@ const FacultyDashboard = () => {
         </motion.div>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-gradient-to-r from-gray-800 to-gray-900 py-3 sm:py-4 text-center text-gray-500 text-xs sm:text-sm mt-auto px-3">
-        <p className="truncate">© 2025 Sanjay Gandhi Polytechnic. All rights reserved.</p>
-      </footer>
+      <Footer />
     </div>
   );
 };

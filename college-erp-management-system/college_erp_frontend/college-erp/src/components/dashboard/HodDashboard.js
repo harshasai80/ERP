@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Dashboard from "../hod/pages/Dashboard";
 import FacultyList from "../hod/pages/Faculty/FacultyList";
 import StudentList from "../hod/pages/Students/StudentList";
 import { motion } from "framer-motion";
 import Navbar from "../hod/components/layout/Navbar";
 import Marquee from "../common/Marquee";
+import Footer from "../common/Footer";
 
 const HodDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -67,31 +68,7 @@ const HodDashboard = () => {
         </motion.div>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-gradient-to-r from-gray-800 to-gray-900 py-6 text-center text-gray-400 mt-auto">
-        <div className="container mx-auto px-4 sm:px-6">
-          <h3 className="text-lg sm:text-xl font-semibold text-white">
-            Sanjay Gandhi Polytechnic Ballari
-          </h3>
-          <p className="text-purple-300 mb-4 text-sm sm:text-base">
-            Excellence in Technical Education
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-6 text-sm">
-            <Link to="/contact-details" className="hover:text-white">
-              Contact
-            </Link>
-            <Link to="/about" className="hover:text-white">
-              About
-            </Link>
-            <a href="/policies" className="hover:text-white">
-              Privacy Policy
-            </a>
-          </div>
-          <p className="mt-4 text-xs sm:text-sm">
-            © 2025 Sanjay Gandhi Polytechnic. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };
