@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
 import Api from "../../Api";
 
 const ViewStudentsTab = () => {
@@ -13,8 +12,6 @@ const ViewStudentsTab = () => {
   const [sortOrder, setSortOrder] = useState("asc");
   const [currentPage, setCurrentPage] = useState(1);
   const [studentsPerPage] = useState(20);
-
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -59,8 +56,13 @@ const ViewStudentsTab = () => {
   const totalPages = Math.ceil(filteredAndSortedStudents.length / studentsPerPage);
 
   const handleView = (data) => {
-    navigate("/dashboard", { state: { student: data } });
-  };
+  // Save student data in localStorage
+  localStorage.setItem("student", JSON.stringify(data));
+
+  // Open dashboard in new tab
+  window.open("/dashboard", "_blank");
+};
+
 
   const handleSort = (field) => {
     if (sortBy === field) {

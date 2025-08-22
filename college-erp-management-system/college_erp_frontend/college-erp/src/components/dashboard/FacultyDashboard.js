@@ -6,6 +6,7 @@ import ViewStudentsTab from "../faculty/ViewStudentsTab";
 import AddSubjectTab from "../faculty/AddSubjectTab";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import Marquee from "../common/Marquee";
 
 
 const FacultyDashboard = () => {
@@ -197,6 +198,7 @@ const FacultyDashboard = () => {
         </div>
       </nav>
 
+      <Marquee />
 
       {/* Main */}
       <main className="flex-1 p-3 sm:p-4 md:p-6">
