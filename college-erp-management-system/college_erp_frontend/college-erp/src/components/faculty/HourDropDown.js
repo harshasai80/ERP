@@ -1,40 +1,27 @@
 import React from "react";
 
-const lunchBreaks = {
-  1: { start: 12, end: 13 },
-  2: { start: 13, end: 14 },
-  3: { start: 13, end: 14 },
-  4: { start: 13, end: 14 },
-  5: { start: 13, end: 14 },
-  6: { start: 13, end: 14 },
-};
-
-const HourDropdown = ({
-  value,
-  onChange,
-  label,
-  startTime,
-  isEndTime,
-  semester,
-}) => {
+const HourDropdown = ({ value, onChange, label, startTime, isEndTime }) => {
   const minHour = 9;
-  const lunch = lunchBreaks[semester] || { start: 13, end: 14 };
+  const maxHour = 18;
   const parsedStart = startTime ? parseInt(startTime.split(":")[0]) : null;
 
+  // Function to convert 24h -> 12h AM/PM format
+  const format12Hour = (hour) => {
+    const suffix = hour >= 12 ? "PM" : "AM";
+    const hour12 = hour % 12 === 0 ? 12 : hour % 12;
+    return `${hour12 < 10 ? "0" + hour12 : hour12}:00 ${suffix}`;
+  };
+
   const options = [];
-  for (let hour = minHour; hour <= 18; hour++) {
-    const isLunch = hour >= lunch.start && hour < lunch.end;
+  for (let hour = minHour; hour <= maxHour; hour++) {
     const isBeforeStart =
       isEndTime && parsedStart !== null && hour <= parsedStart;
 
-    const time = `${String(hour).padStart(2, "0")}:00`;
-
-    // Only block lunch for start time, and enforce start < end
-    const isDisabled = isBeforeStart || (!isEndTime && isLunch);
+    const value24 = `${String(hour).padStart(2, "0")}:00`;
 
     options.push(
-      <option key={time} value={time} disabled={isDisabled}>
-        {time}
+      <option key={value24} value={value24} disabled={isBeforeStart}>
+        {format12Hour(hour)}
       </option>
     );
   }

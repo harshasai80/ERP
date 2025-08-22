@@ -34,8 +34,3 @@ public class Subject {
     @Column(name = "max_marks", nullable = false)
     private int maxMarks;
 }
-
-enum SubjectType {
-    THEORY,
-    LAB
-}

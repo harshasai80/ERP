@@ -1,6 +1,7 @@
 package com.sgp.erp.model;
 
 import com.sgp.erp.model.enums.Section;
+import com.sgp.erp.model.enums.SubjectType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
