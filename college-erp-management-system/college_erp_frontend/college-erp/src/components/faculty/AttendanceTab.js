@@ -23,13 +23,17 @@ function AttendanceTab({ faculty }) {
     try {
       const response = await Api.get(`/subjects/all?facultyId=${faculty.id}`);
       const data = response.data?.data || [];
-      setSubjects(data);
+
+      const subjectsAsSemester = data.filter(
+        (subject) => subject.subject?.semester === parseInt(semester)
+      );
+      setSubjects(subjectsAsSemester);
     } catch (error) {
       console.error("Error fetching subjects", error);
       setSubjects([]);
       showAlert("Failed to load subjects", "error");
     }
-  }, [faculty.id]);
+  }, [faculty.id, semester]);
 
   useEffect(() => {
     if (department && semester) {
@@ -95,15 +99,6 @@ function AttendanceTab({ faculty }) {
     { start: "16:00", end: "17:00" },
   ];
 
-  const lunchBreaks = {
-    1: { start: "12:00", end: "13:00" },
-    2: { start: "13:00", end: "14:00" },
-    3: { start: "13:00", end: "14:00" },
-    4: { start: "13:00", end: "14:00" },
-    5: { start: "13:00", end: "14:00" },
-    6: { start: "13:00", end: "14:00" },
-  };
-
   const collegeEndTimes = {
     1: "16:00",
     2: "17:00",
@@ -127,7 +122,6 @@ function AttendanceTab({ faculty }) {
 
     const selectedStartTime = new Date(`${date}T${startTime}`);
     const selectedEndTime = new Date(`${date}T${endTime}`);
-    const lunchBreak = lunchBreaks[semester];
     const collegeEndTime = collegeEndTimes[semester];
 
     let selectedSessions = [];
@@ -138,12 +132,6 @@ function AttendanceTab({ faculty }) {
 
       if (collegeEndTime && sessionEnd > new Date(`${date}T${collegeEndTime}`))
         return;
-
-      if (lunchBreak) {
-        const lunchStart = new Date(`${date}T${lunchBreak.start}`);
-        const lunchEnd = new Date(`${date}T${lunchBreak.end}`);
-        if (sessionStart >= lunchStart && sessionEnd <= lunchEnd) return;
-      }
 
       if (sessionStart >= selectedStartTime && sessionEnd <= selectedEndTime) {
         selectedSessions.push({
@@ -227,7 +215,9 @@ function AttendanceTab({ faculty }) {
             </label>
             <select
               value={semester}
-              onChange={(e) => setSemester(e.target.value)}
+              onChange={(e) => {
+                setSemester(e.target.value);
+              }}
               className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
             >
               <option value="">Select Semester</option>
@@ -358,7 +348,10 @@ function AttendanceTab({ faculty }) {
                         <input
                           type="checkbox"
                           onChange={(e) =>
-                            handleAttendanceChange(e, student.registrationNumber)
+                            handleAttendanceChange(
+                              e,
+                              student.registrationNumber
+                            )
                           }
                           checked={absentStudents.includes(
                             student.registrationNumber
