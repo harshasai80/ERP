@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import Marquee from "./common/Marquee";
+import Footer from "./common/Footer";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -15,10 +16,6 @@ const Home = () => {
       setGifSrc("/home.gif"); // Reset to the animated GIF
     }, 1); // Delay before restarting the animation
   };
-
-  const handleNavigation = (path) => {
-  navigate(path);
-};
 
   const handleHoverEnd = () => {
     setGifSrc("/home.gif"); // Optionally reset to a specific GIF after hover ends
@@ -197,40 +194,7 @@ const Home = () => {
           </div>
         </motion.div>
       </section>
-
-      {/* Footer */}
-      <footer className="bg-gradient-to-r from-gray-800 to-gray-900 py-8">
-        <div className="container mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="text-center md:text-left mb-4 md:mb-0">
-              <h4 className="text-lg font-semibold text-emerald-300">
-                Sanjay Gandhi Polytechnic Ballari
-              </h4>
-              <p className="text-sm text-gray-400">
-                Excellence in Technical Education
-              </p>
-            </div>
-            <div className="flex space-x-6">
-              {[
-                { name: "Contact", path: "/contact-details" },
-                { name: "About", path: "/about" },
-                { name: "Privacy Policy", path: "/#" }
-              ].map((item, idx) => (
-              <button
-                key={idx}
-                onClick={() => handleNavigation(item.path)}
-                className="text-gray-400 hover:text-white text-sm transition cursor-pointer"
-              >
-                {item.name}
-              </button>
-            ))}
-          </div>
-          </div>
-          <p className="text-center mt-6 text-xs text-gray-500">
-            © 2025 Sanjay Gandhi Polytechnic. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

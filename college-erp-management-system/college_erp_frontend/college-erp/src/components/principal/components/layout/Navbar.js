@@ -41,6 +41,12 @@ const Navbar = ({ data }) => {
           >
             Logout
           </button>
+          <button
+            onClick={() => navigate("/faculty-dashboard", { state: { data } })}
+            className="bg-black/60 hover:bg-black text-white px-4 py-2 rounded-md transition"
+          >
+            Shift to Faculty
+          </button>
         </div>
       </div>
     </nav>

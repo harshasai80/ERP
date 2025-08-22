@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Api from "../../Api";
 import { motion } from "framer-motion";
 import Marquee from "../common/Marquee";
+import Footer from "../common/Footer";
 
 const Login = () => {
   const [formData, setFormData] = useState("");
@@ -139,6 +140,7 @@ const Login = () => {
           </button>
         </motion.form>
       </div>
+      <Footer />
     </div>
   );
 };

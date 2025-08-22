@@ -4,6 +4,7 @@ import { PiEyeClosedBold, PiEyeBold } from "react-icons/pi";
 import { motion } from "framer-motion";
 import Api from "../Api";
 import Marquee from "./common/Marquee";
+import Footer from "./common/Footer";
 
 export default function RoleBasedLogin() {
   const [email, setEmail] = useState("");
@@ -140,10 +141,7 @@ export default function RoleBasedLogin() {
         />
       </div>
 
-      {/* Footer */}
-      <footer className="bg-gradient-to-r from-gray-800 to-gray-900 py-4 text-center text-xs sm:text-sm text-gray-500">
-        © 2025 Sanjay Gandhi Polytechnic. All rights reserved.
-      </footer>
+      <Footer />
     </div>
   );
 }
