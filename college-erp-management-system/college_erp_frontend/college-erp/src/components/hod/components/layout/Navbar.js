@@ -1,5 +1,4 @@
 // src/components/layout/Navbar.js
-import React from "react";
 import { useNavigate, Link } from "react-router-dom";
 
 const Navbar = ({ data }) => {
@@ -40,6 +39,12 @@ const Navbar = ({ data }) => {
             className="bg-black/60 hover:bg-black text-white px-4 py-2 rounded-md transition"
           >
             Logout
+          </button>
+          <button
+            onClick={() => navigate("/faculty-dashboard", { state: { data } })}
+            className="bg-black/60 hover:bg-black text-white px-4 py-2 rounded-md transition"
+          >
+            Shift to Faculty
           </button>
         </div>
       </div>

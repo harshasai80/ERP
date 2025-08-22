@@ -59,7 +59,7 @@ function AttendanceTab({ faculty }) {
         selectedSubject?.section || ""
       }`;
       if (selectedBatch) {
-        const [batchName, startRegNo, endRegNo] = selectedBatch.split(",");
+        const [startRegNo, endRegNo] = selectedBatch.split(",");
         if (startRegNo && endRegNo) {
           url += `&startRegNo=${startRegNo}&endRegNo=${endRegNo}`;
         }

@@ -27,7 +27,7 @@ function AddSubjectTab({ faculty }) {
           setSubjectOptions([]);
         });
     }
-  }, [formData.department, formData.semester]);
+  }, [formData, formData.department, formData.semester]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
