@@ -464,7 +464,17 @@ export default function Rohan() {
                         </h3>
 
                         <div className="text-emerald-400 font-mono text-sm mb-4 bg-gray-900/50 px-3 py-2 rounded-lg border border-emerald-500/20">
-                          {project.url}
+                          <a
+                            href={
+                              project.url.startsWith("http")
+                                ? project.url
+                                : `https://${project.url}`
+                            }
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {project.url}
+                          </a>
                         </div>
 
                         <p className="text-gray-300 mb-6 leading-relaxed">
