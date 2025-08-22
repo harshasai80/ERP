@@ -1,75 +1,89 @@
 import React, { useEffect, useState } from "react";
 import SummaryCard from "../components/cards/SummaryCard";
 import { motion } from "framer-motion";
-import Api from "../../../Api"; // Make sure this path matches your project structure
+import Api from "../../../Api";
 
-const Dashboard = ({ department }) => {
-  const [facultyCount, setFacultyCount] = useState(0);
-  const [studentCount, setStudentCount] = useState(0);
+const Dashboard = () => {
+  const [deptData, setDeptData] = useState({});
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchFacultyCount = async () => {
+    const fetchData = async () => {
       try {
-        const response = await Api.get("/faculty/all-faculties", {
-          params: { department },
-        });
-        const nonHodFaculties = response.data.data.filter(
-          (faculty) => faculty.department !== "SGP"
+        const facultyRes = await Api.get("/faculty/all-faculties");
+        const faculties = facultyRes.data.data.filter(
+          (f) => f.department !== "SGP"
         );
-        setFacultyCount(nonHodFaculties.length || 0);
-      } catch (error) {
-        console.error("Failed to fetch faculty data:", error);
+
+        const studentRes = await Api.get("/student/all-students");
+        const students = studentRes.data.data;
+
+        const departmentCounts = {};
+
+        faculties.forEach((f) => {
+          if (!departmentCounts[f.department]) {
+            departmentCounts[f.department] = { faculty: 0, students: 0 };
+          }
+          departmentCounts[f.department].faculty += 1;
+        });
+
+        students.forEach((s) => {
+          if (!departmentCounts[s.department]) {
+            departmentCounts[s.department] = { faculty: 0, students: 0 };
+          }
+          departmentCounts[s.department].students += 1;
+        });
+
+        setDeptData(departmentCounts);
+        setLoading(false);
+      } catch (err) {
+        console.error("Failed to fetch dashboard data", err);
+        setLoading(false);
       }
     };
 
-    const fetchStudentCount = async () => {
-      try {
-        const response = await Api.get("/student/all-students");
-        const students = response.data.data;
-        setStudentCount(students.length || 0);
-      } catch (error) {
-        console.error("Failed to fetch student data:", error);
-      }
-    };
+    fetchData();
+  }, []);
 
-    fetchFacultyCount();
-    fetchStudentCount();
-  }, [department]);
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen text-white">
+        Loading...
+      </div>
+    );
+  }
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="p-8 max-w-7xl mx-auto bg-gradient-to-b from-gray-900 to-black min-h-screen flex flex-col items-center text-white"
+      className="p-8 max-w-7xl mx-auto bg-gradient-to-b from-gray-950 via-gray-900 to-black min-h-screen flex flex-col items-center text-white"
     >
-      <h1 className="text-4xl font-extrabold mb-10 text-center text-white drop-shadow-xl">
+      {/* Dashboard Title */}
+      <h1 className="text-5xl font-extrabold mb-12 text-center bg-gradient-to-r from-emerald-400 to-green-600 bg-clip-text text-transparent drop-shadow-lg">
         Principal Dashboard
       </h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-10 w-full max-w-3xl justify-center">
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          transition={{ type: "spring", stiffness: 300 }}
-        >
-          <SummaryCard
-            title="Total Faculty"
-            value={facultyCount.toString()}
-            icon="👨‍🏫"
-            className="shadow-md p-6 rounded-2xl bg-gray-800 hover:shadow-lg transition text-white"
-          />
-        </motion.div>
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          transition={{ type: "spring", stiffness: 300 }}
-        >
-          <SummaryCard
-            title="Total Students"
-            value={studentCount.toString()}
-            icon="👨‍🎓"
-            className="shadow-md p-6 rounded-2xl bg-gray-800 hover:shadow-lg transition text-white"
-          />
-        </motion.div>
+      {/* Department Wise Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 w-full">
+        {Object.keys(deptData).map((dept) => (
+          <motion.div
+            key={dept}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.97 }}
+            transition={{ type: "spring", stiffness: 250 }}
+          >
+            <SummaryCard
+              title={dept}
+              value={`👨‍🏫 ${deptData[dept].faculty} | 👨‍🎓 ${deptData[dept].students}`}
+              icon="🏫"
+              className="p-8 rounded-2xl shadow-lg backdrop-blur-sm border border-white/10 
+                bg-gradient-to-br from-gray-800/90 to-gray-900/90 hover:shadow-gray-700/50 
+                text-white transition"
+            />
+          </motion.div>
+        ))}
       </div>
     </motion.div>
   );

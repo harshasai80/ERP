@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import Marquee from "./common/Marquee";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -116,18 +117,7 @@ const Home = () => {
       </nav>
 
       {/* Hero Section */}
-      {/* Marquee Text */}
-      <div className="bg-emerald-700/40 backdrop-blur-sm py-2 overflow-hidden relative">
-        <motion.div
-          className="whitespace-nowrap text-sm md:text-base font-medium text-emerald-500"
-          animate={{ x: ["100%", "-100%"] }}
-          transition={{ repeat: Infinity, duration: 15, ease: "linear" }}
-        >
-          🚀 This ERP System is made by SGP DCS batch 2022-25 students "<big className="text-emerald-300">Syed Mohammed Zuber, D Rohan Samuel</big>, M MD Abrar, Mohammed Nawaz, 
-          Anushka Reddy, Kamala Bai, Tania Khandelwal, Yaseen, J Mohammed Sahil, K A Harshita, K Sana Begum, Hafiza Muskan" 🚀
-        </motion.div>
-      </div>
-
+      <Marquee />
       <section className="flex-grow container mx-auto px-6 py-16">
         <motion.div
           className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center"

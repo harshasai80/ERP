@@ -8,6 +8,7 @@ import EditFacultyModal from "./EditFacultyModal";
 const FacultyList = ({ department }) => {
   const [faculties, setFaculties] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedDepartment, setSelectedDepartment] = useState("ALL"); // New state for department filter
 
   const [showUpload, setShowUpload] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -39,6 +40,20 @@ const FacultyList = ({ department }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Get unique departments for the dropdown
+  const getUniqueDepartments = () => {
+    const departments = [...new Set(faculties.map(faculty => faculty.department))];
+    return departments.sort();
+  };
+
+  // Filter faculties based on selected department
+  const getFilteredFaculties = () => {
+    if (selectedDepartment === "ALL") {
+      return faculties;
+    }
+    return faculties.filter(faculty => faculty.department === selectedDepartment);
   };
 
   const handleAddFaculty = () => {
@@ -135,7 +150,9 @@ const FacultyList = ({ department }) => {
     { name: "Actions", center: true },
   ];
 
-  const facultyData = faculties.map((faculty) => ({
+  // Use filtered faculties for the table data
+  const filteredFaculties = getFilteredFaculties();
+  const facultyData = filteredFaculties.map((faculty) => ({
     name: faculty.name.toUpperCase(),
     email: faculty.email,
     department: faculty.department.toUpperCase(),
@@ -194,6 +211,29 @@ const FacultyList = ({ department }) => {
                 Add Subjects (CSV)
               </button>
             </div>
+          </div>
+
+          {/* Department Filter Section */}
+          <div className="mb-6 flex flex-col sm:flex-row items-center gap-3">
+            <label htmlFor="departmentFilter" className="text-white font-semibold text-sm sm:text-base">
+              Filter by Department:
+            </label>
+            <select
+              id="departmentFilter"
+              value={selectedDepartment}
+              onChange={(e) => setSelectedDepartment(e.target.value)}
+              className="px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base min-w-[150px]"
+            >
+              <option value="ALL">All Departments</option>
+              {getUniqueDepartments().map((dept) => (
+                <option key={dept} value={dept}>
+                  {dept.toUpperCase()}
+                </option>
+              ))}
+            </select>
+            <span className="text-gray-400 text-sm">
+              ({filteredFaculties.length} of {faculties.length} faculties)
+            </span>
           </div>
 
           {/* Upload Faculty CSV / Add Individually Options */}

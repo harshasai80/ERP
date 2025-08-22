@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import BottomNavbar from "./BottomNavBar";
 import Attendance from "../student/Attendance";
 import IAMarks from "../student/IAMarks";
+import Marquee from "../common/Marquee";
 
 export default function StudentDashboard() {
   const [activeTab, setActiveTab] = useState("Dashboard");
@@ -12,8 +13,11 @@ export default function StudentDashboard() {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const student = location.state?.student?.data || location.state?.student;
-
+  const student =
+  location.state?.student?.data ||
+  location.state?.student ||
+  JSON.parse(localStorage.getItem("student"));
+  
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white flex flex-col relative overflow-hidden">
       {/* Floating Background Circles */}
@@ -133,6 +137,8 @@ export default function StudentDashboard() {
           )}
         </AnimatePresence>
       </nav>
+
+      <Marquee />
 
       {/* Main Content */}
       <div className="flex flex-col items-center justify-center flex-grow px-4 py-10">

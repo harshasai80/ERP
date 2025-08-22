@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Api from "../../Api";
 import { motion } from "framer-motion";
+import Marquee from "../common/Marquee";
 
 const Login = () => {
   const [formData, setFormData] = useState("");
@@ -103,17 +104,8 @@ const Login = () => {
           </button>
         </div>
       </nav>
-      {/* Marquee Text */}
-      <div className="bg-emerald-700/40 backdrop-blur-sm py-2 overflow-hidden relative">
-        <motion.div
-          className="whitespace-nowrap text-sm md:text-base font-medium text-emerald-500"
-          animate={{ x: ["100%", "-100%"] }}
-          transition={{ repeat: Infinity, duration: 15, ease: "linear" }}
-        >
-          🚀 This ERP System is made by SGP DCS batch 2022-25 students "<big className="text-emerald-300">Syed Mohammed Zuber, D Rohan Samuel</big>, M MD Abrar, Mohammed Nawaz, 
-          Anushka Reddy, Kamala Bai, Tania Khandelwal, Yaseen, J Mohammed Sahil, K A Harshita, K Sana Begum, Hafiza Muskan" 🚀
-        </motion.div>
-      </div>
+
+      <Marquee />
 
       {/* Login Form */}
       <div className="relative z-10 flex-grow flex items-center justify-center px-4 py-10 sm:py-16">

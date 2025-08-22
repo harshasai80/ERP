@@ -5,6 +5,7 @@ import FacultyList from "../principal/pages/Faculty/FacultyList";
 import StudentList from "../principal/pages/Students/StudentList";
 import { motion } from "framer-motion";
 import Navbar from "../principal/components/layout/Navbar";
+import Marquee from "../common/Marquee";
 
 const PrincipalDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -26,6 +27,8 @@ const PrincipalDashboard = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-black to-gray-900 text-white font-sans">
       <Navbar data={data} />
+
+      <Marquee />
 
       {/* Tab Buttons */}
       <motion.div
