@@ -155,13 +155,15 @@ _`;
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
-          className="relative group">
+          className="relative group"
+        >
           {/* Button glow effect */}
           <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-emerald-400/20 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500 scale-110"></div>
 
           <Link
             to="/team"
-            className="relative flex items-center gap-3 bg-gradient-to-r from-emerald-600/90 to-emerald-500/90 hover:from-emerald-500 hover:to-emerald-400 px-4 md:px-6 py-2.5 md:py-3 rounded-xl text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-emerald-500/25 transform hover:-translate-y-0.5 border border-emerald-500/30 hover:border-emerald-400/50 backdrop-blur-sm overflow-hidden">
+            className="relative flex items-center gap-3 bg-gradient-to-r from-emerald-600/90 to-emerald-500/90 hover:from-emerald-500 hover:to-emerald-400 px-4 md:px-6 py-2.5 md:py-3 rounded-xl text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-emerald-500/25 transform hover:-translate-y-0.5 border border-emerald-500/30 hover:border-emerald-400/50 backdrop-blur-sm overflow-hidden"
+          >
             {/* Button background animation */}
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
 
@@ -169,7 +171,8 @@ _`;
             <motion.span
               className="relative text-lg"
               whileHover={{ x: -2 }}
-              transition={{ duration: 0.2 }}>
+              transition={{ duration: 0.2 }}
+            >
               ←
             </motion.span>
             <span className="relative text-sm md:text-base">Back to Team</span>
@@ -195,7 +198,8 @@ _`;
               top: `${Math.random() * 100}%`,
               animationDelay: `${i * 2}s`,
               animationDuration: `${8 + Math.random() * 4}s`,
-            }}>
+            }}
+          >
             {symbol}
           </div>
         ))}
@@ -207,14 +211,16 @@ _`;
           className="text-center mb-16"
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}>
+          transition={{ duration: 0.8 }}
+        >
           {/* Name Title */}
           <div className="mb-6">
             <motion.h1
               className="text-5xl md:text-7xl font-black mb-4 leading-tight"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.2 }}>
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
               <span className="bg-gradient-to-r from-white via-emerald-200 to-emerald-400 bg-clip-text text-transparent animate-gradient">
                 Syed Mohammed Zuber
               </span>
@@ -225,7 +231,8 @@ _`;
               className="flex items-center justify-center gap-4 mb-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}>
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
               <div className="w-16 h-0.5 bg-gradient-to-r from-transparent to-emerald-400"></div>
               <span className="text-emerald-400 text-xl md:text-2xl font-light tracking-widest uppercase">
                 Tech Explorer & Innovator
@@ -238,7 +245,8 @@ _`;
               className="text-gray-300 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.6 }}>
+              transition={{ duration: 0.6, delay: 0.6 }}
+            >
               Passionate Computer Science student at MSRIT Bangalore, constantly
               exploring new technologies and experimenting with innovative
               solutions to real-world problems.
@@ -250,12 +258,14 @@ _`;
             className="flex justify-center items-center space-x-6 text-emerald-400/60"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.8 }}>
+            transition={{ duration: 0.8, delay: 0.8 }}
+          >
             <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
             <span className="font-mono text-sm">Ready to innovate</span>
             <div
               className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"
-              style={{ animationDelay: "0.5s" }}></div>
+              style={{ animationDelay: "0.5s" }}
+            ></div>
           </motion.div>
         </motion.div>
 
@@ -264,7 +274,8 @@ _`;
           className="max-w-6xl mx-auto mb-12"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 1 }}>
+          transition={{ duration: 0.6, delay: 1 }}
+        >
           <div className="flex justify-center gap-4 bg-gray-800/40 backdrop-blur-xl rounded-2xl p-2 border border-gray-700/30">
             {[
               { id: "terminal", label: "$ Terminal", icon: "⚡" },
@@ -279,7 +290,8 @@ _`;
                   currentView === tab.id
                     ? "bg-gradient-to-r from-emerald-600 to-emerald-500 text-white shadow-lg"
                     : "text-gray-400 hover:text-white hover:bg-gray-700/30"
-                }`}>
+                }`}
+              >
                 <span>{tab.icon}</span>
                 {tab.label}
               </button>
@@ -296,7 +308,8 @@ _`;
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.3 }}
-              className="max-w-4xl mx-auto">
+              className="max-w-4xl mx-auto"
+            >
               <div className="bg-gray-900/90 backdrop-blur-xl rounded-2xl border border-gray-700/50 overflow-hidden shadow-2xl">
                 {/* Terminal Header */}
                 <div className="bg-gray-800/80 px-4 py-3 border-b border-gray-700/50 flex items-center gap-2">
@@ -367,7 +380,8 @@ _`;
               initial="hidden"
               animate="visible"
               exit="hidden"
-              className="max-w-6xl mx-auto">
+              className="max-w-6xl mx-auto"
+            >
               <div className="text-center mb-12">
                 <h2 className="text-4xl font-bold mb-4">
                   <span className="bg-gradient-to-r from-emerald-300 to-emerald-400 bg-clip-text text-transparent">
@@ -384,7 +398,8 @@ _`;
                   <motion.div
                     key={index}
                     variants={itemVariants}
-                    className="group relative bg-gradient-to-br from-gray-800/60 to-gray-700/40 backdrop-blur-xl rounded-2xl p-8 border border-gray-700/30 hover:border-emerald-400/50 transition-all duration-500 overflow-hidden">
+                    className="group relative bg-gradient-to-br from-gray-800/60 to-gray-700/40 backdrop-blur-xl rounded-2xl p-8 border border-gray-700/30 hover:border-emerald-400/50 transition-all duration-500 overflow-hidden"
+                  >
                     {/* Animated background element */}
                     <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-emerald-400/10 to-transparent rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
 
@@ -405,7 +420,17 @@ _`;
 
                       <div className="text-emerald-400 font-mono text-sm mb-4 bg-gray-900/50 px-3 py-2 rounded-lg border border-emerald-500/20">
                         <span className="text-gray-400">https://</span>
-                        {project.url}
+                        <a
+                          href={
+                            project.url.startsWith("http")
+                              ? project.url
+                              : `https://${project.url}`
+                          }
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {project.url}
+                        </a>
                       </div>
 
                       <p className="text-gray-300 mb-6 leading-relaxed">
@@ -421,7 +446,8 @@ _`;
                           {project.tech.map((tech, techIndex) => (
                             <div
                               key={techIndex}
-                              className="bg-gradient-to-r from-emerald-600/20 to-emerald-500/10 text-emerald-200 text-xs font-medium px-3 py-2 rounded-lg border border-emerald-400/20 hover:border-emerald-400/40 transition-all duration-300">
+                              className="bg-gradient-to-r from-emerald-600/20 to-emerald-500/10 text-emerald-200 text-xs font-medium px-3 py-2 rounded-lg border border-emerald-400/20 hover:border-emerald-400/40 transition-all duration-300"
+                            >
                               {tech}
                             </div>
                           ))}
@@ -442,7 +468,8 @@ _`;
               initial="hidden"
               animate="visible"
               exit="hidden"
-              className="max-w-4xl mx-auto">
+              className="max-w-4xl mx-auto"
+            >
               <div className="text-center mb-12">
                 <h2 className="text-4xl font-bold mb-4">
                   <span className="bg-gradient-to-r from-emerald-300 to-emerald-400 bg-clip-text text-transparent">
@@ -459,7 +486,8 @@ _`;
                   <motion.div
                     key={index}
                     variants={itemVariants}
-                    className="bg-gradient-to-br from-gray-800/60 to-gray-700/40 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/30">
+                    className="bg-gradient-to-br from-gray-800/60 to-gray-700/40 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/30"
+                  >
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="text-xl font-bold text-emerald-300">
                         {skillGroup.category}
@@ -484,7 +512,8 @@ _`;
                       {skillGroup.items.map((skill, skillIndex) => (
                         <span
                           key={skillIndex}
-                          className="bg-gray-700/50 text-gray-300 text-sm px-3 py-1 rounded-lg border border-gray-600/30">
+                          className="bg-gray-700/50 text-gray-300 text-sm px-3 py-1 rounded-lg border border-gray-600/30"
+                        >
                           {skill}
                         </span>
                       ))}
@@ -503,7 +532,8 @@ _`;
               initial="hidden"
               animate="visible"
               exit="hidden"
-              className="max-w-6xl mx-auto">
+              className="max-w-6xl mx-auto"
+            >
               <div className="text-center mb-12">
                 <h2 className="text-4xl font-bold mb-4">
                   <span className="bg-gradient-to-r from-emerald-300 to-emerald-400 bg-clip-text text-transparent">
@@ -520,7 +550,8 @@ _`;
                   <motion.div
                     key={index}
                     variants={itemVariants}
-                    className="group bg-gradient-to-br from-gray-800/60 to-gray-700/40 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/30 hover:border-emerald-400/50 transition-all duration-500 text-center">
+                    className="group bg-gradient-to-br from-gray-800/60 to-gray-700/40 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/30 hover:border-emerald-400/50 transition-all duration-500 text-center"
+                  >
                     <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">
                       {area.icon}
                     </div>
@@ -539,7 +570,8 @@ _`;
                           : area.status === "Advanced"
                           ? "bg-purple-500/20 text-purple-300 border border-purple-400/30"
                           : "bg-yellow-500/20 text-yellow-300 border border-yellow-400/30"
-                      }`}>
+                      }`}
+                    >
                       {area.status}
                     </div>
                   </motion.div>

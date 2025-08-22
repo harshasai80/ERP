@@ -45,13 +45,15 @@ export default function Rohan() {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
-          className="relative group">
+          className="relative group"
+        >
           {/* Button glow effect */}
           <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-emerald-400/20 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500 scale-110"></div>
 
           <Link
             to="/team"
-            className="relative flex items-center gap-3 bg-gradient-to-r from-emerald-600/90 to-emerald-500/90 hover:from-emerald-500 hover:to-emerald-400 px-4 md:px-6 py-2.5 md:py-3 rounded-xl text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-emerald-500/25 transform hover:-translate-y-0.5 border border-emerald-500/30 hover:border-emerald-400/50 backdrop-blur-sm overflow-hidden">
+            className="relative flex items-center gap-3 bg-gradient-to-r from-emerald-600/90 to-emerald-500/90 hover:from-emerald-500 hover:to-emerald-400 px-4 md:px-6 py-2.5 md:py-3 rounded-xl text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-emerald-500/25 transform hover:-translate-y-0.5 border border-emerald-500/30 hover:border-emerald-400/50 backdrop-blur-sm overflow-hidden"
+          >
             {/* Button background animation */}
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
 
@@ -59,7 +61,8 @@ export default function Rohan() {
             <motion.span
               className="relative text-lg"
               whileHover={{ x: -2 }}
-              transition={{ duration: 0.2 }}>
+              transition={{ duration: 0.2 }}
+            >
               ←
             </motion.span>
             <span className="relative text-sm md:text-base">Back to Team</span>
@@ -75,10 +78,12 @@ export default function Rohan() {
         <div className="absolute top-20 left-20 w-96 h-96 bg-emerald-400/5 rounded-full blur-3xl animate-pulse"></div>
         <div
           className="absolute bottom-40 right-20 w-80 h-80 bg-emerald-500/8 rounded-full blur-2xl animate-pulse"
-          style={{ animationDelay: "2s" }}></div>
+          style={{ animationDelay: "2s" }}
+        ></div>
         <div
           className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-emerald-300/6 rounded-full blur-3xl animate-pulse"
-          style={{ animationDelay: "4s" }}></div>
+          style={{ animationDelay: "4s" }}
+        ></div>
 
         {/* Floating particles */}
         {[...Array(15)].map((_, i) => (
@@ -103,7 +108,8 @@ export default function Rohan() {
           }`}
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}>
+          transition={{ duration: 0.8 }}
+        >
           {/* Profile Picture */}
           <div className="mb-8 flex justify-center">
             <div className="relative group">
@@ -161,7 +167,8 @@ export default function Rohan() {
                   activeTab === tab
                     ? "bg-gradient-to-r from-emerald-600 to-emerald-500 text-white shadow-lg"
                     : "text-gray-400 hover:text-white hover:bg-gray-700/30"
-                }`}>
+                }`}
+              >
                 {tab}
               </button>
             ))}
@@ -176,7 +183,8 @@ export default function Rohan() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="grid md:grid-cols-2 gap-12 items-center">
+              className="grid md:grid-cols-2 gap-12 items-center"
+            >
               <div className="space-y-6">
                 <h2 className="text-3xl md:text-4xl font-bold">
                   <span className="bg-gradient-to-r from-emerald-300 to-emerald-400 bg-clip-text text-transparent">
@@ -262,7 +270,8 @@ export default function Rohan() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="space-y-8">
+              className="space-y-8"
+            >
               <div className="text-center mb-12">
                 <h2 className="text-3xl md:text-4xl font-bold mb-4">
                   <span className="bg-gradient-to-r from-emerald-300 to-emerald-400 bg-clip-text text-transparent">
@@ -278,7 +287,8 @@ export default function Rohan() {
                 {projects.map((project, index) => (
                   <div
                     key={index}
-                    className="group bg-gradient-to-br from-gray-800/60 to-gray-700/40 backdrop-blur-xl rounded-2xl p-8 border border-gray-700/30 hover:border-emerald-400/50 transition-all duration-500 hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-emerald-400/10">
+                    className="group bg-gradient-to-br from-gray-800/60 to-gray-700/40 backdrop-blur-xl rounded-2xl p-8 border border-gray-700/30 hover:border-emerald-400/50 transition-all duration-500 hover:transform hover:scale-105 hover:shadow-2xl hover:shadow-emerald-400/10"
+                  >
                     <div className="relative">
                       {/* Project type badge */}
                       <div className="inline-block bg-emerald-500/20 text-emerald-300 text-xs font-semibold px-3 py-1 rounded-full mb-4 border border-emerald-400/30">
@@ -290,7 +300,17 @@ export default function Rohan() {
                       </h3>
 
                       <div className="text-emerald-400 font-mono text-sm mb-4 bg-gray-900/50 px-3 py-2 rounded-lg border border-emerald-500/20">
-                        {project.url}
+                        <a
+                          href={
+                            project.url.startsWith("http")
+                              ? project.url
+                              : `https://${project.url}`
+                          }
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {project.url}
+                        </a>
                       </div>
 
                       <p className="text-gray-300 mb-6 leading-relaxed">
@@ -302,7 +322,8 @@ export default function Rohan() {
                         {project.tech.map((tech, techIndex) => (
                           <span
                             key={techIndex}
-                            className="bg-gradient-to-r from-emerald-600/30 to-emerald-500/20 text-emerald-200 text-xs font-medium px-3 py-1 rounded-full border border-emerald-400/30">
+                            className="bg-gradient-to-r from-emerald-600/30 to-emerald-500/20 text-emerald-200 text-xs font-medium px-3 py-1 rounded-full border border-emerald-400/30"
+                          >
                             {tech}
                           </span>
                         ))}
@@ -323,7 +344,8 @@ export default function Rohan() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="space-y-8">
+              className="space-y-8"
+            >
               <div className="text-center mb-12">
                 <h2 className="text-3xl md:text-4xl font-bold mb-4">
                   <span className="bg-gradient-to-r from-emerald-300 to-emerald-400 bg-clip-text text-transparent">
@@ -339,7 +361,8 @@ export default function Rohan() {
                 {hobbies.map((hobby, index) => (
                   <div
                     key={index}
-                    className="group bg-gradient-to-br from-gray-800/60 to-gray-700/40 backdrop-blur-xl rounded-2xl p-8 border border-gray-700/30 hover:border-emerald-400/50 transition-all duration-500 hover:transform hover:scale-105 text-center">
+                    className="group bg-gradient-to-br from-gray-800/60 to-gray-700/40 backdrop-blur-xl rounded-2xl p-8 border border-gray-700/30 hover:border-emerald-400/50 transition-all duration-500 hover:transform hover:scale-105 text-center"
+                  >
                     <div className="text-6xl mb-6 group-hover:scale-110 transition-transform duration-300">
                       {hobby.icon}
                     </div>
@@ -387,7 +410,8 @@ export default function Rohan() {
                   <div
                     key={i}
                     className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"
-                    style={{ animationDelay: `${i * 0.2}s` }}></div>
+                    style={{ animationDelay: `${i * 0.2}s` }}
+                  ></div>
                 ))}
               </div>
               <span className="text-emerald-400 font-semibold">
@@ -398,7 +422,8 @@ export default function Rohan() {
                   <div
                     key={i}
                     className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"
-                    style={{ animationDelay: `${(i + 5) * 0.2}s` }}></div>
+                    style={{ animationDelay: `${(i + 5) * 0.2}s` }}
+                  ></div>
                 ))}
               </div>
             </div>
