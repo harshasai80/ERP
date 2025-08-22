@@ -116,7 +116,7 @@ const Home = () => {
       </nav>
 
       {/* Hero Section */}
-            {/* Marquee Text */}
+      {/* Marquee Text */}
       <div className="bg-emerald-700/40 backdrop-blur-sm py-2 overflow-hidden relative">
         <motion.div
           className="whitespace-nowrap text-sm md:text-base font-medium text-emerald-500"
