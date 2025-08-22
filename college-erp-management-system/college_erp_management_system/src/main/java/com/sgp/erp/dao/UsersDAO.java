@@ -9,7 +9,9 @@ import com.sgp.erp.model.Faculty;
 import com.sgp.erp.model.Users;
 import com.sgp.erp.repository.FacultyRepository;
 import com.sgp.erp.repository.UserRepository;
+import com.sgp.erp.service.EmailService;
 
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 
 @Repository
@@ -22,6 +24,9 @@ public class UsersDAO {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private EmailService emailService;
 
     public Users save(Users user) {
         return userRepository.save(user);
@@ -53,23 +58,22 @@ public class UsersDAO {
 
     @Transactional
     public Faculty addUser(Faculty faculty) {
-        // try {
-        Users users = new Users();
-        users.setEmail(faculty.getEmail());
-        System.out.println("459" + faculty.getDepartment().toLowerCase());
-        users.setPassword(passwordEncoder.encode("459" + faculty.getDepartment().toLowerCase()));
-        // users.setResetToken(UUID.randomUUID().toString());
+        try {
+            Users users = new Users();
+            users.setEmail(faculty.getEmail());
+            users.setPassword(passwordEncoder.encode("459" + faculty.getDepartment().toLowerCase()));
+            // users.setResetToken(UUID.randomUUID().toString());
 
-        userRepository.save(users);
+            userRepository.save(users);
 
-        facultyRepository.save(faculty);
-        // emailService.sendPasswordResetEmail(users.getEmail(), users.getResetToken());
+            facultyRepository.save(faculty);
+            emailService.sendAccountCreationEmail(users.getEmail(), "459" + faculty.getDepartment().toLowerCase());
 
-        return faculty;
+            return faculty;
 
-        // } catch (MessagingException e) {
-        // throw new RuntimeException("Failed to send password reset email.");
-        // }
+        } catch (MessagingException e) {
+            throw new RuntimeException("Failed to send password reset email.");
+        }
     }
 
     public boolean deleteUser(String email) {
