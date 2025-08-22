@@ -21,7 +21,7 @@ const Navbar = ({ data }) => {
 
         {/* Center: Page title - Absolutely centered */}
         <div className="absolute left-1/2 transform -translate-x-1/2 text-lg font-semibold tracking-wide text-white hidden md:block">
-          HOD Portal
+          Principal Portal
         </div>
 
         {/* Right: Welcome, Reset Password, Logout */}

@@ -5,6 +5,7 @@ import FacultyList from "../hod/pages/Faculty/FacultyList";
 import StudentList from "../hod/pages/Students/StudentList";
 import { motion } from "framer-motion";
 import Navbar from "../hod/components/layout/Navbar";
+import Marquee from "../common/Marquee";
 
 const HodDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -26,6 +27,8 @@ const HodDashboard = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-black to-gray-900 text-white font-sans">
       <Navbar data={data} />
+
+      <Marquee />
 
       {/* Tab Buttons */}
       <motion.div
