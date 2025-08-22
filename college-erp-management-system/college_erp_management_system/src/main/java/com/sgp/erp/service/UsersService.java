@@ -24,7 +24,7 @@ import com.sgp.erp.model.Users;
 import com.sgp.erp.model.enums.Roles;
 import com.sgp.erp.repository.FacultyRepository;
 
-// import jakarta.mail.MessagingException;
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -39,8 +39,8 @@ public class UsersService {
     @Autowired
     private UsersDAO usersDAO;
 
-    // @Autowired
-    // private EmailService emailService;
+    @Autowired
+    private EmailService emailService;
 
     @Transactional
     public void uploadFacultyCSV(MultipartFile file) {
@@ -69,7 +69,6 @@ public class UsersService {
 
                 Users users = new Users();
                 users.setEmail(email);
-                System.out.println("459" + department.toLowerCase());
                 users.setPassword(passwordEncoder.encode("459" + department.toLowerCase()));
                 // users.setResetToken(UUID.randomUUID().toString());
 
@@ -82,16 +81,15 @@ public class UsersService {
                 faculty.setRole(role);
 
                 facultyRepository.save(faculty);
-                // emailService.sendPasswordResetEmail(users.getEmail(), users.getResetToken());
-                System.out.println("Faculty added: " + faculty.getName() + ", Email: " + faculty.getEmail());
+                emailService.sendAccountCreationEmail(users.getEmail(), "459" + faculty.getDepartment().toLowerCase());
             }
             System.out.println("csv file uploaded");
 
         } catch (IOException | CsvValidationException e) {
             System.out.println("Failed to process CSV file: " + e.getMessage());
             throw new RuntimeException("Failed to process CSV file.");
-            // } catch (MessagingException e) {
-            // throw new RuntimeException("Failed to send password reset email.");
+        } catch (MessagingException e) {
+            throw new RuntimeException("Failed to send account creation email.");
         }
     }
 
