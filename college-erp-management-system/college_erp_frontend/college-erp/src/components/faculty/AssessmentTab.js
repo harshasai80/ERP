@@ -65,11 +65,11 @@ function AssessmentTab({ faculty }) {
     setMarksData(updated);
   };
 
-  const handleMaxMarksChange = (index, value) => {
-    const updated = [...marksData];
-    updated[index].maxMarks = value;
-    setMarksData(updated);
-  };
+  // const handleMaxMarksChange = (index, value) => {
+  //   const updated = [...marksData];
+  //   updated[index].maxMarks = value;
+  //   setMarksData(updated);
+  // };
 
   const handleSave = () => {
     if (

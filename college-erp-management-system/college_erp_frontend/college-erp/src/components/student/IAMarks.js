@@ -1,115 +1,67 @@
-import React from "react";
-// import React, { useEffect, useState } from "react";
-// import Api from "../../Api";
-// import { useLocation } from "react-router-dom";
+import React from 'react';
 
-const IAMarks = () => {
-  // const [iaMarks, setIaMarks] = useState([]);
-  // const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState("");
-
-  // const location = useLocation();
-
-  // const registrationNumber =
-  //   location.state?.student?.data?.registrationNumber ||
-  //   location.state?.student?.registrationNumber;
-
-  // useEffect(() => {
-  //   const fetchResults = async () => {
-  //     try {
-  //       const response = await Api.get(
-  //         `/iamarks/student/${registrationNumber}`
-  //       );
-  //       const data = response.data?.data;
-
-  //       if (!data || data.length === 0) {
-  //         setError("⚠️ No results found for this student.");
-  //         setLoading(false);
-  //         return;
-  //       }
-
-  //       const formattedMarks = data.map((entry) => ({
-  //         subjectName: entry.subject.subjectName,
-  //         subjectCode: entry.subject.subjectCode,
-  //         iaMarks: JSON.parse(entry.iaMarks),
-  //         theoryAttendance: "85%",
-  //         labAttendance: "90%",
-  //       }));
-
-  //       setIaMarks(formattedMarks);
-  //     } catch (error) {
-  //       console.error("❌ Error fetching results:", error);
-  //       setError("❌ Failed to fetch data. Please try again.");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchResults();
-  // }, [registrationNumber]);
-
-  // Dummy data
-  const subjects = [
-    { name: "FSD", ia1: 28, ia2: 27, ia3: 26, skill1: 18, skill2: 17 },
-    { name: "OS", ia1: 25, ia2: 29, ia3: 24, skill1: 19, skill2: 18 },
-    { name: "DS", ia1: 30, ia2: 28, ia3: 27, skill1: 20, skill2: 20 },
-  ];
-
+function IAMarks() {
   return (
-    <div className="p-4 sm:p-6 max-w-6xl mx-auto rounded-2xl shadow-lg bg-gray-900 text-white">
-      <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-4 sm:mb-6 text-emerald-400">
-        Internal Assessment & Skill Tests
-      </h2>
+    <div className="flex items-center justify-center w-full px-4">
+      {/* Main Card */}
+      <div className="relative bg-white/10 backdrop-blur-lg shadow-xl rounded-xl p-6 sm:p-8 text-center 
+                      w-full max-w-md border border-white/20 transition-all duration-300">
+        
+        {/* Icon */}
+        <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 
+                        bg-gradient-to-r from-purple-500 to-blue-500 rounded-full p-3 shadow-lg">
+          <div className="text-2xl">📊</div>
+        </div>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-[650px] w-full text-sm sm:text-base bg-gray-800 border border-gray-700 rounded-xl shadow-md">
-          <thead className="bg-emerald-700 text-white">
-            <tr>
-              <th className="px-3 py-2 sm:px-4 sm:py-3 text-left">Subject</th>
-              <th className="px-3 py-2 sm:px-4 sm:py-3 text-center">
-                IA1 / 30
-              </th>
-              <th className="px-3 py-2 sm:px-4 sm:py-3 text-center">
-                IA2 / 30
-              </th>
-              <th className="px-3 py-2 sm:px-4 sm:py-3 text-center">
-                IA3 / 30
-              </th>
-              <th className="px-3 py-2 sm:px-4 sm:py-3 text-center">
-                Skill Test 1 / 20
-              </th>
-              <th className="px-3 py-2 sm:px-4 sm:py-3 text-center">
-                Skill Test 2 / 20
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {subjects.map((subj, index) => (
-              <tr
-                key={index}
-                className={`${
-                  index % 2 === 0 ? "bg-gray-900" : "bg-gray-800"
-                } text-center border-t border-gray-700`}
-              >
-                <td className="px-3 py-2 sm:px-4 sm:py-3 text-left text-emerald-300 font-medium">
-                  {subj.name}
-                </td>
-                <td className="px-3 py-2 sm:px-4 sm:py-3">{subj.ia1}</td>
-                <td className="px-3 py-2 sm:px-4 sm:py-3">{subj.ia2}</td>
-                <td className="px-3 py-2 sm:px-4 sm:py-3">{subj.ia3}</td>
-                <td className="px-3 py-2 sm:px-4 sm:py-3 text-yellow-300">
-                  {subj.skill1}
-                </td>
-                <td className="px-3 py-2 sm:px-4 sm:py-3 text-yellow-300">
-                  {subj.skill2}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {/* Header */}
+        <div className="mt-6 mb-4">
+          <h1 className="text-xl sm:text-2xl font-extrabold 
+                         bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 
+                         bg-clip-text text-transparent">
+            IA Marks Management
+          </h1>
+          <div className="w-12 h-0.5 bg-gradient-to-r from-purple-500 to-blue-500 mx-auto rounded-full mt-2"></div>
+        </div>
+
+        {/* Status Message */}
+        <div className="mb-4">
+          <p className="text-gray-200 text-sm">
+            Currently 
+            <span className="ml-2 text-base font-bold 
+                            bg-gradient-to-r from-orange-400 to-red-500 
+                            bg-clip-text text-transparent animate-pulse">
+              Under Development
+            </span>
+          </p>
+          <p className="text-xs text-gray-400 mt-1">
+            Feature will be available soon.
+          </p>
+        </div>
+
+        {/* Features Preview */}
+        <div className="flex flex-wrap justify-center gap-2 mb-3">
+          {['Mark Entry', 'Auto Calculate', 'Grade Reports', 'Analytics'].map((feature, i) => (
+            <span 
+              key={i} 
+              className="px-3 py-1 bg-purple-500/20 text-purple-200 rounded-full border 
+                         border-purple-500/30 text-xs"
+            >
+              {feature}
+            </span>
+          ))}
+        </div>
+
+        {/* Progress Bar */}
+        <div>
+          <div className="w-full bg-gray-700/50 rounded-full h-1.5">
+            <div className="bg-gradient-to-r from-purple-500 to-blue-500 h-1.5 rounded-full animate-pulse"
+                 style={{ width: '70%' }}></div>
+          </div>
+          <p className="text-xs text-gray-400 mt-1">70% Complete</p>
+        </div>
       </div>
     </div>
   );
-};
+}
 
 export default IAMarks;
