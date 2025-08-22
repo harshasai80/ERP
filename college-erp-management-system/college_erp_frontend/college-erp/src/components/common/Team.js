@@ -1,17 +1,18 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Footer from "./Footer";
 
 export default function Team() {
   const [isVisible, setIsVisible] = useState(false);
   const [hoveredCard, setHoveredCard] = useState(null);
+  const navigate = useNavigate();
 
   const contributors = [
-    { name: "Syed Mohammed Zuber", role: "Backend Developer" },
-    { name: "D Rohan Samuel", role: "Backend Developer" },
+    { name: "Syed Mohammed Zuber", role: "Backend Developer", route: "/zuber" },
+    { name: "D Rohan Samuel", role: "Backend Developer", route: "/rohan" },
     { name: "M MD Abrar", role: "Database Administrator" },
     { name: "Mohammed Nawaz", role: "UI/UX Designer" },
     { name: "Anushka Reddy", role: "API Integration" },
@@ -39,6 +40,12 @@ export default function Team() {
 
   const getRandomDelay = (index) => {
     return `${index * 0.15 + Math.random() * 0.3}s`;
+  };
+
+  const handleCardClick = (contributor) => {
+    if (contributor.route) {
+      navigate(contributor.route);
+    }
   };
 
   return (
@@ -244,14 +251,29 @@ export default function Team() {
                   isVisible
                     ? "opacity-100 translate-y-0"
                     : "opacity-0 translate-y-20"
-                }`}
+                } ${contributor.route ? "cursor-pointer" : ""}`}
                 style={{ transitionDelay: getRandomDelay(index) }}
                 onMouseEnter={() => setHoveredCard(index)}
-                onMouseLeave={() => setHoveredCard(null)}>
+                onMouseLeave={() => setHoveredCard(null)}
+                onClick={() => handleCardClick(contributor)}>
                 {/* Card */}
-                <div className="relative bg-gradient-to-br from-gray-800/40 to-gray-900/60 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/30 hover:border-emerald-400/50 transition-all duration-500 group-hover:transform group-hover:scale-105 group-hover:shadow-2xl group-hover:shadow-emerald-400/10">
+                <div
+                  className={`relative bg-gradient-to-br from-gray-800/40 to-gray-900/60 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/30 hover:border-emerald-400/50 transition-all duration-500 group-hover:transform group-hover:scale-105 group-hover:shadow-2xl group-hover:shadow-emerald-400/10 ${
+                    contributor.route
+                      ? "hover:border-emerald-300/70 hover:shadow-emerald-300/20"
+                      : ""
+                  }`}>
                   {/* Hover glow effect */}
                   <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                  {/* Clickable indicator for D Rohan Samuel */}
+                  {contributor.route && (
+                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="w-6 h-6 bg-emerald-400/20 rounded-full flex items-center justify-center border border-emerald-400/40">
+                        <span className="text-emerald-300 text-xs">👆</span>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Avatar */}
                   <div className="relative mb-6">
@@ -270,8 +292,16 @@ export default function Team() {
 
                   {/* Content */}
                   <div className="text-center relative z-10">
-                    <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-emerald-200 transition-colors duration-300">
+                    <h3
+                      className={`text-lg font-semibold text-white mb-2 group-hover:text-emerald-200 transition-colors duration-300 ${
+                        contributor.route ? "group-hover:text-emerald-100" : ""
+                      }`}>
                       {contributor.name}
+                      {contributor.route && (
+                        <span className="ml-2 text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          →
+                        </span>
+                      )}
                     </h3>
                     <p className="text-emerald-400/80 text-sm font-medium mb-3">
                       {contributor.role}
