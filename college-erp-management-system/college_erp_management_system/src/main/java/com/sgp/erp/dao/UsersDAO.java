@@ -72,7 +72,7 @@ public class UsersDAO {
             return faculty;
 
         } catch (MessagingException e) {
-            throw new RuntimeException("Failed to send password reset email.");
+            throw new RuntimeException("Failed to send account creation email.");
         }
     }
 
