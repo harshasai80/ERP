@@ -16,7 +16,7 @@ const StudentList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [studentsPerPage] = useState(20);
-  const [sortBy, setSortBy] = useState("name");
+  const [sortBy, setSortBy] = useState("registrationNumber");
   const [sortOrder, setSortOrder] = useState("asc");
   const [loading, setLoading] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);

@@ -192,164 +192,264 @@ function AttendanceTab({ faculty }) {
   };
 
   return (
-    <div className="bg-gray-800 p-4 sm:p-6 rounded-md shadow-md mt-5 text-white">
-      <h2 className="text-xl sm:text-2xl font-bold mb-4 text-emerald-400">
+    <div className="bg-gray-800 p-3 sm:p-6 rounded-md shadow-md mt-5 text-white max-w-full">
+      {/* Header */}
+      <h2 className="text-lg sm:text-xl md:text-2xl font-bold mb-4 text-emerald-400 text-center sm:text-left">
         Mark Student Attendance
       </h2>
 
-      {/* Filters */}
-      <div className="mb-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <label className="text-sm text-gray-300">Department:</label>
-          <select
-            value={department}
-            onChange={(e) => setDepartment(e.target.value)}
-            className="w-full p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-sm"
-          >
-            <option value="">Select Department</option>
-            <option value="DCS">DCS</option>
-            <option value="DEEE">DEEE</option>
-            <option value="DME">DME</option>
-            <option value="DMT">DMT</option>
-            <option value="DCE">DCE</option>
-          </select>
-        </div>
-        <div>
-          <label className="text-sm text-gray-300">Semester:</label>
-          <select
-            value={semester}
-            onChange={(e) => setSemester(e.target.value)}
-            className="w-full p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-sm"
-          >
-            <option value="">Select Semester</option>
-            {[...Array(6)].map((_, i) => (
-              <option key={i + 1} value={i + 1}>{`${i + 1}`}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="text-sm text-gray-300">Subject:</label>
-          <select
-            value={subjectId}
-            onChange={(e) => setSubjectId(e.target.value)}
-            className="w-full p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-sm"
-          >
-            <option value="">Select Subject</option>
-            {subjects.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.subject.subjectName} ({s.subject.subjectCode}) - Sec{" "}
-                {s.section}{" "}
-                {s.subjectType === "LAB" && s.batches.length > 0
-                  ? `- Batches ${s.batches.length}`
-                  : ""}
-              </option>
-            ))}
-          </select>
-        </div>
-        {subjectType === "LAB" && (
-          <div>
-            <label className="text-sm text-gray-300">Batch:</label>
+      {/* Filters Section */}
+      <div className="mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+          {/* Department */}
+          <div className="w-full">
+            <label className="block text-xs sm:text-sm text-gray-300 mb-1">
+              Department:
+            </label>
             <select
-              value={batch}
-              onChange={(e) => setBatch(e.target.value)}
-              className="w-full p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-sm"
+              value={department}
+              onChange={(e) => setDepartment(e.target.value)}
+              className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
             >
-              <option value="">Select Batch</option>
-              {availableBatches.map((b) => (
-                <option key={b} value={b}>
-                  {b[0]} ({b[1]} - {b[2]})
+              <option value="">Select Department</option>
+              <option value="DCS">DCS</option>
+              <option value="DEEE">DEEE</option>
+              <option value="DME">DME</option>
+              <option value="DMT">DMT</option>
+              <option value="DCE">DCE</option>
+            </select>
+          </div>
+
+          {/* Semester */}
+          <div className="w-full">
+            <label className="block text-xs sm:text-sm text-gray-300 mb-1">
+              Semester:
+            </label>
+            <select
+              value={semester}
+              onChange={(e) => setSemester(e.target.value)}
+              className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+            >
+              <option value="">Select Semester</option>
+              {[...Array(6)].map((_, i) => (
+                <option key={i + 1} value={i + 1}>{`${i + 1}`}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Subject */}
+          <div className="w-full sm:col-span-2 lg:col-span-1">
+            <label className="block text-xs sm:text-sm text-gray-300 mb-1">
+              Subject:
+            </label>
+            <select
+              value={subjectId}
+              onChange={(e) => setSubjectId(e.target.value)}
+              className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+            >
+              <option value="">Select Subject</option>
+              {subjects.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.subject.subjectName} ({s.subject.subjectCode}) - Sec{" "}
+                  {s.section}{" "}
+                  {s.subjectType === "LAB" && s.batches.length > 0
+                    ? `- Batches ${s.batches.length}`
+                    : ""}
                 </option>
               ))}
             </select>
           </div>
-        )}
+
+          {/* Batch (only for LAB subjects) */}
+          {subjectType === "LAB" && (
+            <div className="w-full sm:col-span-2 lg:col-span-3">
+              <label className="block text-xs sm:text-sm text-gray-300 mb-1">
+                Batch:
+              </label>
+              <select
+                value={batch}
+                onChange={(e) => setBatch(e.target.value)}
+                className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              >
+                <option value="">Select Batch</option>
+                {availableBatches.map((b) => (
+                  <option key={b} value={b}>
+                    {b[0]} ({b[1]} - {b[2]})
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Date and Time */}
-      <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div>
-          <label className="block mb-1 text-sm text-white">Date: </label>
-          <input
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            max={new Date().toISOString().split("T")[0]}
-            className="w-full p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-sm"
-          />
+      {/* Date and Time Section */}
+      <div className="mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+          {/* Date */}
+          <div className="w-full">
+            <label className="block mb-1 text-xs sm:text-sm text-white">
+              Date:
+            </label>
+            <input
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              max={new Date().toISOString().split("T")[0]}
+              className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+            />
+          </div>
+
+          {/* Start Time */}
+          <div className="w-full">
+            <HourDropdown
+              label="Start Time"
+              value={startTime}
+              onChange={setStartTime}
+              startTime={null}
+              isEndTime={false}
+              semester={semester}
+            />
+          </div>
+
+          {/* End Time */}
+          <div className="w-full sm:col-span-2 lg:col-span-1">
+            <HourDropdown
+              label="End Time"
+              value={endTime}
+              onChange={setEndTime}
+              startTime={startTime}
+              isEndTime={true}
+              semester={semester}
+            />
+          </div>
         </div>
-        <HourDropdown
-          label="Start Time"
-          value={startTime}
-          onChange={setStartTime}
-          startTime={null}
-          isEndTime={false}
-          semester={semester}
-        />
-        <HourDropdown
-          label="End Time"
-          value={endTime}
-          onChange={setEndTime}
-          startTime={startTime}
-          isEndTime={true}
-          semester={semester}
-        />
       </div>
 
       {/* Students Table */}
       {students.length > 0 && (
-        <div className="overflow-x-auto mb-6">
-          <table className="w-full border-collapse bg-gray-700 rounded overflow-hidden min-w-[400px]">
-            <thead>
-              <tr className="bg-emerald-700 text-white text-sm">
-                <th className="p-3 text-left">Roll No</th>
-                <th className="p-3 text-left">Name</th>
-                <th className="p-3 text-left">Absent</th>
-              </tr>
-            </thead>
-            <tbody>
+        <div className="mb-6">
+          {/* Mobile Card View (visible on small screens) */}
+          <div className="block sm:hidden">
+            <h3 className="text-sm font-semibold text-emerald-400 mb-3">
+              Students ({students.length})
+            </h3>
+            <div className="space-y-2 max-h-80 overflow-y-auto">
               {students.map((student, index) => (
-                <tr
+                <div
                   key={student.registrationNumber}
-                  className={index % 2 === 0 ? "bg-gray-800" : "bg-gray-700"}
+                  className={`p-3 rounded border ${
+                    absentStudents.includes(student.registrationNumber)
+                      ? "bg-red-900 border-red-600"
+                      : "bg-gray-700 border-gray-600"
+                  }`}
                 >
-                  <td className="p-3 text-sm">{student.registrationNumber}</td>
-                  <td className="p-3 text-sm">{student.name}</td>
-                  <td className="p-3">
-                    <input
-                      type="checkbox"
-                      onChange={(e) =>
-                        handleAttendanceChange(e, student.registrationNumber)
-                      }
-                      checked={absentStudents.includes(
-                        student.registrationNumber
-                      )}
-                      className="w-4 h-4 text-emerald-500 border-gray-600 focus:ring-emerald-500"
-                    />
-                  </td>
-                </tr>
+                  <div className="flex justify-between items-center">
+                    <div className="flex-1 min-w-0">
+                      <div className="text-xs sm:text-sm font-medium text-white truncate">
+                        {student.name}
+                      </div>
+                      <div className="text-xs text-gray-400">
+                        Roll: {student.registrationNumber}
+                      </div>
+                    </div>
+                    <div className="flex items-center ml-3">
+                      <label className="flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          onChange={(e) =>
+                            handleAttendanceChange(e, student.registrationNumber)
+                          }
+                          checked={absentStudents.includes(
+                            student.registrationNumber
+                          )}
+                          className="w-4 h-4 text-red-500 border-gray-600 focus:ring-red-500 rounded"
+                        />
+                        <span className="ml-2 text-xs text-gray-300">
+                          Absent
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+          </div>
+
+          {/* Desktop Table View (hidden on small screens) */}
+          <div className="hidden sm:block overflow-x-auto">
+            <table className="w-full border-collapse bg-gray-700 rounded overflow-hidden min-w-[400px]">
+              <thead>
+                <tr className="bg-emerald-700 text-white text-xs sm:text-sm">
+                  <th className="p-2 sm:p-3 text-left">Roll No</th>
+                  <th className="p-2 sm:p-3 text-left">Name</th>
+                  <th className="p-2 sm:p-3 text-center">Absent</th>
+                </tr>
+              </thead>
+              <tbody className="max-h-80 overflow-y-auto">
+                {students.map((student, index) => (
+                  <tr
+                    key={student.registrationNumber}
+                    className={`${
+                      index % 2 === 0 ? "bg-gray-800" : "bg-gray-700"
+                    } ${
+                      absentStudents.includes(student.registrationNumber)
+                        ? "bg-red-900"
+                        : ""
+                    }`}
+                  >
+                    <td className="p-2 sm:p-3 text-xs sm:text-sm">
+                      {student.registrationNumber}
+                    </td>
+                    <td className="p-2 sm:p-3 text-xs sm:text-sm">
+                      {student.name}
+                    </td>
+                    <td className="p-2 sm:p-3 text-center">
+                      <input
+                        type="checkbox"
+                        onChange={(e) =>
+                          handleAttendanceChange(e, student.registrationNumber)
+                        }
+                        checked={absentStudents.includes(
+                          student.registrationNumber
+                        )}
+                        className="w-4 h-4 text-red-500 border-gray-600 focus:ring-red-500 rounded cursor-pointer"
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Summary */}
+          <div className="mt-3 text-xs sm:text-sm text-gray-300 text-center">
+            Present: {students.length - absentStudents.length} | Absent:{" "}
+            {absentStudents.length} | Total: {students.length}
+          </div>
         </div>
       )}
 
-      {/* Buttons */}
+      {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-3">
         <button
           onClick={() => fetchStudents(subjectType === "LAB" ? batch : null)}
-          className="bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 rounded-md transition-colors text-sm"
+          disabled={!department || !semester || !subjectId}
+          className="flex-1 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white py-2.5 px-4 rounded-md transition-colors text-xs sm:text-sm font-medium"
         >
           Load Students
         </button>
 
         <button
           onClick={saveAttendance}
-          className="bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 rounded-md transition-colors text-sm"
+          disabled={students.length === 0}
+          className="flex-1 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white py-2.5 px-4 rounded-md transition-colors text-xs sm:text-sm font-medium"
         >
           Save Attendance
         </button>
       </div>
 
+      {/* Alert */}
       {alert.show && <Alert message={alert.message} type={alert.type} />}
     </div>
   );
