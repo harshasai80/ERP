@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
 
 export default function Rohan() {
   const [isVisible, setIsVisible] = useState(false);
@@ -100,20 +101,22 @@ export default function Rohan() {
       />
 
       {/* Back Button */}
-      <div className="fixed top-6 left-6 z-50">
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6 }}
-          className="relative group">
-          <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-emerald-400/20 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+      <Link to="/team">
+        <div className="fixed top-6 left-6 z-50">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+            className="relative group">
+            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-emerald-400/20 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
 
-          <button className="relative flex items-center gap-3 bg-gradient-to-r from-emerald-600/90 to-emerald-500/90 hover:from-emerald-500 hover:to-emerald-400 px-6 py-3 rounded-xl text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-emerald-500/25 transform hover:-translate-y-1 border border-emerald-500/30 backdrop-blur-sm">
-            <span className="text-lg">←</span>
-            <span>Back to Team</span>
-          </button>
-        </motion.div>
-      </div>
+            <button className="relative flex items-center gap-3 bg-gradient-to-r from-emerald-600/90 to-emerald-500/90 hover:from-emerald-500 hover:to-emerald-400 px-6 py-3 rounded-xl text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-emerald-500/25 transform hover:-translate-y-1 border border-emerald-500/30 backdrop-blur-sm">
+              <span className="text-lg">←</span>
+              <span>Back to Team</span>
+            </button>
+          </motion.div>
+        </div>
+      </Link>
 
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden">
