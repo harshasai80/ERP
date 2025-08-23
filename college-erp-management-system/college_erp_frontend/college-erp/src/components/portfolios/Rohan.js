@@ -89,7 +89,8 @@ export default function Rohan() {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-emerald-900/20 text-white relative overflow-hidden">
+      className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-emerald-900/20 text-white relative overflow-hidden"
+    >
       {/* Mouse Follower */}
       <div
         className="fixed w-4 h-4 bg-emerald-400/20 rounded-full pointer-events-none z-50 blur-sm transition-transform duration-200 ease-out"
@@ -107,7 +108,8 @@ export default function Rohan() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
-            className="relative group">
+            className="relative group"
+          >
             <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-emerald-400/20 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
 
             <button className="relative flex items-center gap-3 bg-gradient-to-r from-emerald-600/90 to-emerald-500/90 hover:from-emerald-500 hover:to-emerald-400 px-6 py-3 rounded-xl text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-emerald-500/25 transform hover:-translate-y-1 border border-emerald-500/30 backdrop-blur-sm">
@@ -171,13 +173,15 @@ export default function Rohan() {
         className="relative z-10 px-6 py-16"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}>
+        transition={{ duration: 0.8 }}
+      >
         {/* Hero Section */}
         <motion.div
           className="max-w-6xl mx-auto text-center mb-20"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}>
+          transition={{ duration: 0.8 }}
+        >
           {/* Profile Picture */}
           <div className="mb-8 flex justify-center">
             <motion.div className="relative group" whileHover={{ scale: 1.05 }}>
@@ -229,7 +233,8 @@ export default function Rohan() {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.5 }}>
+                transition={{ duration: 0.5 }}
+              >
                 <span className="text-2xl">{skills[currentSkill].icon}</span>
                 <div>
                   <div className="text-emerald-300 font-semibold">
@@ -262,7 +267,8 @@ export default function Rohan() {
                     : "text-gray-400 hover:text-white hover:bg-gray-700/30"
                 }`}
                 whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}>
+                whileTap={{ scale: 0.95 }}
+              >
                 {activeTab === tab && (
                   <motion.div
                     className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-emerald-500 rounded-xl shadow-lg"
@@ -287,7 +293,8 @@ export default function Rohan() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.5 }}
-                className="grid md:grid-cols-2 gap-12 items-center">
+                className="grid md:grid-cols-2 gap-12 items-center"
+              >
                 <div className="space-y-6">
                   <h2 className="text-3xl md:text-4xl font-bold">
                     <span className="bg-gradient-to-r from-emerald-300 to-emerald-400 bg-clip-text text-transparent">
@@ -320,7 +327,8 @@ export default function Rohan() {
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: index * 0.1 }}
-                        whileHover={{ scale: 1.05 }}>
+                        whileHover={{ scale: 1.05 }}
+                      >
                         <div className="flex items-center gap-3">
                           <span className="text-xl">{skill.icon}</span>
                           <div className="flex-1">
@@ -376,7 +384,8 @@ export default function Rohan() {
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.1 + 0.2 }}
-                        whileHover={{ scale: 1.02 }}>
+                        whileHover={{ scale: 1.02 }}
+                      >
                         <div className="flex items-start gap-4">
                           <div
                             className={`w-3 h-3 rounded-full mt-2 flex-shrink-0 ${
@@ -418,7 +427,8 @@ export default function Rohan() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.5 }}
-                className="space-y-8">
+                className="space-y-8"
+              >
                 <div className="text-center mb-12">
                   <h2 className="text-3xl md:text-4xl font-bold mb-4">
                     <span className="bg-gradient-to-r from-emerald-300 to-emerald-400 bg-clip-text text-transparent">
@@ -438,7 +448,8 @@ export default function Rohan() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.1 + 0.2 }}
-                      whileHover={{ scale: 1.03, y: -5 }}>
+                      whileHover={{ scale: 1.03, y: -5 }}
+                    >
                       <div className="relative">
                         {/* Project header */}
                         <div className="flex items-center gap-3 mb-4">
@@ -453,7 +464,17 @@ export default function Rohan() {
                         </h3>
 
                         <div className="text-emerald-400 font-mono text-sm mb-4 bg-gray-900/50 px-3 py-2 rounded-lg border border-emerald-500/20">
-                          {project.url}
+                          <a
+                            href={
+                              project.url.startsWith("http")
+                                ? project.url
+                                : `https://${project.url}`
+                            }
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {project.url}
+                          </a>
                         </div>
 
                         <p className="text-gray-300 mb-6 leading-relaxed">
@@ -465,7 +486,8 @@ export default function Rohan() {
                           {project.tech.map((tech, techIndex) => (
                             <span
                               key={techIndex}
-                              className="bg-gradient-to-r from-emerald-600/30 to-emerald-500/20 text-emerald-200 text-xs font-medium px-3 py-1 rounded-full border border-emerald-400/30">
+                              className="bg-gradient-to-r from-emerald-600/30 to-emerald-500/20 text-emerald-200 text-xs font-medium px-3 py-1 rounded-full border border-emerald-400/30"
+                            >
                               {tech}
                             </span>
                           ))}
@@ -488,7 +510,8 @@ export default function Rohan() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.5 }}
-                className="space-y-8">
+                className="space-y-8"
+              >
                 <div className="text-center mb-12">
                   <h2 className="text-3xl md:text-4xl font-bold mb-4">
                     <span className="bg-gradient-to-r from-emerald-300 to-emerald-400 bg-clip-text text-transparent">
@@ -508,7 +531,8 @@ export default function Rohan() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.1 + 0.2 }}
-                      whileHover={{ scale: 1.05, y: -5 }}>
+                      whileHover={{ scale: 1.05, y: -5 }}
+                    >
                       <div className="text-6xl mb-6 group-hover:scale-110 transition-transform duration-300">
                         {hobby.icon}
                       </div>
@@ -544,7 +568,8 @@ export default function Rohan() {
           className="max-w-4xl mx-auto mt-20 text-center"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}>
+          transition={{ delay: 0.5 }}
+        >
           <div className="bg-gradient-to-r from-gray-800/60 to-gray-700/40 backdrop-blur-xl rounded-2xl p-8 border border-gray-700/30">
             <h3 className="text-2xl font-bold mb-4">
               <span className="bg-gradient-to-r from-emerald-300 to-emerald-400 bg-clip-text text-transparent">
@@ -561,7 +586,8 @@ export default function Rohan() {
                   <div
                     key={i}
                     className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"
-                    style={{ animationDelay: `${i * 0.2}s` }}></div>
+                    style={{ animationDelay: `${i * 0.2}s` }}
+                  ></div>
                 ))}
               </div>
               <span className="text-emerald-400 font-semibold">
@@ -572,7 +598,8 @@ export default function Rohan() {
                   <div
                     key={i}
                     className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"
-                    style={{ animationDelay: `${(i + 5) * 0.2}s` }}></div>
+                    style={{ animationDelay: `${(i + 5) * 0.2}s` }}
+                  ></div>
                 ))}
               </div>
             </div>
