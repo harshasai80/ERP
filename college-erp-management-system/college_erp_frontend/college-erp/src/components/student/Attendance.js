@@ -19,7 +19,8 @@ const Attendance = () => {
 
   const registerNo =
     location.state?.student?.data?.registrationNumber ||
-    location.state?.student?.registrationNumber;
+    location.state?.student?.registrationNumber ||
+    JSON.parse(localStorage.getItem("student"))?.registrationNumber;
 
   const handleDateChange = (date) => setDate(date);
   const handleStartDateChange = (date) =>
@@ -92,8 +93,7 @@ const Attendance = () => {
         className="mb-6"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-      >
+        transition={{ duration: 0.4 }}>
         <h2 className="text-xl sm:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-emerald-200">
           Student Attendance Dashboard
         </h2>
@@ -101,12 +101,11 @@ const Attendance = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Form Section */}
-        <motion.div 
+        <motion.div
           className="bg-gradient-to-tr from-gray-800 to-gray-700 rounded-2xl shadow-lg p-4 sm:p-6"
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.4 }}
-        >
+          transition={{ duration: 0.4 }}>
           <h3 className="text-base sm:text-lg font-bold text-emerald-300 mb-4 flex items-center">
             <span className="mr-2">📅</span> Attendance Lookup
           </h3>
@@ -125,8 +124,7 @@ const Attendance = () => {
                   setMode(m);
                   setAttendanceData([]);
                 }}
-                whileHover={{ scale: 1.05 }}
-              >
+                whileHover={{ scale: 1.05 }}>
                 {m === "range" ? "📆 Date Range" : "📍 Single Date"}
               </motion.button>
             ))}
@@ -163,19 +161,18 @@ const Attendance = () => {
             onClick={handleSearch}
             disabled={loading}
             whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <span className="mr-2">🔍</span> {loading ? "Searching..." : "Search Records"}
+            whileTap={{ scale: 0.98 }}>
+            <span className="mr-2">🔍</span>{" "}
+            {loading ? "Searching..." : "Search Records"}
           </motion.button>
         </motion.div>
 
         {/* Attendance Table Section */}
-        <motion.div 
+        <motion.div
           className="bg-gradient-to-tr from-gray-800 to-gray-700 rounded-2xl shadow-lg p-4 sm:p-6 overflow-x-auto max-h-[500px]"
           initial={{ opacity: 0, x: 10 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.4 }}
-        >
+          transition={{ duration: 0.4 }}>
           <h3 className="text-base sm:text-lg font-bold text-emerald-300 mb-4 flex items-center">
             <span className="mr-2">📊</span> Attendance Records
           </h3>
