@@ -13,23 +13,31 @@ const ViewStudentsTab = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [studentsPerPage] = useState(20);
 
+  // Bulk edit state
+  const [bulkEditMode, setBulkEditMode] = useState(false);
+  const [editedStudents, setEditedStudents] = useState([]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!department || !semester || !section) {
       alert("Please select all fields");
       return;
     }
-    
+
     setLoading(true);
     try {
       const response = await Api.get(
         `/student/all?department=${department}&semester=${semester}&section=${section}`
       );
-      setStudents(response.data.data || []);
+      const data = response.data.data || [];
+      setStudents(data);
+      setEditedStudents(data.map((s) => ({ ...s }))); // keep editable copy
       setCurrentPage(1);
     } catch (error) {
       setStudents([]);
-      const message = error.response?.data?.message || "Failed to fetch students";
+      setEditedStudents([]);
+      const message =
+        error.response?.data?.message || "Failed to fetch students";
       alert(message);
     } finally {
       setLoading(false);
@@ -37,14 +45,17 @@ const ViewStudentsTab = () => {
   };
 
   const filteredAndSortedStudents = useMemo(() => {
-    let filtered = students.filter(s => 
-      s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      s.registrationNumber.toLowerCase().includes(searchTerm.toLowerCase())
+    let filtered = students.filter(
+      (s) =>
+        s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        s.registrationNumber.toLowerCase().includes(searchTerm.toLowerCase())
     );
     return filtered.sort((a, b) => {
       let aVal = (a[sortBy] || "").toString().toLowerCase();
       let bVal = (b[sortBy] || "").toString().toLowerCase();
-      return sortOrder === "asc" ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+      return sortOrder === "asc"
+        ? aVal.localeCompare(bVal)
+        : bVal.localeCompare(aVal);
     });
   }, [students, searchTerm, sortBy, sortOrder]);
 
@@ -53,16 +64,37 @@ const ViewStudentsTab = () => {
     return filteredAndSortedStudents.slice(start, start + studentsPerPage);
   }, [filteredAndSortedStudents, currentPage, studentsPerPage]);
 
-  const totalPages = Math.ceil(filteredAndSortedStudents.length / studentsPerPage);
+  const totalPages = Math.ceil(
+    filteredAndSortedStudents.length / studentsPerPage
+  );
 
   const handleView = (data) => {
-  // Save student data in localStorage
-  localStorage.setItem("student", JSON.stringify(data));
+    // Save student data in localStorage
+    localStorage.setItem("student", JSON.stringify(data));
 
-  // Open dashboard in new tab
-  window.open("/dashboard", "_blank");
-};
+    // Open dashboard in new tab
+    window.open("/dashboard", "_blank");
+  };
 
+  // handle input change for bulk editing
+  const handleBulkChange = (id, field, value) => {
+    setEditedStudents((prev) =>
+      prev.map((s) => (s.id === id ? { ...s, [field]: value } : s))
+    );
+  };
+
+  // send bulk update request
+  const handleBulkSave = async () => {
+    try {
+      await Api.put("/students/bulk-update", editedStudents);
+      alert("Bulk update successful!");
+      setBulkEditMode(false);
+      // Reload students after successful update
+      handleSubmit({ preventDefault: () => {} });
+    } catch {
+      alert("Bulk update failed.");
+    }
+  };
 
   const handleSort = (field) => {
     if (sortBy === field) {
@@ -85,21 +117,42 @@ const ViewStudentsTab = () => {
 
     return (
       <div className="flex flex-wrap justify-center items-center gap-2 mt-4">
-        {[["First", 1, currentPage === 1], ["Prev", currentPage - 1, currentPage === 1]].map(([text, page, disabled]) => (
-          <button key={text} onClick={() => setCurrentPage(page)} disabled={disabled}
-            className="px-2 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm">
+        {[
+          ["First", 1, currentPage === 1],
+          ["Prev", currentPage - 1, currentPage === 1],
+        ].map(([text, page, disabled]) => (
+          <button
+            key={text}
+            onClick={() => setCurrentPage(page)}
+            disabled={disabled}
+            className="px-2 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm"
+          >
             {text}
           </button>
         ))}
-        {pages.map(num => (
-          <button key={num} onClick={() => setCurrentPage(num)}
-            className={`px-2 py-1 rounded text-xs sm:text-sm ${currentPage === num ? "bg-emerald-600 text-white" : "bg-gray-700 text-white hover:bg-gray-600"}`}>
+        {pages.map((num) => (
+          <button
+            key={num}
+            onClick={() => setCurrentPage(num)}
+            className={`px-2 py-1 rounded text-xs sm:text-sm ${
+              currentPage === num
+                ? "bg-emerald-600 text-white"
+                : "bg-gray-700 text-white hover:bg-gray-600"
+            }`}
+          >
             {num}
           </button>
         ))}
-        {[["Next", currentPage + 1, currentPage === totalPages], ["Last", totalPages, currentPage === totalPages]].map(([text, page, disabled]) => (
-          <button key={text} onClick={() => setCurrentPage(page)} disabled={disabled}
-            className="px-2 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm">
+        {[
+          ["Next", currentPage + 1, currentPage === totalPages],
+          ["Last", totalPages, currentPage === totalPages],
+        ].map(([text, page, disabled]) => (
+          <button
+            key={text}
+            onClick={() => setCurrentPage(page)}
+            disabled={disabled}
+            className="px-2 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm"
+          >
             {text}
           </button>
         ))}
@@ -109,16 +162,40 @@ const ViewStudentsTab = () => {
 
   return (
     <div className="bg-gray-800 p-3 sm:p-6 rounded-md shadow-lg text-white max-w-full">
-      <h2 className="text-lg sm:text-xl md:text-2xl font-bold mb-4 text-emerald-400 text-center sm:text-left">
-        View Students
-      </h2>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-4">
+        <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-emerald-400 text-center sm:text-left">
+          View Students
+        </h2>
+        {students.length > 0 && (
+          <button
+            onClick={() => setBulkEditMode(!bulkEditMode)}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-xs sm:text-sm"
+          >
+            {bulkEditMode ? "Cancel Bulk Edit" : "Bulk Edit"}
+          </button>
+        )}
+      </div>
+
+      {/* Save button if in edit mode */}
+      {bulkEditMode && (
+        <div className="mb-4">
+          <button
+            onClick={handleBulkSave}
+            className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 text-xs sm:text-sm"
+          >
+            Save Changes
+          </button>
+        </div>
+      )}
 
       {/* Filters Form */}
       <div className="bg-gradient-to-r from-gray-700 to-gray-800 rounded-xl p-3 sm:p-4 mb-6 shadow-lg">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             <div>
-              <label className="block text-xs sm:text-sm font-medium mb-1">Department</label>
+              <label className="block text-xs sm:text-sm font-medium mb-1">
+                Department
+              </label>
               <select
                 value={department}
                 onChange={(e) => setDepartment(e.target.value)}
@@ -134,7 +211,9 @@ const ViewStudentsTab = () => {
             </div>
 
             <div>
-              <label className="block text-xs sm:text-sm font-medium mb-1">Semester</label>
+              <label className="block text-xs sm:text-sm font-medium mb-1">
+                Semester
+              </label>
               <select
                 value={semester}
                 onChange={(e) => setSemester(e.target.value)}
@@ -148,7 +227,9 @@ const ViewStudentsTab = () => {
             </div>
 
             <div>
-              <label className="block text-xs sm:text-sm font-medium mb-1">Section</label>
+              <label className="block text-xs sm:text-sm font-medium mb-1">
+                Section
+              </label>
               <select
                 value={section}
                 onChange={(e) => setSection(e.target.value)}
@@ -168,7 +249,10 @@ const ViewStudentsTab = () => {
               type="text"
               placeholder="Search by name or registration number..."
               value={searchTerm}
-              onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
               className="flex-1 p-2 bg-gray-600 text-white border border-gray-500 rounded focus:border-emerald-500 focus:outline-none text-xs sm:text-sm"
             />
             <button
@@ -185,21 +269,32 @@ const ViewStudentsTab = () => {
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center pt-3 border-t border-gray-600 gap-3">
               <div className="flex flex-wrap gap-2 items-center">
                 <span className="text-xs text-gray-300">Sort by:</span>
-                {[["name", "Name"], ["registrationNumber", "Reg No"]].map(([field, label]) => (
+                {[
+                  ["name", "Name"],
+                  ["registrationNumber", "Reg No"],
+                ].map(([field, label]) => (
                   <button
                     key={field}
                     type="button"
                     onClick={() => handleSort(field)}
                     className={`text-xs px-2 py-1 rounded ${
-                      sortBy === field ? "bg-emerald-600 text-white" : "bg-gray-600 text-gray-300 hover:bg-gray-500"
+                      sortBy === field
+                        ? "bg-emerald-600 text-white"
+                        : "bg-gray-600 text-gray-300 hover:bg-gray-500"
                     }`}
                   >
-                    {label}{sortBy === field && <span className="ml-1">{sortOrder === "asc" ? "↑" : "↓"}</span>}
+                    {label}
+                    {sortBy === field && (
+                      <span className="ml-1">
+                        {sortOrder === "asc" ? "↑" : "↓"}
+                      </span>
+                    )}
                   </button>
                 ))}
               </div>
               <div className="text-xs text-gray-300">
-                Showing {paginatedStudents.length} of {filteredAndSortedStudents.length} students
+                Showing {paginatedStudents.length} of{" "}
+                {filteredAndSortedStudents.length} students
                 {searchTerm && ` (filtered from ${students.length} total)`}
               </div>
             </div>
@@ -213,29 +308,101 @@ const ViewStudentsTab = () => {
           {/* Mobile Card View */}
           <div className="block sm:hidden">
             <div className="space-y-3 max-h-96 overflow-y-auto">
-              {paginatedStudents.map((student) => (
-                <div key={student.id} className="bg-gray-700 p-3 rounded border border-gray-600">
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-medium text-white truncate">
-                        {String(student.name).toUpperCase()}
+              {(bulkEditMode ? editedStudents : paginatedStudents).map(
+                (student) => (
+                  <div
+                    key={student.id}
+                    className="bg-gray-700 p-3 rounded border border-gray-600"
+                  >
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1 min-w-0 space-y-2">
+                        {bulkEditMode ? (
+                          <>
+                            <input
+                              value={student.name}
+                              onChange={(e) =>
+                                handleBulkChange(
+                                  student.id,
+                                  "name",
+                                  e.target.value
+                                )
+                              }
+                              className="w-full text-sm font-medium px-2 py-1 rounded text-black"
+                              placeholder="Name"
+                            />
+                            <input
+                              value={student.registrationNumber}
+                              onChange={(e) =>
+                                handleBulkChange(
+                                  student.id,
+                                  "registrationNumber",
+                                  e.target.value
+                                )
+                              }
+                              className="w-full text-xs px-2 py-1 rounded text-black"
+                              placeholder="Registration Number"
+                            />
+                            <div className="flex gap-2">
+                              <input
+                                value={student.department}
+                                onChange={(e) =>
+                                  handleBulkChange(
+                                    student.id,
+                                    "department",
+                                    e.target.value
+                                  )
+                                }
+                                className="flex-1 text-xs px-2 py-1 rounded text-black"
+                                placeholder="Department"
+                              />
+                              <input
+                                type="number"
+                                value={student.sem}
+                                onChange={(e) =>
+                                  handleBulkChange(
+                                    student.id,
+                                    "sem",
+                                    e.target.value
+                                  )
+                                }
+                                className="w-16 text-xs px-2 py-1 rounded text-black"
+                                placeholder="Sem"
+                              />
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <div className="text-sm font-medium text-white truncate">
+                              {String(student.name).toUpperCase()}
+                            </div>
+                            <div className="text-xs text-gray-400 mt-1">
+                              Roll:{" "}
+                              {String(student.registrationNumber).toUpperCase()}
+                            </div>
+                            <div className="text-xs text-gray-400">
+                              {String(student.department).toUpperCase()} • Sem{" "}
+                              {student.sem}
+                            </div>
+                          </>
+                        )}
                       </div>
-                      <div className="text-xs text-gray-400 mt-1">
-                        Roll: {String(student.registrationNumber).toUpperCase()}
-                      </div>
-                      <div className="text-xs text-gray-400">
-                        {String(student.department).toUpperCase()} • Sem {student.sem}
-                      </div>
+                      {!bulkEditMode && (
+                        <button
+                          className="ml-3 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition text-xs"
+                          onClick={() => handleView(student)}
+                        >
+                          View
+                        </button>
+                      )}
+                      {bulkEditMode && (
+                        <span className="ml-3 text-gray-400 text-xs">
+                          Editing
+                        </span>
+                      )}
                     </div>
-                    <button
-                      className="ml-3 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition text-xs"
-                      onClick={() => handleView(student)}
-                    >
-                      View
-                    </button>
                   </div>
-                </div>
-              ))}
+                )
+              )}
             </div>
           </div>
 
@@ -244,38 +411,114 @@ const ViewStudentsTab = () => {
             <table className="table-auto w-full min-w-[600px] border-collapse border border-gray-700 rounded-md shadow-md">
               <thead className="bg-emerald-700 text-black">
                 <tr>
-                  <th className="py-2 px-3 border border-gray-600 text-xs sm:text-sm">Registration Number</th>
-                  <th className="py-2 px-3 border border-gray-600 text-xs sm:text-sm">Name</th>
-                  <th className="py-2 px-3 border border-gray-600 text-xs sm:text-sm">Department</th>
-                  <th className="py-2 px-3 border border-gray-600 text-xs sm:text-sm">Semester</th>
-                  <th className="py-2 px-3 border border-gray-600 text-xs sm:text-sm">Actions</th>
+                  <th className="py-2 px-3 border border-gray-600 text-xs sm:text-sm">
+                    Registration Number
+                  </th>
+                  <th className="py-2 px-3 border border-gray-600 text-xs sm:text-sm">
+                    Name
+                  </th>
+                  <th className="py-2 px-3 border border-gray-600 text-xs sm:text-sm">
+                    Department
+                  </th>
+                  <th className="py-2 px-3 border border-gray-600 text-xs sm:text-sm">
+                    Semester
+                  </th>
+                  <th className="py-2 px-3 border border-gray-600 text-xs sm:text-sm">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                {paginatedStudents.map((student) => (
-                  <tr key={student.id} className="odd:bg-gray-700 even:bg-gray-600 text-white">
-                    <td className="py-2 px-3 border border-gray-600 text-center text-xs sm:text-sm">
-                      {String(student.registrationNumber).toUpperCase()}
-                    </td>
-                    <td className="py-2 px-3 border border-gray-600 text-center text-xs sm:text-sm">
-                      {String(student.name).toUpperCase()}
-                    </td>
-                    <td className="py-2 px-3 border border-gray-600 text-center text-xs sm:text-sm">
-                      {String(student.department).toUpperCase()}
-                    </td>
-                    <td className="py-2 px-3 border border-gray-600 text-center text-xs sm:text-sm">
-                      {student.sem}
-                    </td>
-                    <td className="py-2 px-3 border border-gray-600 text-center">
-                      <button
-                        className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition text-xs sm:text-sm"
-                        onClick={() => handleView(student)}
-                      >
-                        View
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {(bulkEditMode ? editedStudents : paginatedStudents).map(
+                  (student) => (
+                    <tr
+                      key={student.id}
+                      className="odd:bg-gray-700 even:bg-gray-600 text-white"
+                    >
+                      <td className="py-2 px-3 border border-gray-600 text-center text-xs sm:text-sm">
+                        {bulkEditMode ? (
+                          <input
+                            value={student.registrationNumber}
+                            onChange={(e) =>
+                              handleBulkChange(
+                                student.id,
+                                "registrationNumber",
+                                e.target.value
+                              )
+                            }
+                            className="w-full px-2 py-1 rounded text-black text-xs sm:text-sm"
+                          />
+                        ) : (
+                          String(student.registrationNumber).toUpperCase()
+                        )}
+                      </td>
+                      <td className="py-2 px-3 border border-gray-600 text-center text-xs sm:text-sm">
+                        {bulkEditMode ? (
+                          <input
+                            value={student.name}
+                            onChange={(e) =>
+                              handleBulkChange(
+                                student.id,
+                                "name",
+                                e.target.value
+                              )
+                            }
+                            className="w-full px-2 py-1 rounded text-black text-xs sm:text-sm"
+                          />
+                        ) : (
+                          String(student.name).toUpperCase()
+                        )}
+                      </td>
+                      <td className="py-2 px-3 border border-gray-600 text-center text-xs sm:text-sm">
+                        {bulkEditMode ? (
+                          <input
+                            value={student.department}
+                            onChange={(e) =>
+                              handleBulkChange(
+                                student.id,
+                                "department",
+                                e.target.value
+                              )
+                            }
+                            className="w-full px-2 py-1 rounded text-black text-xs sm:text-sm"
+                          />
+                        ) : (
+                          String(student.department).toUpperCase()
+                        )}
+                      </td>
+                      <td className="py-2 px-3 border border-gray-600 text-center text-xs sm:text-sm">
+                        {bulkEditMode ? (
+                          <input
+                            type="number"
+                            value={student.sem}
+                            onChange={(e) =>
+                              handleBulkChange(
+                                student.id,
+                                "sem",
+                                e.target.value
+                              )
+                            }
+                            className="w-full px-2 py-1 rounded text-black text-xs sm:text-sm"
+                          />
+                        ) : (
+                          student.sem
+                        )}
+                      </td>
+                      <td className="py-2 px-3 border border-gray-600 text-center">
+                        {bulkEditMode ? (
+                          <span className="text-gray-400 text-xs">Editing</span>
+                        ) : (
+                          <button
+                            className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition text-xs sm:text-sm"
+                            onClick={() => handleView(student)}
+                          >
+                            View
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  )
+                )}
               </tbody>
             </table>
           </div>
@@ -287,8 +530,12 @@ const ViewStudentsTab = () => {
       {/* Empty State */}
       {students.length === 0 && !loading && (
         <div className="text-center py-12">
-          <div className="text-gray-400 text-base sm:text-lg mb-2">No students found</div>
-          <div className="text-gray-500 text-sm">Select department, semester, and section, then click "Load Students"</div>
+          <div className="text-gray-400 text-base sm:text-lg mb-2">
+            No students found
+          </div>
+          <div className="text-gray-500 text-sm">
+            Select department, semester, and section, then click "Load Students"
+          </div>
         </div>
       )}
     </div>

@@ -139,4 +139,18 @@ public class StudentService {
         }
         throw new StudentNotDeletedException();
     }
+
+    @Transactional
+    public ResponseEntity<ResponseStructure<String>> updateBulkStudents(List<Student> students) {
+        ResponseStructure<String> structure = new ResponseStructure<String>();
+        if (students == null || students.isEmpty()) {
+            throw new IllegalArgumentException("Student list is empty");
+        }
+        studentDao.updateBulkStudents(students);
+        structure.setData("Students updated successfully");
+        structure.setMessage("Students updated successfully");
+        structure.setStatus(HttpStatus.OK.value());
+        return new ResponseEntity<ResponseStructure<String>>(structure, HttpStatus.OK);
+    }
+
 }

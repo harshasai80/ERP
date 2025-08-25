@@ -64,6 +64,11 @@ public class StudentController {
         return studentService.updateStudent(registrationNumber, student);
     }
 
+    @PutMapping("/bulk-update")
+    public ResponseEntity<ResponseStructure<String>> updateBulkStudents(@RequestBody List<Student> students) {
+        return studentService.updateBulkStudents(students);
+    }
+
     @GetMapping("/department")
     public ResponseEntity<ResponseStructure<List<Student>>> findByDepartment(@RequestParam String department) {
         return studentService.findByDepartment(department);

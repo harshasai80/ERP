@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.sgp.erp.model.Student;
@@ -23,4 +24,13 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     @Modifying
     @Query("DELETE FROM Student s WHERE s.registrationNumber = ?1")
     Integer deleteByRegistrationNumber(String registrationNumber);
+
+    @Modifying
+    @Query("UPDATE Student s SET " +
+            "s.name = :#{#student.name}, " +
+            "s.registrationNumber = :#{#student.registrationNumber}, " +
+            "s.department = :#{#student.department}, " +
+            "s.sem = :#{#student.sem}, " +
+            "s.section = :#{#student.section} WHERE s.id = :#{#student.id}")
+    void updateStudents(@Param("student") Student student);
 }

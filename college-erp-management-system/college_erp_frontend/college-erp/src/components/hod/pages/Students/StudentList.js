@@ -21,19 +21,33 @@ const StudentList = ({ department }) => {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  const columns = ["Registration Number", "Name", "Department", "Semester", "Section", "Actions"];
+  // Bulk edit state
+  const [bulkEditMode, setBulkEditMode] = useState(false);
+  const [editedStudents, setEditedStudents] = useState([]);
+
+  const columns = [
+    "Registration Number",
+    "Name",
+    "Department",
+    "Semester",
+    "Section",
+    "Actions",
+  ];
 
   const filteredAndSortedStudents = useMemo(() => {
-    let filtered = students.filter(s => 
-      s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      s.registrationNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      s.department.toLowerCase().includes(searchTerm.toLowerCase())
+    let filtered = students.filter(
+      (s) =>
+        s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        s.registrationNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        s.department.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return filtered.sort((a, b) => {
       let aVal = (a[sortBy] || "").toString().toLowerCase();
       let bVal = (b[sortBy] || "").toString().toLowerCase();
-      return sortOrder === "asc" ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+      return sortOrder === "asc"
+        ? aVal.localeCompare(bVal)
+        : bVal.localeCompare(aVal);
     });
   }, [students, searchTerm, sortBy, sortOrder]);
 
@@ -42,12 +56,16 @@ const StudentList = ({ department }) => {
     return filteredAndSortedStudents.slice(start, start + studentsPerPage);
   }, [filteredAndSortedStudents, currentPage, studentsPerPage]);
 
-  const totalPages = Math.ceil(filteredAndSortedStudents.length / studentsPerPage);
+  const totalPages = Math.ceil(
+    filteredAndSortedStudents.length / studentsPerPage
+  );
 
   const handleDelete = async (student) => {
     if (!window.confirm(`Delete ${student.name}?`)) return;
     try {
-      await Api.delete(`/student/delete?registrationNumber=${student.registrationNumber}`);
+      await Api.delete(
+        `/student/delete?registrationNumber=${student.registrationNumber}`
+      );
       alert("Student deleted successfully!");
       fetchStudents();
     } catch {
@@ -66,7 +84,9 @@ const StudentList = ({ department }) => {
     const formData = new FormData();
     formData.append("file", csvFile);
     try {
-      await Api.post("/student/upload", formData, { headers: { "Content-Type": "multipart/form-data" } });
+      await Api.post("/student/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       alert("CSV uploaded successfully!");
       fetchStudents();
     } catch {
@@ -77,6 +97,7 @@ const StudentList = ({ department }) => {
     }
   };
 
+  // Modified fetchStudents to also prepare editable copy
   const fetchStudents = async () => {
     if (!filters.semester && !filters.section) {
       alert("Select semester and section.");
@@ -85,14 +106,39 @@ const StudentList = ({ department }) => {
     setLoading(true);
     try {
       const response = await Api.get("/student/all", {
-        params: { department, semester: parseInt(filters.semester), section: filters.section }
+        params: {
+          department,
+          semester: parseInt(filters.semester),
+          section: filters.section,
+        },
       });
-      setStudents(response.data?.data || []);
+      const data = response.data?.data || [];
+      setStudents(data);
+      setEditedStudents(data.map((s) => ({ ...s }))); // keep editable copy
       setCurrentPage(1);
     } catch {
       alert("Failed to fetch students.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  // handle input change for bulk editing
+  const handleBulkChange = (id, field, value) => {
+    setEditedStudents((prev) =>
+      prev.map((s) => (s.id === id ? { ...s, [field]: value } : s))
+    );
+  };
+
+  // send bulk update request
+  const handleBulkSave = async () => {
+    try {
+      await Api.put("/student/bulk-update", editedStudents);
+      alert("Bulk update successful!");
+      setBulkEditMode(false);
+      fetchStudents();
+    } catch {
+      alert("Bulk update failed.");
     }
   };
 
@@ -119,25 +165,40 @@ const StudentList = ({ department }) => {
       <div className="flex flex-wrap justify-center items-center gap-2 mt-6">
         {[
           ["First", 1, currentPage === 1],
-          ["Prev", currentPage - 1, currentPage === 1]
+          ["Prev", currentPage - 1, currentPage === 1],
         ].map(([text, page, disabled]) => (
-          <button key={text} onClick={() => setCurrentPage(page)} disabled={disabled}
-            className="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm">
+          <button
+            key={text}
+            onClick={() => setCurrentPage(page)}
+            disabled={disabled}
+            className="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+          >
             {text}
           </button>
         ))}
-        {pages.map(num => (
-          <button key={num} onClick={() => setCurrentPage(num)}
-            className={`px-3 py-1 rounded text-sm ${currentPage === num ? "bg-emerald-600 text-white" : "bg-gray-700 text-white hover:bg-gray-600"}`}>
+        {pages.map((num) => (
+          <button
+            key={num}
+            onClick={() => setCurrentPage(num)}
+            className={`px-3 py-1 rounded text-sm ${
+              currentPage === num
+                ? "bg-emerald-600 text-white"
+                : "bg-gray-700 text-white hover:bg-gray-600"
+            }`}
+          >
             {num}
           </button>
         ))}
         {[
           ["Next", currentPage + 1, currentPage === totalPages],
-          ["Last", totalPages, currentPage === totalPages]
+          ["Last", totalPages, currentPage === totalPages],
         ].map(([text, page, disabled]) => (
-          <button key={text} onClick={() => setCurrentPage(page)} disabled={disabled}
-            className="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm">
+          <button
+            key={text}
+            onClick={() => setCurrentPage(page)}
+            disabled={disabled}
+            className="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+          >
             {text}
           </button>
         ))}
@@ -153,75 +214,189 @@ const StudentList = ({ department }) => {
         ) : (
           <>
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
-              <h1 className="text-2xl sm:text-3xl font-bold text-center sm:text-left">Student Management</h1>
-              <button className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 text-sm sm:text-base"
-                onClick={() => setShowOptions(true)}>Add New Student</button>
+              <h1 className="text-2xl sm:text-3xl font-bold text-center sm:text-left">
+                Student Management
+              </h1>
+              <div className="flex gap-2">
+                <button
+                  className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 text-sm sm:text-base"
+                  onClick={() => setShowOptions(true)}
+                >
+                  Add New Student
+                </button>
+                {students.length > 0 && (
+                  <button
+                    onClick={() => setBulkEditMode(!bulkEditMode)}
+                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm sm:text-base"
+                  >
+                    {bulkEditMode ? "Cancel Bulk Edit" : "Bulk Edit"}
+                  </button>
+                )}
+              </div>
             </div>
+
+            {/* Save button if in edit mode */}
+            {bulkEditMode && (
+              <div className="mb-4">
+                <button
+                  onClick={handleBulkSave}
+                  className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700"
+                >
+                  Save Changes
+                </button>
+              </div>
+            )}
 
             {showOptions && (
               <div className="mb-6 p-4 sm:p-5 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl flex flex-col items-center gap-3 w-full sm:w-96 mx-auto shadow-lg">
-                <p className="text-base sm:text-lg font-semibold text-center">Choose an option:</p>
-                <button className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 w-full text-sm sm:text-base"
-                  onClick={() => { setShowAddStudent(true); setShowOptions(false); }}>Add Individually</button>
+                <p className="text-base sm:text-lg font-semibold text-center">
+                  Choose an option:
+                </p>
+                <button
+                  className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 w-full text-sm sm:text-base"
+                  onClick={() => {
+                    setShowAddStudent(true);
+                    setShowOptions(false);
+                  }}
+                >
+                  Add Individually
+                </button>
                 <div className="w-full text-center">
-                  <DragDropCSVUpload onChange={(file) => setCsvFile(file.target ? file.target.files[0] : file)} />
+                  <DragDropCSVUpload
+                    onChange={(file) =>
+                      setCsvFile(file.target ? file.target.files[0] : file)
+                    }
+                  />
                   {csvFile && (
                     <div className="mt-2 p-2 bg-gray-700 border border-gray-600 rounded text-white flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
                       <span className="text-sm break-all">{csvFile.name}</span>
-                      <button className="text-red-500 hover:text-red-700 text-lg sm:ml-2" onClick={() => setCsvFile(null)}>×</button>
+                      <button
+                        className="text-red-500 hover:text-red-700 text-lg sm:ml-2"
+                        onClick={() => setCsvFile(null)}
+                      >
+                        ×
+                      </button>
                     </div>
                   )}
                   {csvFile && (
-                    <button className="mt-2 px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 w-full text-sm sm:text-base"
-                      onClick={handleUpload} disabled={uploading}>{uploading ? "Uploading..." : "Upload File"}</button>
+                    <button
+                      className="mt-2 px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 w-full text-sm sm:text-base"
+                      onClick={handleUpload}
+                      disabled={uploading}
+                    >
+                      {uploading ? "Uploading..." : "Upload File"}
+                    </button>
                   )}
                 </div>
-                <button className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 w-full text-sm sm:text-base"
-                  onClick={() => { const l = document.createElement("a"); l.href = "/csv files/studentcsv.csv"; l.download = "studentcsv.csv"; l.click(); }}>
+                <button
+                  className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 w-full text-sm sm:text-base"
+                  onClick={() => {
+                    const l = document.createElement("a");
+                    l.href = "/csv files/studentcsv.csv";
+                    l.download = "studentcsv.csv";
+                    l.click();
+                  }}
+                >
                   Download Sample CSV
                 </button>
-                <button className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 w-full text-sm sm:text-base"
-                  onClick={() => setShowOptions(false)}>Cancel</button>
+                <button
+                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 w-full text-sm sm:text-base"
+                  onClick={() => setShowOptions(false)}
+                >
+                  Cancel
+                </button>
               </div>
             )}
 
             <div className="bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl p-4 sm:p-5 mb-6 shadow-lg">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
                 {[
-                  ["Semester", "semester", [...Array(6)].map((_, i) => [`Semester ${i+1}`, i+1])],
-                  ["Section", "section", ["A", "B", "C", "D"].map(s => [`Section ${s}`, s])]
+                  [
+                    "Semester",
+                    "semester",
+                    [...Array(6)].map((_, i) => [`Semester ${i + 1}`, i + 1]),
+                  ],
+                  [
+                    "Section",
+                    "section",
+                    ["A", "B", "C", "D"].map((s) => [`Section ${s}`, s]),
+                  ],
                 ].map(([label, key, options]) => (
                   <div key={key}>
-                    <label className="block text-sm font-medium mb-2">{label}</label>
-                    <select className="w-full p-2 bg-gray-700 text-white border border-gray-600 rounded focus:border-emerald-500 focus:outline-none"
-                      value={filters[key]} onChange={(e) => setFilters(prev => ({ ...prev, [key]: e.target.value }))}>
+                    <label className="block text-sm font-medium mb-2">
+                      {label}
+                    </label>
+                    <select
+                      className="w-full p-2 bg-gray-700 text-white border border-gray-600 rounded focus:border-emerald-500 focus:outline-none"
+                      value={filters[key]}
+                      onChange={(e) =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          [key]: e.target.value,
+                        }))
+                      }
+                    >
                       <option value="">All {label}s</option>
-                      {options.map(([text, val]) => <option key={val} value={val}>{text}</option>)}
+                      {options.map(([text, val]) => (
+                        <option key={val} value={val}>
+                          {text}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 ))}
                 <div>
-                  <label className="block text-sm font-medium mb-2">Search Students</label>
-                  <input type="text" placeholder="Name, Reg Number, Department..." 
+                  <label className="block text-sm font-medium mb-2">
+                    Search Students
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Name, Reg Number, Department..."
                     className="w-full p-2 bg-gray-700 text-white border border-gray-600 rounded focus:border-emerald-500 focus:outline-none"
-                    value={searchTerm} onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }} />
+                    value={searchTerm}
+                    onChange={(e) => {
+                      setSearchTerm(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                  />
                 </div>
-                <button className="w-full px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 disabled:opacity-50"
-                  onClick={fetchStudents} disabled={loading}>{loading ? "Loading..." : "Load Students"}</button>
+                <button
+                  className="w-full px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 disabled:opacity-50"
+                  onClick={fetchStudents}
+                  disabled={loading}
+                >
+                  {loading ? "Loading..." : "Load Students"}
+                </button>
               </div>
 
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-4 pt-4 border-t border-gray-700 gap-4">
                 <div className="flex flex-wrap gap-2">
                   <span className="text-sm text-gray-300">Sort by:</span>
-                  {[["name", "Name"], ["registrationNumber", "Reg No"]].map(([field, label]) => (
-                    <button key={field} onClick={() => handleSort(field)}
-                      className={`text-xs px-2 py-1 rounded ${sortBy === field ? "bg-emerald-600 text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"}`}>
-                      {label}{sortBy === field && <span className="ml-1">{sortOrder === "asc" ? "↑" : "↓"}</span>}
+                  {[
+                    ["name", "Name"],
+                    ["registrationNumber", "Reg No"],
+                  ].map(([field, label]) => (
+                    <button
+                      key={field}
+                      onClick={() => handleSort(field)}
+                      className={`text-xs px-2 py-1 rounded ${
+                        sortBy === field
+                          ? "bg-emerald-600 text-white"
+                          : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                      }`}
+                    >
+                      {label}
+                      {sortBy === field && (
+                        <span className="ml-1">
+                          {sortOrder === "asc" ? "↑" : "↓"}
+                        </span>
+                      )}
                     </button>
                   ))}
                 </div>
                 <div className="text-sm text-gray-300">
-                  Showing {paginatedStudents.length} of {filteredAndSortedStudents.length} students
+                  Showing {paginatedStudents.length} of{" "}
+                  {filteredAndSortedStudents.length} students
                   {searchTerm && ` (filtered from ${students.length} total)`}
                 </div>
               </div>
@@ -229,37 +404,115 @@ const StudentList = ({ department }) => {
 
             {students.length > 0 && (
               <div className="overflow-x-auto">
-                <DataTable columns={columns} data={paginatedStudents.map(s => ({
-                  registrationnumber: s.registrationNumber,
-                  name: s.name,
-                  department: s.department.toUpperCase(),
-                  semester: `Sem ${s.sem}`,
-                  section: `Sec ${s.section}`,
-                  actions: (
-                    <div className="flex gap-1 sm:gap-2 justify-center flex-wrap">
-                      <button className="text-xs sm:text-sm px-2 py-1 bg-blue-600 rounded hover:bg-blue-700"
-                        onClick={() => handleEdit(s)}>Edit</button>
-                      <button className="text-xs sm:text-sm px-2 py-1 bg-red-600 rounded hover:bg-red-700"
-                        onClick={() => handleDelete(s)}>Delete</button>
-                    </div>
-                  )
-                }))} />
+                <DataTable
+                  columns={columns}
+                  data={(bulkEditMode ? editedStudents : paginatedStudents).map(
+                    (s) => ({
+                      registrationnumber: bulkEditMode ? (
+                        <input
+                          value={s.registrationNumber}
+                          onChange={(e) =>
+                            handleBulkChange(
+                              s.id,
+                              "registrationNumber",
+                              e.target.value
+                            )
+                          }
+                          className="px-2 py-1 rounded text-black"
+                        />
+                      ) : (
+                        s.registrationNumber
+                      ),
+                      name: bulkEditMode ? (
+                        <input
+                          value={s.name}
+                          onChange={(e) =>
+                            handleBulkChange(s.id, "name", e.target.value)
+                          }
+                          className="px-2 py-1 rounded text-black"
+                        />
+                      ) : (
+                        s.name
+                      ),
+                      department: bulkEditMode ? (
+                        <input
+                          value={s.department}
+                          onChange={(e) =>
+                            handleBulkChange(s.id, "department", e.target.value)
+                          }
+                          className="px-2 py-1 rounded text-black"
+                        />
+                      ) : (
+                        s.department.toUpperCase()
+                      ),
+                      semester: bulkEditMode ? (
+                        <input
+                          type="number"
+                          value={s.sem}
+                          onChange={(e) =>
+                            handleBulkChange(s.id, "sem", e.target.value)
+                          }
+                          className="px-2 py-1 rounded text-black w-20"
+                        />
+                      ) : (
+                        `Sem ${s.sem}`
+                      ),
+                      section: bulkEditMode ? (
+                        <input
+                          value={s.section}
+                          onChange={(e) =>
+                            handleBulkChange(s.id, "section", e.target.value)
+                          }
+                          className="px-2 py-1 rounded text-black w-20"
+                        />
+                      ) : (
+                        `Sec ${s.section}`
+                      ),
+                      actions: bulkEditMode ? (
+                        <span className="text-gray-400 text-xs">Editing</span>
+                      ) : (
+                        <div className="flex gap-1 sm:gap-2 justify-center flex-wrap">
+                          <button
+                            className="text-xs sm:text-sm px-2 py-1 bg-blue-600 rounded hover:bg-blue-700"
+                            onClick={() => handleEdit(s)}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className="text-xs sm:text-sm px-2 py-1 bg-red-600 rounded hover:bg-red-700"
+                            onClick={() => handleDelete(s)}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      ),
+                    })
+                  )}
+                />
                 {renderPagination()}
               </div>
             )}
 
             {students.length === 0 && !loading && (
               <div className="text-center py-12">
-                <div className="text-gray-400 text-lg mb-2">No students loaded</div>
-                <div className="text-gray-500">Select semester and section, then click "Load Students"</div>
+                <div className="text-gray-400 text-lg mb-2">
+                  No students loaded
+                </div>
+                <div className="text-gray-500">
+                  Select semester and section, then click "Load Students"
+                </div>
               </div>
             )}
           </>
         )}
       </div>
       {showModal && (
-        <EditStudentModal show={showModal} onClose={() => setShowModal(false)} 
-          onUpdate={fetchStudents} student={selectedStudent} />
+        <EditStudentModal
+          show={showModal}
+          onClose={() => setShowModal(false)}
+          onUpdate={fetchStudents}
+          student={selectedStudent}
+        />
       )}
     </>
   );

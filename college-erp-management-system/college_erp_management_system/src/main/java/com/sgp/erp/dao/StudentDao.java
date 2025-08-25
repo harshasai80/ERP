@@ -19,6 +19,8 @@ import com.sgp.erp.model.Student;
 import com.sgp.erp.model.enums.Section;
 import com.sgp.erp.repository.StudentRepository;
 
+import jakarta.transaction.Transactional;
+
 @Repository
 public class StudentDao {
 
@@ -123,6 +125,10 @@ public class StudentDao {
     public boolean deleteStudent(String registrationNumber) {
         Integer result = studentRepository.deleteByRegistrationNumber(registrationNumber);
         return result > 0; // Returns true if at least one record was deleted
+    }
+
+    public void updateBulkStudents(List<Student> students) {
+        students.forEach(t -> studentRepository.updateStudents(t));
     }
 
 }
