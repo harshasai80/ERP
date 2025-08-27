@@ -12,7 +12,7 @@ const Navbar = ({ data }) => {
         {/* Left: Logo + Title */}
         <Link to="/" className="flex items-center gap-3">
           <img
-            src="/logo128.png"
+            src="/logo192.png"
             alt="SGP Logo"
             className="h-10 w-10 hover:rotate-12 transition-transform duration-300"
           />

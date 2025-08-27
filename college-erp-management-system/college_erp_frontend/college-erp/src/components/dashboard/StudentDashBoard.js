@@ -14,10 +14,10 @@ export default function StudentDashboard() {
   const navigate = useNavigate();
   const location = useLocation();
   const student =
-  location.state?.student?.data ||
-  location.state?.student ||
-  JSON.parse(localStorage.getItem("student"));
-  
+    location.state?.student?.data ||
+    location.state?.student ||
+    JSON.parse(localStorage.getItem("student"));
+
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white flex flex-col relative overflow-hidden">
       {/* Floating Background Circles */}
@@ -52,7 +52,7 @@ export default function StudentDashboard() {
           {/* Left: Logo + Title */}
           <div className="flex items-center gap-3">
             <motion.img
-              src="/logo128.png"
+              src="/logo192.png"
               alt="Logo"
               className="h-10 w-10 sm:h-12 sm:w-12"
               whileHover={{ scale: 1.2 }}

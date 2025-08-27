@@ -14,11 +14,13 @@ const Navbar = ({ data }) => {
         {/* Left: Logo + Title */}
         <Link to="/" className="flex items-center gap-3">
           <img
-            src="/logo128.png"
+            src="/logo192.png"
             alt="SGP Logo"
             className="h-10 w-10 hover:rotate-12 transition-transform duration-300"
           />
-          <span className="text-xl sm:text-2xl font-bold tracking-wide">SGP ERP</span>
+          <span className="text-xl sm:text-2xl font-bold tracking-wide">
+            SGP ERP
+          </span>
         </Link>
 
         {/* Center: Page title (only visible on md+) */}
@@ -52,10 +54,7 @@ const Navbar = ({ data }) => {
         </div>
 
         {/* Mobile Hamburger */}
-        <button
-          className="md:hidden p-2"
-          onClick={() => setIsOpen(!isOpen)}
-        >
+        <button className="md:hidden p-2" onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>

@@ -64,15 +64,17 @@ export default function Team() {
             className="flex items-center gap-4"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}>
+            transition={{ duration: 0.6 }}
+          >
             {/* Enhanced logo container */}
             <motion.div
               className="relative group"
               whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.3 }}>
+              transition={{ duration: 0.3 }}
+            >
               <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/20 to-emerald-600/10 rounded-xl blur-sm group-hover:blur-md transition-all duration-300"></div>
               <motion.img
-                src="/logo128.png"
+                src="/logo192.png"
                 alt="SGP Logo"
                 className="relative w-12 h-12 md:w-14 md:h-14 rounded-xl shadow-xl border border-emerald-400/30 group-hover:border-emerald-400/50 transition-all duration-300"
                 whileHover={{ rotate: 5 }}
@@ -104,13 +106,15 @@ export default function Team() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
-            className="relative group">
+            className="relative group"
+          >
             {/* Button glow effect */}
             <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-emerald-400/20 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500 scale-110"></div>
 
             <Link
               to="/"
-              className="relative flex items-center gap-3 bg-gradient-to-r from-emerald-600/90 to-emerald-500/90 hover:from-emerald-500 hover:to-emerald-400 px-4 md:px-6 py-2.5 md:py-3 rounded-xl text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-emerald-500/25 transform hover:-translate-y-0.5 border border-emerald-500/30 hover:border-emerald-400/50 backdrop-blur-sm overflow-hidden">
+              className="relative flex items-center gap-3 bg-gradient-to-r from-emerald-600/90 to-emerald-500/90 hover:from-emerald-500 hover:to-emerald-400 px-4 md:px-6 py-2.5 md:py-3 rounded-xl text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-emerald-500/25 transform hover:-translate-y-0.5 border border-emerald-500/30 hover:border-emerald-400/50 backdrop-blur-sm overflow-hidden"
+            >
               {/* Button background animation */}
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
 
@@ -118,7 +122,8 @@ export default function Team() {
               <motion.span
                 className="relative text-lg"
                 whileHover={{ x: -2 }}
-                transition={{ duration: 0.2 }}>
+                transition={{ duration: 0.2 }}
+              >
                 ←
               </motion.span>
               <span className="relative text-sm md:text-base">
@@ -183,7 +188,8 @@ export default function Team() {
         <div
           className={`text-center mb-20 transition-all duration-1000 ${
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-          }`}>
+          }`}
+        >
           <div className="inline-block mb-6">
             <div className="flex items-center justify-center space-x-4 mb-4">
               <div className="w-12 h-0.5 bg-gradient-to-r from-transparent to-emerald-400"></div>
@@ -231,7 +237,8 @@ export default function Team() {
               isVisible
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-10"
-            }`}>
+            }`}
+          >
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
               <span className="bg-gradient-to-r from-emerald-300 via-emerald-400 to-emerald-300 bg-clip-text text-transparent">
                 Meet the Dream Team
@@ -255,14 +262,16 @@ export default function Team() {
                 style={{ transitionDelay: getRandomDelay(index) }}
                 onMouseEnter={() => setHoveredCard(index)}
                 onMouseLeave={() => setHoveredCard(null)}
-                onClick={() => handleCardClick(contributor)}>
+                onClick={() => handleCardClick(contributor)}
+              >
                 {/* Card */}
                 <div
                   className={`relative bg-gradient-to-br from-gray-800/40 to-gray-900/60 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/30 hover:border-emerald-400/50 transition-all duration-500 group-hover:transform group-hover:scale-105 group-hover:shadow-2xl group-hover:shadow-emerald-400/10 ${
                     contributor.route
                       ? "hover:border-emerald-300/70 hover:shadow-emerald-300/20"
                       : ""
-                  }`}>
+                  }`}
+                >
                   {/* Hover glow effect */}
                   <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
@@ -295,7 +304,8 @@ export default function Team() {
                     <h3
                       className={`text-lg font-semibold text-white mb-2 group-hover:text-emerald-200 transition-colors duration-300 ${
                         contributor.route ? "group-hover:text-emerald-100" : ""
-                      }`}>
+                      }`}
+                    >
                       {contributor.name}
                       {contributor.route && (
                         <span className="ml-2 text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -324,7 +334,8 @@ export default function Team() {
               isVisible
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-10"
-            }`}>
+            }`}
+          >
             <div className="inline-block bg-gradient-to-r from-gray-800/50 to-gray-700/30 backdrop-blur-xl rounded-2xl px-8 py-6 border border-gray-700/30">
               <p className="text-gray-300 text-lg italic mb-4">
                 "Transforming education through collaborative innovation"
@@ -335,7 +346,8 @@ export default function Team() {
                     <div
                       key={i}
                       className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"
-                      style={{ animationDelay: `${i * 0.2}s` }}></div>
+                      style={{ animationDelay: `${i * 0.2}s` }}
+                    ></div>
                   ))}
                 </div>
                 <span className="text-emerald-400 font-semibold">
@@ -346,7 +358,8 @@ export default function Team() {
                     <div
                       key={i}
                       className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"
-                      style={{ animationDelay: `${(i + 5) * 0.2}s` }}></div>
+                      style={{ animationDelay: `${(i + 5) * 0.2}s` }}
+                    ></div>
                   ))}
                 </div>
               </div>

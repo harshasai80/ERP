@@ -48,7 +48,7 @@ export default function RoleBasedLogin() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <motion.img
-              src="/logo128.png"
+              src="/logo192.png"
               alt="Logo"
               className="h-10 w-10 sm:h-12 sm:w-12"
               whileHover={{ scale: 1.2 }}

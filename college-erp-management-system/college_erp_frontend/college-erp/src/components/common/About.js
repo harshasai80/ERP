@@ -62,15 +62,17 @@ export default function About() {
             className="flex items-center gap-4"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}>
+            transition={{ duration: 0.6 }}
+          >
             {/* Enhanced logo container */}
             <motion.div
               className="relative group"
               whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.3 }}>
+              transition={{ duration: 0.3 }}
+            >
               <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/20 to-emerald-600/10 rounded-xl blur-sm group-hover:blur-md transition-all duration-300"></div>
               <motion.img
-                src="/logo128.png"
+                src="/logo192.png"
                 alt="SGP Logo"
                 className="relative w-12 h-12 md:w-14 md:h-14 rounded-xl shadow-xl border border-emerald-400/30 group-hover:border-emerald-400/50 transition-all duration-300"
                 whileHover={{ rotate: 5 }}
@@ -102,13 +104,15 @@ export default function About() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
-            className="relative group">
+            className="relative group"
+          >
             {/* Button glow effect */}
             <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-emerald-400/20 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500 scale-110"></div>
 
             <Link
               to="/"
-              className="relative flex items-center gap-3 bg-gradient-to-r from-emerald-600/90 to-emerald-500/90 hover:from-emerald-500 hover:to-emerald-400 px-4 md:px-6 py-2.5 md:py-3 rounded-xl text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-emerald-500/25 transform hover:-translate-y-0.5 border border-emerald-500/30 hover:border-emerald-400/50 backdrop-blur-sm overflow-hidden">
+              className="relative flex items-center gap-3 bg-gradient-to-r from-emerald-600/90 to-emerald-500/90 hover:from-emerald-500 hover:to-emerald-400 px-4 md:px-6 py-2.5 md:py-3 rounded-xl text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-emerald-500/25 transform hover:-translate-y-0.5 border border-emerald-500/30 hover:border-emerald-400/50 backdrop-blur-sm overflow-hidden"
+            >
               {/* Button background animation */}
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
 
@@ -116,7 +120,8 @@ export default function About() {
               <motion.span
                 className="relative text-lg"
                 whileHover={{ x: -2 }}
-                transition={{ duration: 0.2 }}>
+                transition={{ duration: 0.2 }}
+              >
                 ←
               </motion.span>
               <span className="relative text-sm md:text-base">
@@ -156,21 +161,24 @@ export default function About() {
         className="relative py-20 px-6 bg-gradient-to-r from-emerald-900/20 to-blue-900/20"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}>
+        transition={{ duration: 0.8 }}
+      >
         <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-blue-500/10 backdrop-blur-3xl"></div>
         <div className="relative max-w-4xl mx-auto text-center">
           <motion.h1
             className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-emerald-400 via-blue-400 to-purple-400 bg-clip-text text-transparent"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}>
+            transition={{ duration: 0.8 }}
+          >
             About SGP
           </motion.h1>
           <motion.p
             className="text-xl text-gray-300 leading-relaxed"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}>
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
             Pioneering technical education since 1992
           </motion.p>
         </div>
@@ -183,7 +191,8 @@ export default function About() {
           className="grid lg:grid-cols-2 gap-12 items-center"
           variants={containerVariants}
           initial="hidden"
-          animate="visible">
+          animate="visible"
+        >
           <motion.div className="space-y-6" variants={itemVariants}>
             <div className="bg-gradient-to-br from-gray-800 to-gray-900 p-8 rounded-2xl shadow-2xl border border-gray-700">
               <h2 className="text-3xl font-bold mb-6 text-emerald-400">
@@ -217,7 +226,8 @@ export default function About() {
                     className="flex items-start gap-3 group"
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}>
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                  >
                     <div className="w-2 h-2 bg-emerald-400 rounded-full mt-2 group-hover:bg-emerald-300 transition-colors"></div>
                     <p className="text-gray-300 group-hover:text-white transition-colors leading-relaxed">
                       {commitment}
@@ -233,7 +243,8 @@ export default function About() {
         <motion.section
           variants={containerVariants}
           initial="hidden"
-          animate="visible">
+          animate="visible"
+        >
           <motion.div variants={itemVariants} className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">
               Courses Offered
@@ -245,7 +256,8 @@ export default function About() {
 
           <motion.div
             variants={itemVariants}
-            className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl shadow-2xl overflow-hidden border border-gray-700">
+            className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl shadow-2xl overflow-hidden border border-gray-700"
+          >
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -267,7 +279,8 @@ export default function About() {
                       className="hover:bg-gray-700/50 border-b border-gray-700 transition-colors"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: i * 0.1 }}>
+                      transition={{ duration: 0.5, delay: i * 0.1 }}
+                    >
                       <td className="p-4 font-medium text-emerald-300">
                         {row[0]}
                       </td>
@@ -291,7 +304,8 @@ export default function About() {
           className="grid md:grid-cols-4 gap-6"
           variants={containerVariants}
           initial="hidden"
-          animate="visible">
+          animate="visible"
+        >
           {[
             {
               number: `${new Date().getFullYear() - 1992}+`,
@@ -304,7 +318,8 @@ export default function About() {
             <motion.div
               key={index}
               variants={itemVariants}
-              className="bg-gradient-to-br from-emerald-900/40 to-blue-900/40 p-6 rounded-xl text-center border border-emerald-500/20 hover:border-emerald-500/40 transition-colors">
+              className="bg-gradient-to-br from-emerald-900/40 to-blue-900/40 p-6 rounded-xl text-center border border-emerald-500/20 hover:border-emerald-500/40 transition-colors"
+            >
               <h3 className="text-3xl font-bold text-emerald-400 mb-2">
                 {stat.number}
               </h3>

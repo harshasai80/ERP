@@ -4,12 +4,15 @@ import { useDropzone } from "react-dropzone";
 const DragDropCSVUpload = ({ onChange }) => {
   const [files, setFiles] = useState([]);
 
-  const onDrop = useCallback((acceptedFiles) => {
-    setFiles(acceptedFiles);
-    if (onChange) {
-      onChange(acceptedFiles[0]);
-    }
-  }, [onChange]);
+  const onDrop = useCallback(
+    (acceptedFiles) => {
+      setFiles(acceptedFiles);
+      if (onChange) {
+        onChange(acceptedFiles[0]);
+      }
+    },
+    [onChange]
+  );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -25,9 +28,13 @@ const DragDropCSVUpload = ({ onChange }) => {
       >
         <input {...getInputProps()} />
         {isDragActive ? (
-          <p className="text-emerald-400 font-medium">Drop the CSV file here...</p>
+          <p className="text-emerald-400 font-medium">
+            Drop the CSV file here...
+          </p>
         ) : (
-          <p className="text-gray-300">Drag and drop a CSV file here, or click to select</p>
+          <p className="text-gray-300">
+            Drag and drop a CSV file here, or click to select
+          </p>
         )}
       </div>
     </div>

@@ -73,7 +73,10 @@ const Login = () => {
               height: `${100 + Math.random() * 100}px`,
               top: `${Math.random() * 100}%`,
               left: `${Math.random() * 100}%`,
-              backgroundColor: `rgba(52, 211, 153, ${Math.min(0.2 + formData.length * 0.02, 0.6)})`,
+              backgroundColor: `rgba(52, 211, 153, ${Math.min(
+                0.2 + formData.length * 0.02,
+                0.6
+              )})`,
             }}
           />
         ))}
@@ -84,15 +87,20 @@ const Login = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <motion.img
-              src="/logo128.png"
+              src="/logo192.png"
               alt="Logo"
               className="h-10 w-10 sm:h-12 sm:w-12"
               whileHover={{ scale: 1.2 }}
               transition={{ duration: 0.3 }}
             />
-            <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.3 }}>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.3 }}
+            >
               <h1 className="text-lg sm:text-xl md:text-2xl font-extrabold tracking-wide text-white leading-tight">
-                <span className="hidden sm:inline">Sanjay Gandhi Polytechnic</span>
+                <span className="hidden sm:inline">
+                  Sanjay Gandhi Polytechnic
+                </span>
                 <span className="inline sm:hidden">SGP</span> ERP System
               </h1>
             </motion.div>

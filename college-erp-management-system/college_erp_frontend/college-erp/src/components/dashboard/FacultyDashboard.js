@@ -9,7 +9,6 @@ import { motion } from "framer-motion";
 import Marquee from "../common/Marquee";
 import Footer from "../common/Footer";
 
-
 const FacultyDashboard = () => {
   const [activeTab, setActiveTab] = useState("attendance");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -39,11 +38,10 @@ const FacultyDashboard = () => {
       {/* Header */}
       <header className="bg-gradient-to-r from-emerald-700 to-emerald-900 text-white shadow-md px-4 sm:px-6 py-3 sm:py-4">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
-          
           {/* Left - Logo + Title */}
           <div className="flex items-center gap-3 cursor-pointer">
             <motion.img
-              src="/logo128.png"
+              src="/logo192.png"
               alt="SGP Logo"
               className="h-10 w-10 sm:h-12 sm:w-12"
               whileHover={{ scale: 1.2 }}
@@ -53,15 +51,21 @@ const FacultyDashboard = () => {
               <h1 className="text-lg sm:text-2xl font-bold tracking-wide leading-tight">
                 Sanjay Gandhi Polytechnic ERP
               </h1>
-              <p className="text-emerald-100 text-xs sm:text-sm">Faculty Dashboard</p>
+              <p className="text-emerald-100 text-xs sm:text-sm">
+                Faculty Dashboard
+              </p>
             </div>
           </div>
 
           {/* Right - User Info + Buttons (Desktop) */}
           <div className="hidden sm:flex items-center gap-4">
             <div className="text-right">
-              <p className="text-sm font-semibold truncate max-w-[140px]">{facultyName}</p>
-              <p className="text-xs text-emerald-100 truncate max-w-[140px]">{facultyRole}</p>
+              <p className="text-sm font-semibold truncate max-w-[140px]">
+                {facultyName}
+              </p>
+              <p className="text-xs text-emerald-100 truncate max-w-[140px]">
+                {facultyRole}
+              </p>
             </div>
             <div className="flex gap-2">
               <button
@@ -125,7 +129,6 @@ const FacultyDashboard = () => {
         )}
       </header>
 
-
       {/* Navigation Tabs */}
       <nav className="bg-[#273036] shadow-md relative">
         {/* Mobile */}
@@ -135,8 +138,8 @@ const FacultyDashboard = () => {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             <span className="flex items-center gap-2">
-              <span>{tabs.find(tab => tab.id === activeTab)?.icon}</span>
-              <span>{tabs.find(tab => tab.id === activeTab)?.label}</span>
+              <span>{tabs.find((tab) => tab.id === activeTab)?.icon}</span>
+              <span>{tabs.find((tab) => tab.id === activeTab)?.label}</span>
             </span>
             <motion.span
               animate={{ rotate: mobileMenuOpen ? 180 : 0 }}
