@@ -67,29 +67,32 @@ export default function InstallPWA() {
   };
 
   return (
-    <div className="mt-6 text-center">
+    <>
+      {/* Floating Install Button */}
       {showBtn && (
         <button
           onClick={handleInstallClick}
-          className="px-4 py-2 rounded-xl bg-blue-600 text-white font-medium shadow-md hover:bg-blue-700 transition"
+          className="fixed bottom-5 right-5 px-4 py-2 rounded-xl bg-blue-600 text-white font-medium shadow-lg hover:bg-blue-700 transition"
         >
           Install App
         </button>
       )}
 
+      {/* Floating iOS Instruction Card */}
       {showIosMsg && (
-        <div className="mt-4 p-3 rounded-xl bg-gray-100 text-sm text-gray-700 max-w-xs mx-auto shadow">
-          📲 To install this app:
+        <div className="fixed bottom-5 right-5 max-w-xs p-3 rounded-xl bg-gray-100 text-sm text-gray-700 shadow-lg">
+          📲 To install:
           <br />
           Tap <strong>Share</strong> → <strong>Add to Home Screen</strong>
         </div>
       )}
 
+      {/* Center Toast */}
       {toast && (
-        <div className="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-black text-white px-4 py-2 rounded-lg shadow-lg animate-fadeIn">
+        <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 bg-black text-white px-4 py-2 rounded-lg shadow-lg animate-fadeIn">
           {toast}
         </div>
       )}
-    </div>
+    </>
   );
 }
