@@ -20,6 +20,8 @@ const FacultyDashboard = () => {
   const facultyName = data?.name || "Faculty";
   const facultyRole = data?.role || "Role";
 
+  const isNotFaculty = location.state?.isNotFaculty;
+
   const tabs = [
     { id: "attendance", label: "Attendance", icon: "📋" },
     { id: "assessment", label: "Internal Assessment", icon: "📝" },
@@ -80,6 +82,16 @@ const FacultyDashboard = () => {
               >
                 Logout
               </button>
+              {isNotFaculty && (
+                <button
+                  onClick={() => {
+                    navigate("/hod-dashboard", { state: { data } });
+                  }}
+                  className="bg-purple-600 hover:bg-purple-700 px-3 py-2 rounded-md text-white text-sm font-medium transition"
+                >
+                  Switch to HOD
+                </button>
+              )}
             </div>
           </div>
 
@@ -116,6 +128,17 @@ const FacultyDashboard = () => {
             >
               Reset Password
             </button>
+            {isNotFaculty && (
+              <button
+                onClick={() => {
+                  navigate("/hod-dashboard", { state: { data } });
+                  setUserMenuOpen(false);
+                }}
+                className="bg-purple-600 hover:bg-purple-700 px-3 py-2 rounded-md text-white text-sm font-medium transition"
+              >
+                Switch to HOD
+              </button>
+            )}
             <button
               className="bg-emerald-600 hover:bg-emerald-700 px-3 py-2 rounded-md text-white text-sm font-medium transition"
               onClick={() => {
