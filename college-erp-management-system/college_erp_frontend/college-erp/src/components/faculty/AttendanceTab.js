@@ -197,8 +197,7 @@ function AttendanceTab({ faculty }) {
             <select
               value={department}
               onChange={(e) => setDepartment(e.target.value)}
-              className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-            >
+              className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
               <option value="">Select Department</option>
               <option value="DCS">DCS</option>
               <option value="DEEE">DEEE</option>
@@ -218,8 +217,7 @@ function AttendanceTab({ faculty }) {
               onChange={(e) => {
                 setSemester(e.target.value);
               }}
-              className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-            >
+              className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
               <option value="">Select Semester</option>
               {[...Array(6)].map((_, i) => (
                 <option key={i + 1} value={i + 1}>{`${i + 1}`}</option>
@@ -235,8 +233,7 @@ function AttendanceTab({ faculty }) {
             <select
               value={subjectId}
               onChange={(e) => setSubjectId(e.target.value)}
-              className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-            >
+              className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
               <option value="">Select Subject</option>
               {subjects.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -259,8 +256,7 @@ function AttendanceTab({ faculty }) {
               <select
                 value={batch}
                 onChange={(e) => setBatch(e.target.value)}
-                className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-              >
+                className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
                 <option value="">Select Batch</option>
                 {availableBatches.map((b) => (
                   <option key={b} value={b}>
@@ -332,8 +328,7 @@ function AttendanceTab({ faculty }) {
                     absentStudents.includes(student.registrationNumber)
                       ? "bg-red-900 border-red-600"
                       : "bg-gray-700 border-gray-600"
-                  }`}
-                >
+                  }`}>
                   <div className="flex justify-between items-center">
                     <div className="flex-1 min-w-0">
                       <div className="text-xs sm:text-sm font-medium text-white truncate">
@@ -389,11 +384,23 @@ function AttendanceTab({ faculty }) {
                       absentStudents.includes(student.registrationNumber)
                         ? "bg-red-900"
                         : ""
-                    }`}
-                  >
+                    } cursor-pointer select-none`}
+                    onClick={() =>
+                      handleAttendanceChange(
+                        {
+                          target: {
+                            checked: !absentStudents.includes(
+                              student.registrationNumber
+                            ),
+                          },
+                        },
+                        student.registrationNumber
+                      )
+                    }>
                     <td className="p-2 sm:p-3 text-xs sm:text-sm">
                       {student.registrationNumber}
                     </td>
+                    {/* 👇 Make name cell clickable */}
                     <td className="p-2 sm:p-3 text-xs sm:text-sm">
                       {student.name}
                     </td>
@@ -428,16 +435,14 @@ function AttendanceTab({ faculty }) {
         <button
           onClick={() => fetchStudents(subjectType === "LAB" ? batch : null)}
           disabled={!department || !semester || !subjectId}
-          className="flex-1 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white py-2.5 px-4 rounded-md transition-colors text-xs sm:text-sm font-medium"
-        >
+          className="flex-1 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white py-2.5 px-4 rounded-md transition-colors text-xs sm:text-sm font-medium">
           Load Students
         </button>
 
         <button
           onClick={saveAttendance}
           disabled={students.length === 0}
-          className="flex-1 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white py-2.5 px-4 rounded-md transition-colors text-xs sm:text-sm font-medium"
-        >
+          className="flex-1 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white py-2.5 px-4 rounded-md transition-colors text-xs sm:text-sm font-medium">
           Save Attendance
         </button>
       </div>
