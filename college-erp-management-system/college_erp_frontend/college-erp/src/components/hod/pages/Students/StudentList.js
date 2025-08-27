@@ -99,7 +99,8 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
             return (
               <div
                 key={date}
-                className="bg-gray-800/50 rounded-xl border border-gray-600/30 overflow-hidden shadow-lg">
+                className="bg-gray-800/50 rounded-xl border border-gray-600/30 overflow-hidden shadow-lg"
+              >
                 <div className="bg-emerald-600/20 px-4 py-3 border-b border-gray-600/30">
                   <h4 className="text-white font-semibold text-base">
                     {formatPrettyDate(date)}
@@ -111,7 +112,8 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                     return (
                       <div
                         key={sNum}
-                        className="flex justify-between items-center py-2 px-3 rounded-lg bg-gray-700/30">
+                        className="flex justify-between items-center py-2 px-3 rounded-lg bg-gray-700/30"
+                      >
                         <span className="text-gray-300 font-medium text-sm">
                           {sessions[sNum - 1]}
                         </span>
@@ -122,7 +124,8 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                               : status === "absent"
                               ? "text-red-300 bg-red-900/50 border border-red-700/50"
                               : "text-gray-400 bg-gray-700/50 border border-gray-600/50"
-                          }`}>
+                          }`}
+                        >
                           {status
                             ? status.charAt(0).toUpperCase() + status.slice(1)
                             : "N/A"}
@@ -147,7 +150,8 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                 {sessions.map((s, i) => (
                   <th
                     key={i}
-                    className="px-3 py-3 text-center whitespace-nowrap min-w-[80px]">
+                    className="px-3 py-3 text-center whitespace-nowrap min-w-[80px]"
+                  >
                     {s}
                   </th>
                 ))}
@@ -159,7 +163,8 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                 return (
                   <tr
                     key={date}
-                    className="even:bg-gray-700/20 odd:bg-gray-800/20 border-t border-gray-600/30 hover:bg-gray-600/20">
+                    className="even:bg-gray-700/20 odd:bg-gray-800/20 border-t border-gray-600/30 hover:bg-gray-600/20"
+                  >
                     <td className="px-4 py-3 text-emerald-300 font-semibold sticky left-0 bg-inherit backdrop-blur-sm z-10 whitespace-nowrap">
                       {formatPrettyDate(date)}
                     </td>
@@ -174,7 +179,8 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                               : status === "absent"
                               ? "text-red-400"
                               : "text-gray-400"
-                          }`}>
+                          }`}
+                        >
                           <span
                             className={`inline-block w-full py-1 px-2 rounded ${
                               status === "present"
@@ -182,7 +188,8 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                                 : status === "absent"
                                 ? "bg-red-900/30"
                                 : "bg-gray-700/30"
-                            }`}>
+                            }`}
+                          >
                             {status
                               ? status.charAt(0).toUpperCase() + status.slice(1)
                               : "-"}
@@ -221,7 +228,8 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                   : status === "absent"
                   ? "bg-red-900/10 border-red-700/30"
                   : "bg-gray-800/30 border-gray-600/30"
-              }`}>
+              }`}
+            >
               <div className="p-4">
                 <div className="flex justify-between items-center">
                   <div>
@@ -239,7 +247,8 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                           : status === "absent"
                           ? "text-red-300 bg-red-900/50 border border-red-700/50"
                           : "text-gray-400 bg-gray-700/50 border border-gray-600/50"
-                      }`}>
+                      }`}
+                    >
                       {status
                         ? status.charAt(0).toUpperCase() + status.slice(1)
                         : "-"}
@@ -263,7 +272,8 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
               {sessions.map((s, i) => (
                 <th
                   key={i}
-                  className="px-3 py-3 text-center whitespace-nowrap min-w-[80px]">
+                  className="px-3 py-3 text-center whitespace-nowrap min-w-[80px]"
+                >
                   {s}
                 </th>
               ))}
@@ -285,7 +295,8 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                         : status === "absent"
                         ? "text-red-400"
                         : "text-gray-400"
-                    }`}>
+                    }`}
+                  >
                     <span
                       className={`inline-block w-full py-1 px-2 rounded ${
                         status === "present"
@@ -293,7 +304,8 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                           : status === "absent"
                           ? "bg-red-900/30"
                           : "bg-gray-700/30"
-                      }`}>
+                      }`}
+                    >
                       {status
                         ? status.charAt(0).toUpperCase() + status.slice(1)
                         : "-"}
@@ -457,7 +469,8 @@ const InlineAttendance = ({ registerNo }) => {
                   mode === key
                     ? "bg-emerald-600/20 border-emerald-500 text-emerald-300"
                     : "bg-gray-700/50 border-gray-600 text-gray-300 hover:bg-gray-600/50"
-                }`}>
+                }`}
+              >
                 {label}
               </button>
             ))}
@@ -532,7 +545,8 @@ const InlineAttendance = ({ registerNo }) => {
               loading
                 ? "bg-gray-700 text-gray-300 cursor-not-allowed border-gray-600"
                 : "bg-emerald-600 text-white hover:bg-emerald-700 border-emerald-500"
-            }`}>
+            }`}
+          >
             {loading ? "Searching..." : "Search Records"}
           </button>
         </div>
@@ -712,7 +726,8 @@ const StudentList = ({ department }) => {
             key={text}
             onClick={() => setCurrentPage(page)}
             disabled={disabled}
-            className="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm">
+            className="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+          >
             {text}
           </button>
         ))}
@@ -725,7 +740,8 @@ const StudentList = ({ department }) => {
               currentPage === num
                 ? "bg-emerald-600 text-white"
                 : "bg-gray-700 text-white hover:bg-gray-600"
-            }`}>
+            }`}
+          >
             {num}
           </button>
         ))}
@@ -738,13 +754,155 @@ const StudentList = ({ department }) => {
             key={text}
             onClick={() => setCurrentPage(page)}
             disabled={disabled}
-            className="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm">
+            className="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+          >
             {text}
           </button>
         ))}
       </div>
     );
   };
+
+  const renderMobileStudentCard = (student) => (
+    <div
+      key={student.id}
+      className="bg-gray-800/50 rounded-lg border border-gray-600/30 shadow-lg overflow-hidden"
+    >
+      {/* Student Info Header */}
+      <div className="bg-emerald-600/20 px-4 py-3 border-b border-gray-600/30">
+        <div className="flex justify-between items-start">
+          <div>
+            <h3 className="text-white font-semibold text-base truncate">
+              {student.name}
+            </h3>
+            <p className="text-emerald-300 text-sm font-medium">
+              {student.registrationNumber}
+            </p>
+          </div>
+          <div className="text-right text-xs text-gray-300">
+            <p>{student.department.toUpperCase()}</p>
+            <p>
+              Sem {student.sem}, Sec {student.section}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Actions */}
+      <div className="p-4">
+        <div className="flex flex-wrap gap-2">
+          <button
+            className="flex-1 min-w-[80px] px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm font-medium"
+            onClick={() => handleEdit(student)}
+          >
+            Edit
+          </button>
+          <button
+            className="flex-1 min-w-[80px] px-3 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 text-sm font-medium"
+            onClick={() => handleDelete(student)}
+          >
+            Delete
+          </button>
+          <button
+            className="flex-1 min-w-[120px] px-3 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 text-sm font-medium"
+            onClick={() => toggleExpand(student.id)}
+          >
+            {expandedStudentId === student.id
+              ? "Hide Attendance"
+              : "View Attendance"}
+          </button>
+        </div>
+      </div>
+
+      {/* Expanded Attendance Section */}
+      {expandedStudentId === student.id && (
+        <div className="border-t border-gray-600/30 bg-gray-900/50">
+          <InlineAttendance registerNo={student.registrationNumber} />
+        </div>
+      )}
+    </div>
+  );
+
+  const renderMobileBulkEditCard = (student) => (
+    <div
+      key={student.id}
+      className="bg-gray-800/50 rounded-lg border border-gray-600/30 shadow-lg overflow-hidden"
+    >
+      {/* Bulk Edit Header */}
+      <div className="bg-blue-600/20 px-4 py-3 border-b border-gray-600/30">
+        <h3 className="text-white font-semibold text-base">
+          Editing: {student.name}
+        </h3>
+      </div>
+
+      {/* Bulk Edit Form */}
+      <div className="p-4 space-y-3">
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-1">
+            Registration Number
+          </label>
+          <input
+            value={student.registrationNumber}
+            onChange={(e) =>
+              handleBulkChange(student.id, "registrationNumber", e.target.value)
+            }
+            className="w-full px-3 py-2 bg-gray-700 text-white border border-gray-600 rounded-md focus:border-emerald-500 focus:outline-none"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-1">
+            Name
+          </label>
+          <input
+            value={student.name}
+            onChange={(e) =>
+              handleBulkChange(student.id, "name", e.target.value)
+            }
+            className="w-full px-3 py-2 bg-gray-700 text-white border border-gray-600 rounded-md focus:border-emerald-500 focus:outline-none"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-1">
+            Department
+          </label>
+          <input
+            value={student.department}
+            onChange={(e) =>
+              handleBulkChange(student.id, "department", e.target.value)
+            }
+            className="w-full px-3 py-2 bg-gray-700 text-white border border-gray-600 rounded-md focus:border-emerald-500 focus:outline-none"
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">
+              Semester
+            </label>
+            <input
+              type="number"
+              value={student.sem}
+              onChange={(e) =>
+                handleBulkChange(student.id, "sem", e.target.value)
+              }
+              className="w-full px-3 py-2 bg-gray-700 text-white border border-gray-600 rounded-md focus:border-emerald-500 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">
+              Section
+            </label>
+            <input
+              value={student.section}
+              onChange={(e) =>
+                handleBulkChange(student.id, "section", e.target.value)
+              }
+              className="w-full px-3 py-2 bg-gray-700 text-white border border-gray-600 rounded-md focus:border-emerald-500 focus:outline-none"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <>
@@ -761,13 +919,15 @@ const StudentList = ({ department }) => {
               <div className="flex gap-2">
                 <button
                   className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 text-sm sm:text-base"
-                  onClick={() => setShowOptions(true)}>
+                  onClick={() => setShowOptions(true)}
+                >
                   Add New Student
                 </button>
                 {students.length > 0 && (
                   <button
                     onClick={() => setBulkEditMode(!bulkEditMode)}
-                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm sm:text-base">
+                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm sm:text-base"
+                  >
                     {bulkEditMode ? "Cancel Bulk Edit" : "Bulk Edit"}
                   </button>
                 )}
@@ -779,7 +939,8 @@ const StudentList = ({ department }) => {
               <div className="mb-4">
                 <button
                   onClick={handleBulkSave}
-                  className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700">
+                  className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700"
+                >
                   Save Changes
                 </button>
               </div>
@@ -796,7 +957,8 @@ const StudentList = ({ department }) => {
                   onClick={() => {
                     setShowAddStudent(true);
                     setShowOptions(false);
-                  }}>
+                  }}
+                >
                   Add Individually
                 </button>
                 <div className="w-full text-center">
@@ -813,14 +975,16 @@ const StudentList = ({ department }) => {
                         </span>
                         <button
                           className="text-red-500 hover:text-red-700 text-lg sm:ml-2"
-                          onClick={() => setCsvFile(null)}>
+                          onClick={() => setCsvFile(null)}
+                        >
                           ×
                         </button>
                       </div>
                       <button
                         className="mt-2 px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 w-full text-sm sm:text-base"
                         onClick={handleUpload}
-                        disabled={uploading}>
+                        disabled={uploading}
+                      >
                         {uploading ? "Uploading..." : "Upload File"}
                       </button>
                     </>
@@ -833,12 +997,14 @@ const StudentList = ({ department }) => {
                     l.href = "/csv files/studentcsv.csv";
                     l.download = "studentcsv.csv";
                     l.click();
-                  }}>
+                  }}
+                >
                   Download Sample CSV
                 </button>
                 <button
                   className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 w-full text-sm sm:text-base"
-                  onClick={() => setShowOptions(false)}>
+                  onClick={() => setShowOptions(false)}
+                >
                   Cancel
                 </button>
               </div>
@@ -871,7 +1037,8 @@ const StudentList = ({ department }) => {
                           ...prev,
                           [key]: e.target.value,
                         }))
-                      }>
+                      }
+                    >
                       <option value="">-- Select --</option>
                       {options.map(([text, val]) => (
                         <option key={val} value={val}>
@@ -899,7 +1066,8 @@ const StudentList = ({ department }) => {
                 <button
                   className="w-full px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 disabled:opacity-50"
                   onClick={fetchStudents}
-                  disabled={loading}>
+                  disabled={loading}
+                >
                   {loading ? "Loading..." : "Load Students"}
                 </button>
               </div>
@@ -918,7 +1086,8 @@ const StudentList = ({ department }) => {
                         sortBy === field
                           ? "bg-emerald-600 text-white"
                           : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                      }`}>
+                      }`}
+                    >
                       {label}
                       {sortBy === field && (
                         <span className="ml-1">
@@ -936,160 +1105,186 @@ const StudentList = ({ department }) => {
               </div>
             </div>
 
-            {/* Table with expandable rows */}
-            {students.length > 0 && (
-              <div className="overflow-x-auto">
-                <table className="min-w-full bg-gray-800/30 rounded-lg overflow-hidden">
-                  <thead>
-                    <tr>
-                      {columns.map((col, idx) => (
-                        <th
-                          key={idx}
-                          className="px-4 py-3 text-left text-sm font-semibold text-gray-200 bg-gray-700">
-                          {col}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {(bulkEditMode ? editedStudents : paginatedStudents).map(
-                      (s) => (
-                        <React.Fragment key={s.id}>
-                          <tr className="border-b border-gray-700">
-                            <td className="px-4 py-2">
-                              {bulkEditMode ? (
-                                <input
-                                  value={s.registrationNumber}
-                                  onChange={(e) =>
-                                    handleBulkChange(
-                                      s.id,
-                                      "registrationNumber",
-                                      e.target.value
-                                    )
-                                  }
-                                  className="px-2 py-1 rounded text-black"
-                                />
-                              ) : (
-                                s.registrationNumber
-                              )}
-                            </td>
-                            <td className="px-4 py-2">
-                              {bulkEditMode ? (
-                                <input
-                                  value={s.name}
-                                  onChange={(e) =>
-                                    handleBulkChange(
-                                      s.id,
-                                      "name",
-                                      e.target.value
-                                    )
-                                  }
-                                  className="px-2 py-1 rounded text-black"
-                                />
-                              ) : (
-                                s.name
-                              )}
-                            </td>
-                            <td className="px-4 py-2">
-                              {bulkEditMode ? (
-                                <input
-                                  value={s.department}
-                                  onChange={(e) =>
-                                    handleBulkChange(
-                                      s.id,
-                                      "department",
-                                      e.target.value
-                                    )
-                                  }
-                                  className="px-2 py-1 rounded text-black"
-                                />
-                              ) : (
-                                s.department.toUpperCase()
-                              )}
-                            </td>
-                            <td className="px-4 py-2">
-                              {bulkEditMode ? (
-                                <input
-                                  type="number"
-                                  value={s.sem}
-                                  onChange={(e) =>
-                                    handleBulkChange(
-                                      s.id,
-                                      "sem",
-                                      e.target.value
-                                    )
-                                  }
-                                  className="px-2 py-1 rounded text-black w-20"
-                                />
-                              ) : (
-                                `Sem ${s.sem}`
-                              )}
-                            </td>
-                            <td className="px-4 py-2">
-                              {bulkEditMode ? (
-                                <input
-                                  value={s.section}
-                                  onChange={(e) =>
-                                    handleBulkChange(
-                                      s.id,
-                                      "section",
-                                      e.target.value
-                                    )
-                                  }
-                                  className="px-2 py-1 rounded text-black w-20"
-                                />
-                              ) : (
-                                `Sec ${s.section}`
-                              )}
-                            </td>
-                            <td className="px-4 py-2">
-                              {bulkEditMode ? (
-                                <span className="text-gray-400 text-xs">
-                                  Editing
-                                </span>
-                              ) : (
-                                <div className="flex gap-1 sm:gap-2 justify-center flex-wrap">
-                                  <button
-                                    className="text-xs sm:text-sm px-2 py-1 bg-blue-600 rounded hover:bg-blue-700"
-                                    onClick={() => handleEdit(s)}>
-                                    Edit
-                                  </button>
-                                  <button
-                                    className="text-xs sm:text-sm px-2 py-1 bg-red-600 rounded hover:bg-red-700"
-                                    onClick={() => handleDelete(s)}>
-                                    Delete
-                                  </button>
-                                  <button
-                                    className="text-xs sm:text-sm px-2 py-1 bg-yellow-600 rounded hover:bg-yellow-700"
-                                    onClick={() => toggleExpand(s.id)}>
-                                    {expandedStudentId === s.id
-                                      ? "Hide Attendance"
-                                      : "View Attendance"}
-                                  </button>
-                                </div>
-                              )}
-                            </td>
-                          </tr>
+            {/* Mobile Cards View */}
+            <div className="block lg:hidden">
+              {students.length > 0 && (
+                <div className="space-y-4">
+                  {/* Mobile bulk edit cards */}
+                  {bulkEditMode ? (
+                    <div className="space-y-4">
+                      {editedStudents.map(renderMobileBulkEditCard)}
+                    </div>
+                  ) : (
+                    /* Regular mobile cards */
+                    <div className="space-y-4">
+                      {paginatedStudents.map(renderMobileStudentCard)}
+                    </div>
+                  )}
+                  {renderPagination()}
+                </div>
+              )}
+            </div>
 
-                          {/* Expanded Row */}
-                          {expandedStudentId === s.id && (
-                            <tr className="border-b border-gray-800">
-                              <td colSpan={6} className="bg-gray-900 p-4">
-                                <InlineAttendance
-                                  registerNo={s.registrationNumber}
-                                />
+            {/* Desktop Table View - kept exactly the same */}
+            <div className="hidden lg:block">
+              {students.length > 0 && (
+                <div className="overflow-x-auto">
+                  <table className="min-w-full bg-gray-800/30 rounded-lg overflow-hidden">
+                    <thead>
+                      <tr>
+                        {columns.map((col, idx) => (
+                          <th
+                            key={idx}
+                            className="px-4 py-3 text-left text-sm font-semibold text-gray-200 bg-gray-700"
+                          >
+                            {col}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(bulkEditMode ? editedStudents : paginatedStudents).map(
+                        (s) => (
+                          <React.Fragment key={s.id}>
+                            <tr className="border-b border-gray-700">
+                              <td className="px-4 py-2">
+                                {bulkEditMode ? (
+                                  <input
+                                    value={s.registrationNumber}
+                                    onChange={(e) =>
+                                      handleBulkChange(
+                                        s.id,
+                                        "registrationNumber",
+                                        e.target.value
+                                      )
+                                    }
+                                    className="px-2 py-1 rounded text-black"
+                                  />
+                                ) : (
+                                  s.registrationNumber
+                                )}
+                              </td>
+                              <td className="px-4 py-2">
+                                {bulkEditMode ? (
+                                  <input
+                                    value={s.name}
+                                    onChange={(e) =>
+                                      handleBulkChange(
+                                        s.id,
+                                        "name",
+                                        e.target.value
+                                      )
+                                    }
+                                    className="px-2 py-1 rounded text-black"
+                                  />
+                                ) : (
+                                  s.name
+                                )}
+                              </td>
+                              <td className="px-4 py-2">
+                                {bulkEditMode ? (
+                                  <input
+                                    value={s.department}
+                                    onChange={(e) =>
+                                      handleBulkChange(
+                                        s.id,
+                                        "department",
+                                        e.target.value
+                                      )
+                                    }
+                                    className="px-2 py-1 rounded text-black"
+                                  />
+                                ) : (
+                                  s.department.toUpperCase()
+                                )}
+                              </td>
+                              <td className="px-4 py-2">
+                                {bulkEditMode ? (
+                                  <input
+                                    type="number"
+                                    value={s.sem}
+                                    onChange={(e) =>
+                                      handleBulkChange(
+                                        s.id,
+                                        "sem",
+                                        e.target.value
+                                      )
+                                    }
+                                    className="px-2 py-1 rounded text-black w-20"
+                                  />
+                                ) : (
+                                  `Sem ${s.sem}`
+                                )}
+                              </td>
+                              <td className="px-4 py-2">
+                                {bulkEditMode ? (
+                                  <input
+                                    value={s.section}
+                                    onChange={(e) =>
+                                      handleBulkChange(
+                                        s.id,
+                                        "section",
+                                        e.target.value
+                                      )
+                                    }
+                                    className="px-2 py-1 rounded text-black w-20"
+                                  />
+                                ) : (
+                                  `Sec ${s.section}`
+                                )}
+                              </td>
+                              <td className="px-4 py-2">
+                                {bulkEditMode ? (
+                                  <span className="text-gray-400 text-xs">
+                                    Editing
+                                  </span>
+                                ) : (
+                                  <div className="flex gap-1 sm:gap-2 justify-center flex-wrap">
+                                    <button
+                                      className="text-xs sm:text-sm px-2 py-1 bg-blue-600 rounded hover:bg-blue-700"
+                                      onClick={() => handleEdit(s)}
+                                    >
+                                      Edit
+                                    </button>
+                                    <button
+                                      className="text-xs sm:text-sm px-2 py-1 bg-red-600 rounded hover:bg-red-700"
+                                      onClick={() => handleDelete(s)}
+                                    >
+                                      Delete
+                                    </button>
+                                    <button
+                                      className="text-xs sm:text-sm px-2 py-1 bg-yellow-600 rounded hover:bg-yellow-700"
+                                      onClick={() => toggleExpand(s.id)}
+                                    >
+                                      {expandedStudentId === s.id
+                                        ? "Hide Attendance"
+                                        : "View Attendance"}
+                                    </button>
+                                  </div>
+                                )}
                               </td>
                             </tr>
-                          )}
-                        </React.Fragment>
-                      )
-                    )}
-                  </tbody>
-                </table>
 
-                {renderPagination()}
-              </div>
-            )}
+                            {/* Expanded Row */}
+                            {expandedStudentId === s.id && (
+                              <tr className="border-b border-gray-800">
+                                <td colSpan={6} className="bg-gray-900 p-4">
+                                  <InlineAttendance
+                                    registerNo={s.registrationNumber}
+                                  />
+                                </td>
+                              </tr>
+                            )}
+                          </React.Fragment>
+                        )
+                      )}
+                    </tbody>
+                  </table>
+
+                  {renderPagination()}
+                </div>
+              )}
+            </div>
 
             {students.length === 0 && !loading && (
               <div className="text-center py-12">
