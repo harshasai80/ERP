@@ -337,10 +337,10 @@ const InlineAttendance = ({ registerNo }) => {
     if (mode === "range") {
       const diffTime = Math.abs(dateRange.end - dateRange.start);
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      if (diffDays > 15) {
+      if (diffDays > 7) {
         if (!isAutoLoad)
           alert(
-            "Date range cannot exceed 15 days. Please select a shorter range."
+            "Date range cannot exceed 7 days. Please select a shorter range."
           );
         return;
       }
@@ -410,12 +410,22 @@ const InlineAttendance = ({ registerNo }) => {
     <div className="bg-gray-900/70 rounded-xl border border-gray-700 p-4 sm:p-6">
       {/* Show today's date prominently */}
       <div className="mb-4 text-center">
-        <h3 className="text-lg font-semibold text-emerald-300">
-          Attendance for {formatPrettyDate(new Date())}
-        </h3>
-        <p className="text-sm text-gray-400">
-          Showing today's attendance. Use controls below to view other dates.
-        </p>
+        {mode === "single" ? (
+          <>
+            <h3 className="text-lg font-semibold text-emerald-300">
+              Attendance for {formatPrettyDate(date)}
+            </h3>
+            <p className="text-sm text-gray-400">
+              Showing today's attendance. Use controls below to view other
+              dates.
+            </p>
+          </>
+        ) : (
+          <h3 className="text-lg font-semibold text-emerald-300">
+            Attendance for {formatPrettyDate(dateRange.start)} to{" "}
+            {formatPrettyDate(dateRange.end)}
+          </h3>
+        )}
       </div>
 
       {/* Initial loading state */}
@@ -487,9 +497,9 @@ const InlineAttendance = ({ registerNo }) => {
                       const diff = Math.ceil(
                         Math.abs(newRange.end - d) / (1000 * 60 * 60 * 24)
                       );
-                      if (diff > 15) {
+                      if (diff > 7) {
                         const newEnd = new Date(d);
-                        newEnd.setDate(newEnd.getDate() + 15);
+                        newEnd.setDate(newEnd.getDate() + 7);
                         newRange.end = newEnd;
                       }
                       return newRange;
@@ -510,9 +520,9 @@ const InlineAttendance = ({ registerNo }) => {
                       const diff = Math.ceil(
                         Math.abs(d - newRange.start) / (1000 * 60 * 60 * 24)
                       );
-                      if (diff > 15) {
+                      if (diff > 7) {
                         const newStart = new Date(d);
-                        newStart.setDate(newStart.getDate() - 15);
+                        newStart.setDate(newStart.getDate() - 7);
                         newRange.start = newStart;
                       }
                       return newRange;
@@ -521,7 +531,7 @@ const InlineAttendance = ({ registerNo }) => {
                   className="bg-gray-800 text-white border border-gray-600 rounded-lg px-3 py-2"
                 />
               </div>
-              <p className="text-xs text-gray-400">Maximum range: 15 days</p>
+              <p className="text-xs text-gray-400">Maximum range: 7 days</p>
             </div>
           )}
 
