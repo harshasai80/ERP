@@ -15,7 +15,7 @@ import Contact from "./components/common/Contact";
 import Team from "./components/common/Team";
 import Rohan from "./components/portfolios/Rohan";
 import Zuber from "./components/portfolios/Zuber";
-import InstallPWA from "./components/InstallPWA";
+// import InstallPWA from "./components/InstallPWA";
 
 const App = () => {
   return (
@@ -38,7 +38,7 @@ const App = () => {
           <Route path="/zuber" element={<Zuber />} />
         </Routes>
       </BrowserRouter>
-      <InstallPWA />
+      {/* <InstallPWA /> */}
     </>
   );
 };

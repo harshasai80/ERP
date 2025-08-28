@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PiEyeClosedBold, PiEyeBold } from "react-icons/pi";
+import { IoClose } from "react-icons/io5"; // Import X icon
 import Api from "../Api";
 
 export default function ResetPassword() {
@@ -40,12 +41,12 @@ export default function ResetPassword() {
         }
       );
 
-      const data = await response.data;
+      const res = await response.data;
 
-      if (data.status !== 200) {
-        setError(data.message || "Failed to reset password");
+      if (res.status !== 200) {
+        setError(res.message || "Failed to reset password");
       } else {
-        navigate("/reset-success");
+        navigate("/reset-success", { state: { data } });
       }
     } catch (error) {
       setError("Something went wrong. Please try again.");
@@ -54,7 +55,16 @@ export default function ResetPassword() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white font-sans">
-      <div className="w-full max-w-md bg-[#2d2f36] p-8 rounded-xl shadow-lg">
+      <div className="w-full max-w-md bg-[#2d2f36] p-8 rounded-xl shadow-lg relative">
+        {/* X button to cancel */}
+        <button
+          type="button"
+          className="absolute top-4 right-4 text-2xl text-red-500 hover:text-red-400"
+          onClick={() => navigate(-1)} // go back
+        >
+          <IoClose />
+        </button>
+
         <h2 className="text-2xl font-bold text-center mb-6">
           Reset Your Password
         </h2>
