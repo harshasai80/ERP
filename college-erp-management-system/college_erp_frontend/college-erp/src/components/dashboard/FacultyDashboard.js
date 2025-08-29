@@ -7,7 +7,7 @@ import AddSubjectTab from "../faculty/AddSubjectTab";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Marquee from "../common/Marquee";
-import Footer from "../common/Footer";
+import Footer from "../common/footer/Footer";
 
 const FacultyDashboard = () => {
   const [activeTab, setActiveTab] = useState("attendance");
@@ -72,14 +72,14 @@ const FacultyDashboard = () => {
             <div className="flex gap-2">
               <button
                 className="bg-yellow-500 hover:bg-yellow-600 px-3 py-2 rounded-md text-white text-sm font-medium transition"
-                onClick={() => navigate("/reset-password", { state: { data } })}
-              >
+                onClick={() =>
+                  navigate("/reset-password", { state: { data } })
+                }>
                 Reset Password
               </button>
               <button
                 className="bg-emerald-600 hover:bg-emerald-700 px-3 py-2 rounded-md text-white text-sm font-medium transition"
-                onClick={() => navigate("/")}
-              >
+                onClick={() => navigate("/")}>
                 Logout
               </button>
               {isNotFaculty && (
@@ -87,8 +87,7 @@ const FacultyDashboard = () => {
                   onClick={() => {
                     navigate("/hod-dashboard", { state: { data } });
                   }}
-                  className="bg-purple-600 hover:bg-purple-700 px-3 py-2 rounded-md text-white text-sm font-medium transition"
-                >
+                  className="bg-purple-600 hover:bg-purple-700 px-3 py-2 rounded-md text-white text-sm font-medium transition">
                   Switch to HOD
                 </button>
               )}
@@ -99,8 +98,7 @@ const FacultyDashboard = () => {
           <div className="sm:hidden">
             <button
               onClick={() => setUserMenuOpen(!userMenuOpen)}
-              className="p-2 rounded-md bg-emerald-600 hover:bg-emerald-700 transition"
-            >
+              className="p-2 rounded-md bg-emerald-600 hover:bg-emerald-700 transition">
               {userMenuOpen ? "✖" : "☰"}
             </button>
           </div>
@@ -113,8 +111,7 @@ const FacultyDashboard = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="sm:hidden mt-3 bg-emerald-800 rounded-lg shadow-lg p-4 flex flex-col gap-3"
-          >
+            className="sm:hidden mt-3 bg-emerald-800 rounded-lg shadow-lg p-4 flex flex-col gap-3">
             <div className="text-center border-b border-emerald-700 pb-2 mb-2">
               <p className="text-sm font-semibold">{facultyName}</p>
               <p className="text-xs text-emerald-100">{facultyRole}</p>
@@ -124,8 +121,7 @@ const FacultyDashboard = () => {
               onClick={() => {
                 navigate("/reset-password", { state: { data } });
                 setUserMenuOpen(false);
-              }}
-            >
+              }}>
               Reset Password
             </button>
             {isNotFaculty && (
@@ -134,8 +130,7 @@ const FacultyDashboard = () => {
                   navigate("/hod-dashboard", { state: { data } });
                   setUserMenuOpen(false);
                 }}
-                className="bg-purple-600 hover:bg-purple-700 px-3 py-2 rounded-md text-white text-sm font-medium transition"
-              >
+                className="bg-purple-600 hover:bg-purple-700 px-3 py-2 rounded-md text-white text-sm font-medium transition">
                 Switch to HOD
               </button>
             )}
@@ -144,8 +139,7 @@ const FacultyDashboard = () => {
               onClick={() => {
                 navigate("/");
                 setUserMenuOpen(false);
-              }}
-            >
+              }}>
               Logout
             </button>
           </motion.div>
@@ -158,16 +152,14 @@ const FacultyDashboard = () => {
         <div className="sm:hidden px-3 py-2">
           <button
             className="w-full bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-lg text-white font-medium text-sm flex items-center justify-between transition-colors"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             <span className="flex items-center gap-2">
               <span>{tabs.find((tab) => tab.id === activeTab)?.icon}</span>
               <span>{tabs.find((tab) => tab.id === activeTab)?.label}</span>
             </span>
             <motion.span
               animate={{ rotate: mobileMenuOpen ? 180 : 0 }}
-              transition={{ duration: 0.2 }}
-            >
+              transition={{ duration: 0.2 }}>
               ▼
             </motion.span>
           </button>
@@ -180,8 +172,7 @@ const FacultyDashboard = () => {
               opacity: mobileMenuOpen ? 1 : 0,
             }}
             transition={{ duration: 0.25 }}
-            className="overflow-hidden"
-          >
+            className="overflow-hidden">
             <div className="mt-2 bg-[#1f2937] rounded-lg shadow-lg">
               {tabs.map((tab, index) => (
                 <button
@@ -193,8 +184,7 @@ const FacultyDashboard = () => {
                   } ${index === 0 ? "rounded-t-lg" : ""} ${
                     index === tabs.length - 1 ? "rounded-b-lg" : ""
                   }`}
-                  onClick={() => handleTabChange(tab.id)}
-                >
+                  onClick={() => handleTabChange(tab.id)}>
                   <span className="text-base">{tab.icon}</span>
                   <span>{tab.label}</span>
                 </button>
@@ -214,8 +204,7 @@ const FacultyDashboard = () => {
                       ? "bg-emerald-600 shadow-md text-white"
                       : "text-emerald-100 hover:bg-emerald-800 hover:text-white"
                   }`}
-                  onClick={() => handleTabChange(tab.id)}
-                >
+                  onClick={() => handleTabChange(tab.id)}>
                   <span className="hidden md:inline">{tab.icon}</span>
                   <span>{tab.label}</span>
                 </button>
@@ -234,8 +223,7 @@ const FacultyDashboard = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
-          key={activeTab}
-        >
+          key={activeTab}>
           <div className="overflow-x-auto">
             {activeTab === "attendance" && <AttendanceTab faculty={data} />}
             {activeTab === "assessment" && <AssessmentTab faculty={data} />}

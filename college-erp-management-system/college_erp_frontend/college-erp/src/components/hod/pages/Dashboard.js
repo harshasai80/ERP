@@ -2,15 +2,15 @@ import React, { useEffect, useState, useCallback } from "react";
 import { FaChalkboardTeacher } from "react-icons/fa";
 import Api from "../../../Api";
 
-const MAX_VISIBLE_STUDENTS = 50;
-const MAX_VISIBLE_FACULTY = 20;
+const MAX_VISIBLE_STUDENTS = 100;
+const MAX_VISIBLE_FACULTY = 30;
 const STUDENT_SIZE = 24;
 const FACULTY_SIZE = 40;
 const FRAME_INTERVAL = 80;
 
 const Dashboard = ({ department }) => {
-  const [setStudents] = useState([]);
-  const [setFaculty] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [faculty, setFaculty] = useState([]);
   const [studentCount, setStudentCount] = useState(0);
   const [facultyCount, setFacultyCount] = useState(0);
   const [displayedStudentCount, setDisplayedStudentCount] = useState(0);
@@ -76,10 +76,8 @@ const Dashboard = ({ department }) => {
         const facultyData =
           facultyRes.data.data.filter((f) => f.role !== "HOD") || [];
 
-        // setStudentCount(studentsData.length);
-        setStudentCount(300);
-        // setFacultyCount(facultyData.length);
-        setFacultyCount(20);
+        setStudentCount(studentsData.length);
+        setFacultyCount(facultyData.length);
 
         const visibleStudents = studentsData.slice(0, MAX_VISIBLE_STUDENTS);
         const visibleFaculty = facultyData.slice(0, MAX_VISIBLE_FACULTY);
@@ -224,8 +222,7 @@ const Dashboard = ({ department }) => {
       {/* Classroom */}
       <div
         className="relative w-full max-w-xs sm:max-w-2xl lg:max-w-5xl h-48 sm:h-64 lg:h-96 bg-gray-900 rounded-2xl shadow-xl overflow-hidden border border-gray-700"
-        style={{ width: containerWidth }}
-      >
+        style={{ width: containerWidth }}>
         {/* Students */}
         {studentEntities.map((entity) => (
           <div
@@ -235,8 +232,7 @@ const Dashboard = ({ department }) => {
               left: `${entity.x}px`,
               top: `${entity.y}px`,
               zIndex: 10,
-            }}
-          >
+            }}>
             <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 px-3 py-1 bg-gray-800 text-sm rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-20 border border-gray-600">
               {entity.data.name}
               {entity.data.registrationNumber
@@ -255,8 +251,7 @@ const Dashboard = ({ department }) => {
               left: `${entity.x}px`,
               top: `${entity.y}px`,
               zIndex: 10,
-            }}
-          >
+            }}>
             <FaChalkboardTeacher />
             <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 px-3 py-1 bg-gray-800 text-sm rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-20 border border-gray-600 text-white">
               {entity.data.name}

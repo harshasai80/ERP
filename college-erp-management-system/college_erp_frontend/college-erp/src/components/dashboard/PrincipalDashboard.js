@@ -6,7 +6,7 @@ import StudentList from "../principal/pages/Students/StudentList";
 import { motion } from "framer-motion";
 import Navbar from "../principal/components/layout/Navbar";
 import Marquee from "../common/Marquee";
-import Footer from "../common/Footer";
+import Footer from "../common/footer/Footer";
 
 const PrincipalDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -36,8 +36,7 @@ const PrincipalDashboard = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
-        className="flex justify-center mt-6 border-b border-gray-700 px-2 sm:px-6"
-      >
+        className="flex justify-center mt-6 border-b border-gray-700 px-2 sm:px-6">
         <div className="flex flex-wrap sm:flex-nowrap justify-center gap-2 sm:space-x-6 w-full">
           {["dashboard", "faculty", "students"].map((tab) => (
             <button
@@ -48,8 +47,7 @@ const PrincipalDashboard = () => {
                     ? "bg-emerald-500 text-white"
                     : "bg-gray-800 text-gray-300 hover:bg-gray-700"
                 }`}
-              onClick={() => setActiveTab(tab)}
-            >
+              onClick={() => setActiveTab(tab)}>
               {tab}
             </button>
           ))}
@@ -62,8 +60,7 @@ const PrincipalDashboard = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-gray-800 rounded-xl p-4 sm:p-6 shadow-xl overflow-x-auto"
-        >
+          className="bg-gray-800 rounded-xl p-4 sm:p-6 shadow-xl overflow-x-auto">
           {renderContent()}
         </motion.div>
       </main>
