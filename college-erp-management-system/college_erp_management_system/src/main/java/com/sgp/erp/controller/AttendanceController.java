@@ -49,4 +49,10 @@ public class AttendanceController {
         return attendanceService.addAttendanceRecords(attendanceData);
     }
 
+    @GetMapping("/all-attendance")
+    public ResponseEntity<ResponseStructure<List<Attendance>>> getAllAttendanceByRegisterNo(
+            @RequestParam String registerNo) {
+        return attendanceService.getAttendanceByRegisterNo(registerNo);
+    }
+
 }

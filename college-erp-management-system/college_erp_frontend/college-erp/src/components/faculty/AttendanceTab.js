@@ -179,6 +179,15 @@ function AttendanceTab({ faculty }) {
     setTimeout(() => setAlert({ show: false, message: "", type: "" }), 5000);
   };
 
+  // Toggle all students present/absent
+  const toggleAllStudents = () => {
+    if (absentStudents.length === students.length) {
+      setAbsentStudents([]);
+    } else {
+      setAbsentStudents(students.map((s) => s.registrationNumber));
+    }
+  };
+
   return (
     <div className="bg-gray-800 p-3 sm:p-6 rounded-md shadow-md mt-5 text-white max-w-full">
       {/* Header */}
@@ -197,7 +206,8 @@ function AttendanceTab({ faculty }) {
             <select
               value={department}
               onChange={(e) => setDepartment(e.target.value)}
-              className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+              className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+            >
               <option value="">Select Department</option>
               <option value="DCS">DCS</option>
               <option value="DEEE">DEEE</option>
@@ -217,7 +227,8 @@ function AttendanceTab({ faculty }) {
               onChange={(e) => {
                 setSemester(e.target.value);
               }}
-              className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+              className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+            >
               <option value="">Select Semester</option>
               {[...Array(6)].map((_, i) => (
                 <option key={i + 1} value={i + 1}>{`${i + 1}`}</option>
@@ -233,7 +244,8 @@ function AttendanceTab({ faculty }) {
             <select
               value={subjectId}
               onChange={(e) => setSubjectId(e.target.value)}
-              className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+              className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+            >
               <option value="">Select Subject</option>
               {subjects.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -256,7 +268,8 @@ function AttendanceTab({ faculty }) {
               <select
                 value={batch}
                 onChange={(e) => setBatch(e.target.value)}
-                className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              >
                 <option value="">Select Batch</option>
                 {availableBatches.map((b) => (
                   <option key={b} value={b}>
@@ -312,120 +325,145 @@ function AttendanceTab({ faculty }) {
         </div>
       </div>
 
-      {/* Students Table */}
+      {/* Students Grid */}
       {students.length > 0 && (
         <div className="mb-6">
-          {/* Mobile Card View (visible on small screens) */}
-          <div className="block sm:hidden">
-            <h3 className="text-sm font-semibold text-emerald-400 mb-3">
+          {/* Header with bulk actions */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
+            <h3 className="text-sm sm:text-base font-semibold text-emerald-400">
               Students ({students.length})
             </h3>
-            <div className="space-y-2 max-h-80 overflow-y-auto">
-              {students.map((student, index) => (
+            <div className="flex flex-col sm:flex-row gap-2 text-xs">
+              <button
+                onClick={toggleAllStudents}
+                className="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 rounded text-white transition-colors"
+              >
+                {absentStudents.length === students.length
+                  ? "Mark All Present"
+                  : "Mark All Absent"}
+              </button>
+              <div className="text-gray-300 self-center">
+                Present: {students.length - absentStudents.length} | Absent:{" "}
+                {absentStudents.length}
+              </div>
+            </div>
+          </div>
+
+          {/* Responsive Grid Layout */}
+          <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2 sm:gap-3 max-h-96 overflow-y-auto p-1">
+            {students.map((student) => (
+              <div
+                key={student.registrationNumber}
+                className={`relative p-2 sm:p-3 rounded-lg border cursor-pointer transition-all duration-200 hover:scale-105 ${
+                  absentStudents.includes(student.registrationNumber)
+                    ? "bg-red-900 border-red-600 shadow-red-500/20"
+                    : "bg-gray-700 border-gray-600 hover:border-emerald-500 shadow-gray-500/10"
+                } shadow-lg hover:shadow-xl`}
+                onClick={() =>
+                  handleAttendanceChange(
+                    {
+                      target: {
+                        checked: !absentStudents.includes(
+                          student.registrationNumber
+                        ),
+                      },
+                    },
+                    student.registrationNumber
+                  )
+                }
+              >
+                {/* Status indicator */}
                 <div
-                  key={student.registrationNumber}
-                  className={`p-3 rounded border ${
+                  className={`absolute top-1 right-1 w-3 h-3 rounded-full ${
                     absentStudents.includes(student.registrationNumber)
-                      ? "bg-red-900 border-red-600"
-                      : "bg-gray-700 border-gray-600"
-                  }`}>
-                  <div className="flex justify-between items-center">
-                    <div className="flex-1 min-w-0">
-                      <div className="text-xs sm:text-sm font-medium text-white truncate">
-                        {student.name}
-                      </div>
-                      <div className="text-xs text-gray-400">
-                        Roll: {student.registrationNumber}
-                      </div>
-                    </div>
-                    <div className="flex items-center ml-3">
-                      <label className="flex items-center cursor-pointer">
-                        <input
-                          type="checkbox"
-                          onChange={(e) =>
-                            handleAttendanceChange(
-                              e,
-                              student.registrationNumber
-                            )
-                          }
-                          checked={absentStudents.includes(
-                            student.registrationNumber
-                          )}
-                          className="w-4 h-4 text-red-500 border-gray-600 focus:ring-red-500 rounded"
-                        />
-                        <span className="ml-2 text-xs text-gray-300">
-                          Absent
-                        </span>
-                      </label>
-                    </div>
+                      ? "bg-red-500"
+                      : "bg-emerald-500"
+                  }`}
+                ></div>
+
+                {/* Student Info */}
+                <div className="text-center">
+                  <div className="text-xs sm:text-sm font-medium text-white mb-1 truncate">
+                    {student.name}
+                  </div>
+                  <div className="text-xs text-gray-400 mb-2">
+                    {student.registrationNumber}
+                  </div>
+
+                  {/* Status Badge */}
+                  <div
+                    className={`text-xs px-2 py-1 rounded-full font-medium ${
+                      absentStudents.includes(student.registrationNumber)
+                        ? "bg-red-700 text-red-200"
+                        : "bg-emerald-700 text-emerald-200"
+                    }`}
+                  >
+                    {absentStudents.includes(student.registrationNumber)
+                      ? "Absent"
+                      : "Present"}
                   </div>
                 </div>
+
+                {/* Hidden checkbox for accessibility */}
+                <input
+                  type="checkbox"
+                  onChange={(e) =>
+                    handleAttendanceChange(e, student.registrationNumber)
+                  }
+                  checked={absentStudents.includes(student.registrationNumber)}
+                  className="sr-only"
+                  tabIndex={-1}
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Mobile-specific compact view for very small screens */}
+          <div className="block xs:hidden mt-4">
+            <div className="text-xs text-gray-400 mb-2">
+              Tap students to mark absent/present
+            </div>
+            <div className="flex flex-wrap gap-1">
+              {students.map((student) => (
+                <button
+                  key={student.registrationNumber}
+                  onClick={() =>
+                    handleAttendanceChange(
+                      {
+                        target: {
+                          checked: !absentStudents.includes(
+                            student.registrationNumber
+                          ),
+                        },
+                      },
+                      student.registrationNumber
+                    )
+                  }
+                  className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
+                    absentStudents.includes(student.registrationNumber)
+                      ? "bg-red-700 text-red-200"
+                      : "bg-emerald-700 text-emerald-200"
+                  }`}
+                >
+                  {student.registrationNumber}
+                </button>
               ))}
             </div>
           </div>
 
-          {/* Desktop Table View (hidden on small screens) */}
-          <div className="hidden sm:block overflow-x-auto">
-            <table className="w-full border-collapse bg-gray-700 rounded overflow-hidden min-w-[400px]">
-              <thead>
-                <tr className="bg-emerald-700 text-white text-xs sm:text-sm">
-                  <th className="p-2 sm:p-3 text-left">Roll No</th>
-                  <th className="p-2 sm:p-3 text-left">Name</th>
-                  <th className="p-2 sm:p-3 text-center">Absent</th>
-                </tr>
-              </thead>
-              <tbody className="max-h-80 overflow-y-auto">
-                {students.map((student, index) => (
-                  <tr
-                    key={student.registrationNumber}
-                    className={`${
-                      index % 2 === 0 ? "bg-gray-800" : "bg-gray-700"
-                    } ${
-                      absentStudents.includes(student.registrationNumber)
-                        ? "bg-red-900"
-                        : ""
-                    } cursor-pointer select-none`}
-                    onClick={() =>
-                      handleAttendanceChange(
-                        {
-                          target: {
-                            checked: !absentStudents.includes(
-                              student.registrationNumber
-                            ),
-                          },
-                        },
-                        student.registrationNumber
-                      )
-                    }>
-                    <td className="p-2 sm:p-3 text-xs sm:text-sm">
-                      {student.registrationNumber}
-                    </td>
-                    {/* 👇 Make name cell clickable */}
-                    <td className="p-2 sm:p-3 text-xs sm:text-sm">
-                      {student.name}
-                    </td>
-                    <td className="p-2 sm:p-3 text-center">
-                      <input
-                        type="checkbox"
-                        onChange={(e) =>
-                          handleAttendanceChange(e, student.registrationNumber)
-                        }
-                        checked={absentStudents.includes(
-                          student.registrationNumber
-                        )}
-                        className="w-4 h-4 text-red-500 border-gray-600 focus:ring-red-500 rounded cursor-pointer"
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Summary */}
-          <div className="mt-3 text-xs sm:text-sm text-gray-300 text-center">
-            Present: {students.length - absentStudents.length} | Absent:{" "}
-            {absentStudents.length} | Total: {students.length}
+          {/* Summary for larger screens */}
+          <div className="hidden xs:block mt-4 text-xs sm:text-sm text-gray-300 text-center bg-gray-700 p-2 rounded">
+            <div className="flex justify-center gap-4">
+              <span className="flex items-center gap-1">
+                <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                Present: {students.length - absentStudents.length}
+              </span>
+              <span className="flex items-center gap-1">
+                <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                Absent: {absentStudents.length}
+              </span>
+              <span>Total: {students.length}</span>
+            </div>
           </div>
         </div>
       )}
@@ -435,14 +473,16 @@ function AttendanceTab({ faculty }) {
         <button
           onClick={() => fetchStudents(subjectType === "LAB" ? batch : null)}
           disabled={!department || !semester || !subjectId}
-          className="flex-1 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white py-2.5 px-4 rounded-md transition-colors text-xs sm:text-sm font-medium">
+          className="flex-1 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white py-2.5 px-4 rounded-md transition-colors text-xs sm:text-sm font-medium"
+        >
           Load Students
         </button>
 
         <button
           onClick={saveAttendance}
           disabled={students.length === 0}
-          className="flex-1 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white py-2.5 px-4 rounded-md transition-colors text-xs sm:text-sm font-medium">
+          className="flex-1 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white py-2.5 px-4 rounded-md transition-colors text-xs sm:text-sm font-medium"
+        >
           Save Attendance
         </button>
       </div>

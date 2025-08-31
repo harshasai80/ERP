@@ -104,4 +104,8 @@ public class AttendanceDao {
         return attendanceRepository.saveAll(savedAttendances);
     }
 
+    public List<Attendance> getAttendanceByRegisterNo(String registerNo) {
+        return attendanceRepository.findAttendanceByRegistrationNumber(registerNo);
+    }
+
 }
