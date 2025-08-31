@@ -9,8 +9,8 @@ const FACULTY_SIZE = 40;
 const FRAME_INTERVAL = 80;
 
 const Dashboard = ({ department }) => {
-  const [setStudents] = useState([]);
-  const [setFaculty] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [faculty, setFaculty] = useState([]);
   const [studentCount, setStudentCount] = useState(0);
   const [facultyCount, setFacultyCount] = useState(0);
   const [displayedStudentCount, setDisplayedStudentCount] = useState(0);
@@ -76,10 +76,8 @@ const Dashboard = ({ department }) => {
         const facultyData =
           facultyRes.data.data.filter((f) => f.role !== "HOD") || [];
 
-        // setStudentCount(studentsData.length);
-        setStudentCount(300);
-        // setFacultyCount(facultyData.length);
-        setFacultyCount(20);
+        setStudentCount(studentsData.length);
+        setFacultyCount(facultyData.length);
 
         const visibleStudents = studentsData.slice(0, MAX_VISIBLE_STUDENTS);
         const visibleFaculty = facultyData.slice(0, MAX_VISIBLE_FACULTY);
