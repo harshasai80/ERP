@@ -109,7 +109,8 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
             return (
               <div
                 key={dateIndex}
-                className="bg-gray-800/50 rounded-xl border border-gray-600/30 overflow-hidden shadow-lg">
+                className="bg-gray-800/50 rounded-xl border border-gray-600/30 overflow-hidden shadow-lg"
+              >
                 <div className="bg-emerald-600/20 px-4 py-3 border-b border-gray-600/30">
                   <h4 className="text-white font-semibold text-base">
                     {formatDate(date)}
@@ -121,7 +122,8 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                     return (
                       <div
                         key={sessionNum}
-                        className="flex justify-between items-center py-2 px-3 rounded-lg bg-gray-700/30">
+                        className="flex justify-between items-center py-2 px-3 rounded-lg bg-gray-700/30"
+                      >
                         <span className="text-gray-300 font-medium text-sm">
                           {sessions[sessionNum - 1]}
                         </span>
@@ -132,7 +134,8 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                               : status === "absent"
                               ? "text-red-300 bg-red-900/50 border border-red-700/50"
                               : "text-gray-400 bg-gray-700/50 border border-gray-600/50"
-                          }`}>
+                          }`}
+                        >
                           {status
                             ? status.charAt(0).toUpperCase() + status.slice(1)
                             : "N/A"}
@@ -157,7 +160,8 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                 {sessions.map((session, index) => (
                   <th
                     key={index}
-                    className="px-3 py-3 text-center whitespace-nowrap min-w-[80px]">
+                    className="px-3 py-3 text-center whitespace-nowrap min-w-[80px]"
+                  >
                     {session}
                   </th>
                 ))}
@@ -169,7 +173,8 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                 return (
                   <tr
                     key={index}
-                    className="even:bg-gray-700/20 odd:bg-gray-800/20 border-t border-gray-600/30 hover:bg-gray-600/20 transition-colors">
+                    className="even:bg-gray-700/20 odd:bg-gray-800/20 border-t border-gray-600/30 hover:bg-gray-600/20 transition-colors"
+                  >
                     <td className="px-4 py-3 text-emerald-300 font-semibold sticky left-0 bg-inherit backdrop-blur-sm z-10 whitespace-nowrap">
                       {formatDate(date)}
                     </td>
@@ -184,7 +189,8 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                               : status === "absent"
                               ? "text-red-400"
                               : "text-gray-400"
-                          }`}>
+                          }`}
+                        >
                           <span
                             className={`inline-block w-full py-1 px-2 rounded ${
                               status === "present"
@@ -192,7 +198,8 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                                 : status === "absent"
                                 ? "bg-red-900/30"
                                 : "bg-gray-700/30"
-                            }`}>
+                            }`}
+                          >
                             {status
                               ? status.charAt(0).toUpperCase() + status.slice(1)
                               : "-"}
@@ -246,7 +253,8 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                   : status === "absent"
                   ? "bg-red-900/10 border-red-700/30"
                   : "bg-gray-800/30 border-gray-600/30"
-              }`}>
+              }`}
+            >
               <div className="p-4">
                 <div className="flex justify-between items-center">
                   <div>
@@ -264,7 +272,8 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                           : status === "absent"
                           ? "text-red-300 bg-red-900/50 border border-red-700/50"
                           : "text-gray-400 bg-gray-700/50 border border-gray-600/50"
-                      }`}>
+                      }`}
+                    >
                       {status
                         ? status.charAt(0).toUpperCase() + status.slice(1)
                         : "-"}
@@ -288,7 +297,8 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
               {sessions.map((session, index) => (
                 <th
                   key={index}
-                  className="px-3 py-3 text-center whitespace-nowrap min-w-[80px]">
+                  className="px-3 py-3 text-center whitespace-nowrap min-w-[80px]"
+                >
                   {session}
                 </th>
               ))}
@@ -312,7 +322,8 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                         : status === "absent"
                         ? "text-red-400"
                         : "text-gray-400"
-                    }`}>
+                    }`}
+                  >
                     <span
                       className={`inline-block w-full py-1 px-2 rounded ${
                         status === "present"
@@ -320,7 +331,8 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                           : status === "absent"
                           ? "bg-red-900/30"
                           : "bg-gray-700/30"
-                      }`}>
+                      }`}
+                    >
                       {status
                         ? status.charAt(0).toUpperCase() + status.slice(1)
                         : "-"}
@@ -434,9 +446,6 @@ const Attendance = () => {
         const sessionData = data.data[0]?.sessions;
         const parsedSessions = sessionData ? JSON.parse(sessionData) : [];
 
-        console.log("Single date response:", data); // Debug log
-        console.log("Parsed sessions:", parsedSessions); // Debug log
-
         setAttendanceData(parsedSessions);
       }
     } catch (error) {
@@ -468,7 +477,8 @@ const Attendance = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="text-center">
+            className="text-center"
+          >
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 via-emerald-300 to-emerald-500">
               Attendance Dashboard
             </h1>
@@ -485,7 +495,8 @@ const Attendance = () => {
           className="w-full max-w-5xl mx-auto"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}>
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
           <div className="bg-gradient-to-br from-gray-800/90 to-gray-700/90 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-600/30 overflow-hidden">
             {/* Header Section */}
             <div className="p-6 sm:p-8 border-b border-gray-600/30 bg-gradient-to-r from-gray-800/50 to-gray-700/50">
@@ -516,7 +527,8 @@ const Attendance = () => {
                       setAttendanceData([]);
                     }}
                     whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}>
+                    whileTap={{ scale: 0.98 }}
+                  >
                     <div className="flex items-center justify-center space-x-2">
                       <span className="text-xl">{icon}</span>
                       <span>{label}</span>
@@ -582,7 +594,8 @@ const Attendance = () => {
                   onClick={handleSearch}
                   disabled={loading}
                   whileHover={!loading ? { scale: 1.05 } : {}}
-                  whileTap={!loading ? { scale: 0.95 } : {}}>
+                  whileTap={!loading ? { scale: 0.95 } : {}}
+                >
                   {loading ? (
                     <>
                       <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
@@ -604,7 +617,8 @@ const Attendance = () => {
                 key={attendanceData.length}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}>
+                transition={{ duration: 0.4 }}
+              >
                 <AttendanceTable
                   attendanceData={attendanceData}
                   mode={mode}
