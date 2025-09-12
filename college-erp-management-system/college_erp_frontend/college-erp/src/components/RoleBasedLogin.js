@@ -16,11 +16,14 @@ export default function RoleBasedLogin() {
   const handleLogin = async (e) => {
     e.preventDefault();
 
+    let finalEmail = email;
+    if (!finalEmail.includes("@")) {
+      finalEmail = finalEmail + "@gmail.com";
+    }
+
     try {
       const response = await Api.post(
-        `/auth/login?email=${
-          email.includes("@gmail.com") === false ? email + "@gmail.com" : email
-        }&password=${password}`,
+        `/auth/login?email=${finalEmail}&password=${password}`,
         null,
         {
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
