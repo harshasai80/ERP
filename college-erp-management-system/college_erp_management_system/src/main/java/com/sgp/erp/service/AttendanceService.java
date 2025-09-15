@@ -67,4 +67,17 @@ public class AttendanceService {
         throw new DataNotSavedException("Attendances not saved");
     }
 
+    public ResponseEntity<ResponseStructure<List<Attendance>>> getAttendanceByRegisterNo(String registerNo) {
+        List<Attendance> attendances = attendanceDao.getAttendanceByRegisterNo(registerNo);
+        ResponseStructure<List<Attendance>> structure = new ResponseStructure<List<Attendance>>();
+
+        if (!attendances.isEmpty()) {
+            structure.setData(attendances);
+            structure.setMessage("Attendances found");
+            structure.setStatus(HttpStatus.OK.value());
+            return new ResponseEntity<ResponseStructure<List<Attendance>>>(structure, HttpStatus.OK);
+        }
+        throw new DataNotFoundException("Attendance not found");
+    }
+
 }

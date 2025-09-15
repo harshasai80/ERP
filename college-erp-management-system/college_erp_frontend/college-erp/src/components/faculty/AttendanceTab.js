@@ -179,6 +179,15 @@ function AttendanceTab({ faculty }) {
     setTimeout(() => setAlert({ show: false, message: "", type: "" }), 5000);
   };
 
+  // Toggle all students present/absent
+  const toggleAllStudents = () => {
+    if (absentStudents.length === students.length) {
+      setAbsentStudents([]);
+    } else {
+      setAbsentStudents(students.map(s => s.registrationNumber));
+    }
+  };
+
   return (
     <div className="bg-gray-800 p-3 sm:p-6 rounded-md shadow-md mt-5 text-white max-w-full">
       {/* Header */}
@@ -312,120 +321,89 @@ function AttendanceTab({ faculty }) {
         </div>
       </div>
 
-      {/* Students Table */}
+      {/* Students Section */}
       {students.length > 0 && (
         <div className="mb-6">
-          {/* Mobile Card View (visible on small screens) */}
-          <div className="block sm:hidden">
-            <h3 className="text-sm font-semibold text-emerald-400 mb-3">
+          {/* Header with bulk actions */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
+            <h3 className="text-base font-semibold text-emerald-400">
               Students ({students.length})
             </h3>
-            <div className="space-y-2 max-h-80 overflow-y-auto">
-              {students.map((student, index) => (
-                <div
-                  key={student.registrationNumber}
-                  className={`p-3 rounded border ${
-                    absentStudents.includes(student.registrationNumber)
-                      ? "bg-red-900 border-red-600"
-                      : "bg-gray-700 border-gray-600"
-                  }`}>
-                  <div className="flex justify-between items-center">
-                    <div className="flex-1 min-w-0">
-                      <div className="text-xs sm:text-sm font-medium text-white truncate">
-                        {student.name}
-                      </div>
-                      <div className="text-xs text-gray-400">
-                        Roll: {student.registrationNumber}
-                      </div>
-                    </div>
-                    <div className="flex items-center ml-3">
-                      <label className="flex items-center cursor-pointer">
-                        <input
-                          type="checkbox"
-                          onChange={(e) =>
-                            handleAttendanceChange(
-                              e,
-                              student.registrationNumber
-                            )
-                          }
-                          checked={absentStudents.includes(
-                            student.registrationNumber
-                          )}
-                          className="w-4 h-4 text-red-500 border-gray-600 focus:ring-red-500 rounded"
-                        />
-                        <span className="ml-2 text-xs text-gray-300">
-                          Absent
-                        </span>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              ))}
+            <div className="flex gap-3 items-center">
+              <button
+                onClick={toggleAllStudents}
+                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 rounded text-white transition-colors text-sm">
+                {absentStudents.length === students.length ? "Mark All Present" : "Mark All Absent"}
+              </button>
+              <div className="text-sm text-gray-300">
+                Present: <span className="text-emerald-400 font-semibold">{students.length - absentStudents.length}</span> | 
+                Absent: <span className="text-red-400 font-semibold">{absentStudents.length}</span>
+              </div>
             </div>
           </div>
 
-          {/* Desktop Table View (hidden on small screens) */}
-          <div className="hidden sm:block overflow-x-auto">
-            <table className="w-full border-collapse bg-gray-700 rounded overflow-hidden min-w-[400px]">
-              <thead>
-                <tr className="bg-emerald-700 text-white text-xs sm:text-sm">
-                  <th className="p-2 sm:p-3 text-left">Roll No</th>
-                  <th className="p-2 sm:p-3 text-left">Name</th>
-                  <th className="p-2 sm:p-3 text-center">Absent</th>
-                </tr>
-              </thead>
-              <tbody className="max-h-80 overflow-y-auto">
-                {students.map((student, index) => (
-                  <tr
-                    key={student.registrationNumber}
-                    className={`${
-                      index % 2 === 0 ? "bg-gray-800" : "bg-gray-700"
-                    } ${
-                      absentStudents.includes(student.registrationNumber)
-                        ? "bg-red-900"
-                        : ""
-                    } cursor-pointer select-none`}
-                    onClick={() =>
-                      handleAttendanceChange(
-                        {
-                          target: {
-                            checked: !absentStudents.includes(
-                              student.registrationNumber
-                            ),
-                          },
-                        },
-                        student.registrationNumber
-                      )
-                    }>
-                    <td className="p-2 sm:p-3 text-xs sm:text-sm">
-                      {student.registrationNumber}
-                    </td>
-                    {/* 👇 Make name cell clickable */}
-                    <td className="p-2 sm:p-3 text-xs sm:text-sm">
-                      {student.name}
-                    </td>
-                    <td className="p-2 sm:p-3 text-center">
-                      <input
-                        type="checkbox"
-                        onChange={(e) =>
-                          handleAttendanceChange(e, student.registrationNumber)
-                        }
-                        checked={absentStudents.includes(
-                          student.registrationNumber
-                        )}
-                        className="w-4 h-4 text-red-500 border-gray-600 focus:ring-red-500 rounded cursor-pointer"
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          {/* Clean Student Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2 max-h-80 overflow-y-auto">
+            {students.map((student) => {
+              const isAbsent = absentStudents.includes(student.registrationNumber);
+              
+              return (
+                <div
+                  key={student.registrationNumber}
+                  className={`flex items-center p-2 rounded border-2 cursor-pointer transition-all duration-200 hover:shadow-md ${
+                    isAbsent
+                      ? "bg-red-900 border-red-500 hover:bg-red-800"
+                      : "bg-gray-700 border-emerald-500 hover:bg-gray-600"
+                  }`}
+                  onClick={() =>
+                    handleAttendanceChange(
+                      { target: { checked: !isAbsent } },
+                      student.registrationNumber
+                    )
+                  }>
+                  
+                  {/* Status Checkbox */}
+                  <div className="flex-shrink-0 mr-2">
+                    <div className={`w-4 h-4 rounded border flex items-center justify-center ${
+                      isAbsent 
+                        ? "bg-red-600 border-red-400" 
+                        : "bg-emerald-600 border-emerald-400"
+                    }`}>
+                      {isAbsent ? (
+                        <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                        </svg>
+                      ) : (
+                        <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      )}
+                    </div>
+                  </div>
 
-          {/* Summary */}
-          <div className="mt-3 text-xs sm:text-sm text-gray-300 text-center">
-            Present: {students.length - absentStudents.length} | Absent:{" "}
-            {absentStudents.length} | Total: {students.length}
+                  {/* Student Info */}
+                  <div className="flex-1 min-w-0">
+                    <div className="text-xs font-semibold text-white truncate leading-tight" title={student.name}>
+                      {student.name}
+                    </div>
+                    <div className="text-xs text-gray-300 font-mono leading-tight" title={student.registrationNumber}>
+                      {student.registrationNumber}
+                    </div>
+                  </div>
+
+                  {/* Hidden checkbox for accessibility */}
+                  <input
+                    type="checkbox"
+                    onChange={(e) =>
+                      handleAttendanceChange(e, student.registrationNumber)
+                    }
+                    checked={isAbsent}
+                    className="sr-only"
+                    tabIndex={-1}
+                  />
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
