@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import Api from "../../Api";
 import { motion } from "framer-motion";
 import Marquee from "../common/Marquee";
-import Footer from "../common/Footer";
+import Footer from "../common/footer/Footer";
+import LoginNavbar from "../common/navbars/LoginNavbar";
 
 const Login = () => {
   const [formData, setFormData] = useState("");
@@ -82,37 +83,7 @@ const Login = () => {
         ))}
       </div>
 
-      {/* Navbar */}
-      <nav className="relative z-10 backdrop-blur-md bg-gradient-to-r from-emerald-500/60 to-emerald-700/60 shadow-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <motion.img
-              src="/logo192.png"
-              alt="Logo"
-              className="h-10 w-10 sm:h-12 sm:w-12"
-              whileHover={{ scale: 1.2 }}
-              transition={{ duration: 0.3 }}
-            />
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.3 }}
-            >
-              <h1 className="text-lg sm:text-xl md:text-2xl font-extrabold tracking-wide text-white leading-tight">
-                <span className="hidden sm:inline">
-                  Sanjay Gandhi Polytechnic
-                </span>
-                <span className="inline sm:hidden">SGP</span> ERP System
-              </h1>
-            </motion.div>
-          </div>
-          <button
-            onClick={() => navigate("/")}
-            className="hover:bg-emerald-800 px-3 py-1 sm:px-4 sm:py-2 rounded-full border border-emerald-300 transition duration-300 text-xs sm:text-sm font-medium"
-          >
-            Home
-          </button>
-        </div>
-      </nav>
+      <LoginNavbar />
 
       <Marquee />
 
@@ -123,8 +94,7 @@ const Login = () => {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           className="w-full max-w-sm sm:max-w-md bg-gray-900/90 backdrop-blur-md p-6 sm:p-8 rounded-2xl shadow-2xl border border-gray-700 text-center"
-          onSubmit={handleSubmit}
-        >
+          onSubmit={handleSubmit}>
           <h2 className="text-xl sm:text-2xl font-bold mb-6 tracking-wide">
             Student Login
           </h2>
@@ -142,8 +112,7 @@ const Login = () => {
           </div>
           <button
             type="submit"
-            className="w-full py-2 sm:py-2.5 rounded-md bg-emerald-600 text-white font-semibold hover:bg-emerald-700 transition duration-300 text-sm sm:text-base"
-          >
+            className="w-full py-2 sm:py-2.5 rounded-md bg-emerald-600 text-white font-semibold hover:bg-emerald-700 transition duration-300 text-sm sm:text-base">
             Submit
           </button>
         </motion.form>

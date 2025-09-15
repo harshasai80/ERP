@@ -99,8 +99,7 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
             return (
               <div
                 key={date}
-                className="bg-gray-800/50 rounded-xl border border-gray-600/30 overflow-hidden shadow-lg"
-              >
+                className="bg-gray-800/50 rounded-xl border border-gray-600/30 overflow-hidden shadow-lg">
                 <div className="bg-emerald-600/20 px-4 py-3 border-b border-gray-600/30">
                   <h4 className="text-white font-semibold text-base">
                     {formatPrettyDate(date)}
@@ -112,8 +111,7 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                     return (
                       <div
                         key={sNum}
-                        className="flex justify-between items-center py-2 px-3 rounded-lg bg-gray-700/30"
-                      >
+                        className="flex justify-between items-center py-2 px-3 rounded-lg bg-gray-700/30">
                         <span className="text-gray-300 font-medium text-sm">
                           {sessions[sNum - 1]}
                         </span>
@@ -124,8 +122,7 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                               : status === "absent"
                               ? "text-red-300 bg-red-900/50 border border-red-700/50"
                               : "text-gray-400 bg-gray-700/50 border border-gray-600/50"
-                          }`}
-                        >
+                          }`}>
                           {status
                             ? status.charAt(0).toUpperCase() + status.slice(1)
                             : "N/A"}
@@ -150,8 +147,7 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                 {sessions.map((s, i) => (
                   <th
                     key={i}
-                    className="px-3 py-3 text-center whitespace-nowrap min-w-[80px]"
-                  >
+                    className="px-3 py-3 text-center whitespace-nowrap min-w-[80px]">
                     {s}
                   </th>
                 ))}
@@ -163,8 +159,7 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                 return (
                   <tr
                     key={date}
-                    className="even:bg-gray-700/20 odd:bg-gray-800/20 border-t border-gray-600/30 hover:bg-gray-600/20"
-                  >
+                    className="even:bg-gray-700/20 odd:bg-gray-800/20 border-t border-gray-600/30 hover:bg-gray-600/20">
                     <td className="px-4 py-3 text-emerald-300 font-semibold sticky left-0 bg-inherit backdrop-blur-sm z-10 whitespace-nowrap">
                       {formatPrettyDate(date)}
                     </td>
@@ -179,8 +174,7 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                               : status === "absent"
                               ? "text-red-400"
                               : "text-gray-400"
-                          }`}
-                        >
+                          }`}>
                           <span
                             className={`inline-block w-full py-1 px-2 rounded ${
                               status === "present"
@@ -188,8 +182,7 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                                 : status === "absent"
                                 ? "bg-red-900/30"
                                 : "bg-gray-700/30"
-                            }`}
-                          >
+                            }`}>
                             {status
                               ? status.charAt(0).toUpperCase() + status.slice(1)
                               : "-"}
@@ -213,6 +206,7 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
   (Array.isArray(attendanceData) ? attendanceData : []).forEach((rec) => {
     sessionStatusMap[rec.session] = rec.status;
   });
+
   return (
     <div className="mt-4">
       {/* Mobile cards */}
@@ -228,8 +222,7 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                   : status === "absent"
                   ? "bg-red-900/10 border-red-700/30"
                   : "bg-gray-800/30 border-gray-600/30"
-              }`}
-            >
+              }`}>
               <div className="p-4">
                 <div className="flex justify-between items-center">
                   <div>
@@ -247,8 +240,7 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                           : status === "absent"
                           ? "text-red-300 bg-red-900/50 border border-red-700/50"
                           : "text-gray-400 bg-gray-700/50 border border-gray-600/50"
-                      }`}
-                    >
+                      }`}>
                       {status
                         ? status.charAt(0).toUpperCase() + status.slice(1)
                         : "-"}
@@ -272,8 +264,7 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
               {sessions.map((s, i) => (
                 <th
                   key={i}
-                  className="px-3 py-3 text-center whitespace-nowrap min-w-[80px]"
-                >
+                  className="px-3 py-3 text-center whitespace-nowrap min-w-[80px]">
                   {s}
                 </th>
               ))}
@@ -295,8 +286,7 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                         : status === "absent"
                         ? "text-red-400"
                         : "text-gray-400"
-                    }`}
-                  >
+                    }`}>
                     <span
                       className={`inline-block w-full py-1 px-2 rounded ${
                         status === "present"
@@ -304,8 +294,7 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                           : status === "absent"
                           ? "bg-red-900/30"
                           : "bg-gray-700/30"
-                      }`}
-                    >
+                      }`}>
                       {status
                         ? status.charAt(0).toUpperCase() + status.slice(1)
                         : "-"}
@@ -479,8 +468,7 @@ const InlineAttendance = ({ registerNo }) => {
                   mode === key
                     ? "bg-emerald-600/20 border-emerald-500 text-emerald-300"
                     : "bg-gray-700/50 border-gray-600 text-gray-300 hover:bg-gray-600/50"
-                }`}
-              >
+                }`}>
                 {label}
               </button>
             ))}
@@ -555,8 +543,7 @@ const InlineAttendance = ({ registerNo }) => {
               loading
                 ? "bg-gray-700 text-gray-300 cursor-not-allowed border-gray-600"
                 : "bg-emerald-600 text-white hover:bg-emerald-700 border-emerald-500"
-            }`}
-          >
+            }`}>
             {loading ? "Searching..." : "Search Records"}
           </button>
         </div>
@@ -585,6 +572,7 @@ const StudentList = ({ department }) => {
   // Bulk edit state
   const [bulkEditMode, setBulkEditMode] = useState(false);
   const [editedStudents, setEditedStudents] = useState([]);
+  const [bulkSemester, setBulkSemester] = useState(""); // New state for bulk semester change
 
   // row expansion
   const [expandedStudentId, setExpandedStudentId] = useState(null);
@@ -692,6 +680,28 @@ const StudentList = ({ department }) => {
     );
   };
 
+  // New function to handle bulk semester change
+  const handleBulkSemesterChange = () => {
+    if (!bulkSemester) {
+      alert("Please select a semester to apply to all students.");
+      return;
+    }
+
+    if (
+      !window.confirm(
+        `Change all students' semester to ${bulkSemester}? This will affect ${editedStudents.length} students.`
+      )
+    ) {
+      return;
+    }
+
+    setEditedStudents((prev) =>
+      prev.map((s) => ({ ...s, sem: parseInt(bulkSemester) }))
+    );
+
+    alert(`All students' semester changed to ${bulkSemester}`);
+  };
+
   const handleBulkSave = async () => {
     try {
       await Api.put("/student/bulk-update", editedStudents);
@@ -736,8 +746,7 @@ const StudentList = ({ department }) => {
             key={text}
             onClick={() => setCurrentPage(page)}
             disabled={disabled}
-            className="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
-          >
+            className="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm">
             {text}
           </button>
         ))}
@@ -750,8 +759,7 @@ const StudentList = ({ department }) => {
               currentPage === num
                 ? "bg-emerald-600 text-white"
                 : "bg-gray-700 text-white hover:bg-gray-600"
-            }`}
-          >
+            }`}>
             {num}
           </button>
         ))}
@@ -764,8 +772,7 @@ const StudentList = ({ department }) => {
             key={text}
             onClick={() => setCurrentPage(page)}
             disabled={disabled}
-            className="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
-          >
+            className="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm">
             {text}
           </button>
         ))}
@@ -776,8 +783,7 @@ const StudentList = ({ department }) => {
   const renderMobileStudentCard = (student) => (
     <div
       key={student.id}
-      className="bg-gray-800/50 rounded-lg border border-gray-600/30 shadow-lg overflow-hidden"
-    >
+      className="bg-gray-800/50 rounded-lg border border-gray-600/30 shadow-lg overflow-hidden">
       {/* Student Info Header */}
       <div className="bg-emerald-600/20 px-4 py-3 border-b border-gray-600/30">
         <div className="flex justify-between items-start">
@@ -803,20 +809,17 @@ const StudentList = ({ department }) => {
         <div className="flex flex-wrap gap-2">
           <button
             className="flex-1 min-w-[80px] px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm font-medium"
-            onClick={() => handleEdit(student)}
-          >
+            onClick={() => handleEdit(student)}>
             Edit
           </button>
           <button
             className="flex-1 min-w-[80px] px-3 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 text-sm font-medium"
-            onClick={() => handleDelete(student)}
-          >
+            onClick={() => handleDelete(student)}>
             Delete
           </button>
           <button
             className="flex-1 min-w-[120px] px-3 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 text-sm font-medium"
-            onClick={() => toggleExpand(student.id)}
-          >
+            onClick={() => toggleExpand(student.id)}>
             {expandedStudentId === student.id
               ? "Hide Attendance"
               : "View Attendance"}
@@ -836,8 +839,7 @@ const StudentList = ({ department }) => {
   const renderMobileBulkEditCard = (student) => (
     <div
       key={student.id}
-      className="bg-gray-800/50 rounded-lg border border-gray-600/30 shadow-lg overflow-hidden"
-    >
+      className="bg-gray-800/50 rounded-lg border border-gray-600/30 shadow-lg overflow-hidden">
       {/* Bulk Edit Header */}
       <div className="bg-blue-600/20 px-4 py-3 border-b border-gray-600/30">
         <h3 className="text-white font-semibold text-base">
@@ -929,30 +931,66 @@ const StudentList = ({ department }) => {
               <div className="flex gap-2">
                 <button
                   className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 text-sm sm:text-base"
-                  onClick={() => setShowOptions(true)}
-                >
+                  onClick={() => setShowOptions(true)}>
                   Add New Student
                 </button>
                 {students.length > 0 && (
                   <button
                     onClick={() => setBulkEditMode(!bulkEditMode)}
-                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm sm:text-base"
-                  >
+                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm sm:text-base">
                     {bulkEditMode ? "Cancel Bulk Edit" : "Bulk Edit"}
                   </button>
                 )}
               </div>
             </div>
 
-            {/* Save button in bulk edit */}
+            {/* Bulk Edit Controls */}
             {bulkEditMode && (
-              <div className="mb-4">
-                <button
-                  onClick={handleBulkSave}
-                  className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700"
-                >
-                  Save Changes
-                </button>
+              <div className="mb-6 p-4 sm:p-5 bg-gradient-to-br from-blue-800/20 to-blue-900/20 rounded-xl border border-blue-600/30 shadow-lg">
+                <h3 className="text-lg font-semibold text-blue-300 mb-4">
+                  Bulk Edit Controls
+                </h3>
+
+                {/* Minimalistic Bulk Semester Change */}
+                <div className="flex items-center gap-3 mb-4 p-3 bg-gray-800/40 rounded-lg border border-gray-600/40">
+                  <span className="text-sm text-gray-300">
+                    Change all to semester:
+                  </span>
+                  <select
+                    value={bulkSemester}
+                    onChange={(e) => setBulkSemester(e.target.value)}
+                    className="px-2 py-1 bg-gray-700 text-white border border-gray-600 rounded text-sm focus:border-emerald-500 focus:outline-none min-w-[100px]">
+                    <option value="">Select</option>
+                    {[1, 2, 3, 4, 5, 6].map((sem) => (
+                      <option key={sem} value={sem}>
+                        {sem}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    onClick={handleBulkSemesterChange}
+                    className="px-3 py-1 bg-emerald-600 text-white rounded hover:bg-emerald-700 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={!bulkSemester}>
+                    Apply ({editedStudents.length})
+                  </button>
+                </div>
+
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleBulkSave}
+                    className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700">
+                    Save All Changes
+                  </button>
+                  <button
+                    onClick={() => {
+                      setBulkEditMode(false);
+                      setBulkSemester("");
+                      setEditedStudents(students.map((s) => ({ ...s })));
+                    }}
+                    className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700">
+                    Cancel & Reset
+                  </button>
+                </div>
               </div>
             )}
 
@@ -967,8 +1005,7 @@ const StudentList = ({ department }) => {
                   onClick={() => {
                     setShowAddStudent(true);
                     setShowOptions(false);
-                  }}
-                >
+                  }}>
                   Add Individually
                 </button>
                 <div className="w-full text-center">
@@ -985,16 +1022,14 @@ const StudentList = ({ department }) => {
                         </span>
                         <button
                           className="text-red-500 hover:text-red-700 text-lg sm:ml-2"
-                          onClick={() => setCsvFile(null)}
-                        >
+                          onClick={() => setCsvFile(null)}>
                           ×
                         </button>
                       </div>
                       <button
                         className="mt-2 px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 w-full text-sm sm:text-base"
                         onClick={handleUpload}
-                        disabled={uploading}
-                      >
+                        disabled={uploading}>
                         {uploading ? "Uploading..." : "Upload File"}
                       </button>
                     </>
@@ -1007,14 +1042,12 @@ const StudentList = ({ department }) => {
                     l.href = "/csv files/studentcsv.csv";
                     l.download = "studentcsv.csv";
                     l.click();
-                  }}
-                >
+                  }}>
                   Download Sample CSV
                 </button>
                 <button
                   className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 w-full text-sm sm:text-base"
-                  onClick={() => setShowOptions(false)}
-                >
+                  onClick={() => setShowOptions(false)}>
                   Cancel
                 </button>
               </div>
@@ -1047,8 +1080,7 @@ const StudentList = ({ department }) => {
                           ...prev,
                           [key]: e.target.value,
                         }))
-                      }
-                    >
+                      }>
                       <option value="">-- Select --</option>
                       {options.map(([text, val]) => (
                         <option key={val} value={val}>
@@ -1076,8 +1108,7 @@ const StudentList = ({ department }) => {
                 <button
                   className="w-full px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 disabled:opacity-50"
                   onClick={fetchStudents}
-                  disabled={loading}
-                >
+                  disabled={loading}>
                   {loading ? "Loading..." : "Load Students"}
                 </button>
               </div>
@@ -1096,8 +1127,7 @@ const StudentList = ({ department }) => {
                         sortBy === field
                           ? "bg-emerald-600 text-white"
                           : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                      }`}
-                    >
+                      }`}>
                       {label}
                       {sortBy === field && (
                         <span className="ml-1">
@@ -1135,7 +1165,7 @@ const StudentList = ({ department }) => {
               )}
             </div>
 
-            {/* Desktop Table View - kept exactly the same */}
+            {/* Desktop Table View */}
             <div className="hidden lg:block">
               {students.length > 0 && (
                 <div className="overflow-x-auto">
@@ -1145,8 +1175,7 @@ const StudentList = ({ department }) => {
                         {columns.map((col, idx) => (
                           <th
                             key={idx}
-                            className="px-4 py-3 text-left text-sm font-semibold text-gray-200 bg-gray-700"
-                          >
+                            className="px-4 py-3 text-left text-sm font-semibold text-gray-200 bg-gray-700">
                             {col}
                           </th>
                         ))}
@@ -1252,20 +1281,17 @@ const StudentList = ({ department }) => {
                                   <div className="flex gap-1 sm:gap-2 justify-center flex-wrap">
                                     <button
                                       className="text-xs sm:text-sm px-2 py-1 bg-blue-600 rounded hover:bg-blue-700"
-                                      onClick={() => handleEdit(s)}
-                                    >
+                                      onClick={() => handleEdit(s)}>
                                       Edit
                                     </button>
                                     <button
                                       className="text-xs sm:text-sm px-2 py-1 bg-red-600 rounded hover:bg-red-700"
-                                      onClick={() => handleDelete(s)}
-                                    >
+                                      onClick={() => handleDelete(s)}>
                                       Delete
                                     </button>
                                     <button
                                       className="text-xs sm:text-sm px-2 py-1 bg-yellow-600 rounded hover:bg-yellow-700"
-                                      onClick={() => toggleExpand(s.id)}
-                                    >
+                                      onClick={() => toggleExpand(s.id)}>
                                       {expandedStudentId === s.id
                                         ? "Hide Attendance"
                                         : "View Attendance"}
