@@ -23,6 +23,9 @@ const FacultyList = ({ department }) => {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
+    if (department && department !== "ALL") {
+      setSelectedDepartment(department);
+    }
     fetchFaculties();
   }, [department]);
 

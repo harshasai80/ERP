@@ -3,7 +3,7 @@ import SummaryCard from "../components/cards/SummaryCard";
 import { motion } from "framer-motion";
 import Api from "../../../Api";
 
-const Dashboard = () => {
+const Dashboard = ({ onDeptClick }) => {
   const [deptData, setDeptData] = useState({});
   const [loading, setLoading] = useState(true);
 
@@ -21,17 +21,19 @@ const Dashboard = () => {
         const departmentCounts = {};
 
         faculties.forEach((f) => {
-          if (!departmentCounts[f.department]) {
-            departmentCounts[f.department] = { faculty: 0, students: 0 };
+          const dept = f.department ? f.department.toUpperCase() : "UNKNOWN";
+          if (!departmentCounts[dept]) {
+            departmentCounts[dept] = { faculty: 0, students: 0 };
           }
-          departmentCounts[f.department].faculty += 1;
+          departmentCounts[dept].faculty += 1;
         });
 
         students.forEach((s) => {
-          if (!departmentCounts[s.department]) {
-            departmentCounts[s.department] = { faculty: 0, students: 0 };
+          const dept = s.department ? s.department.toUpperCase() : "UNKNOWN";
+          if (!departmentCounts[dept]) {
+            departmentCounts[dept] = { faculty: 0, students: 0 };
           }
-          departmentCounts[s.department].students += 1;
+          departmentCounts[dept].students += 1;
         });
 
         setDeptData(departmentCounts);
@@ -70,18 +72,32 @@ const Dashboard = () => {
         {Object.keys(deptData).map((dept) => (
           <motion.div
             key={dept}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.97 }}
-            transition={{ type: "spring", stiffness: 250 }}
+            whileHover={{ scale: 1.02 }}
+            className="p-8 rounded-2xl shadow-lg border border-white/10 
+                bg-gradient-to-br from-gray-800/90 to-gray-900/90 hover:shadow-emerald-500/20 
+                text-white transition flex flex-col items-center"
           >
-            <SummaryCard
-              title={dept}
-              value={`👨‍🏫 ${deptData[dept].faculty} | 👨‍🎓 ${deptData[dept].students}`}
-              icon="🏫"
-              className="p-8 rounded-2xl shadow-lg backdrop-blur-sm border border-white/10 
-                bg-gradient-to-br from-gray-800/90 to-gray-900/90 hover:shadow-gray-700/50 
-                text-white transition"
-            />
+            <div className="text-4xl mb-4">🏫</div>
+            <h2 className="text-2xl font-bold mb-2 uppercase text-emerald-300">{dept}</h2>
+            <div className="flex gap-4 mb-6 text-gray-300">
+              <span className="flex items-center gap-1">👨‍🏫 {deptData[dept].faculty} Faculty</span>
+              <span className="flex items-center gap-1">👨‍🎓 {deptData[dept].students} Students</span>
+            </div>
+
+            <div className="flex gap-3 w-full">
+              <button
+                onClick={() => onDeptClick(dept, "faculty")}
+                className="flex-1 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 rounded-lg text-xs font-bold transition"
+              >
+                View Faculty
+              </button>
+              <button
+                onClick={() => onDeptClick(dept, "students")}
+                className="flex-1 px-3 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-xs font-bold transition"
+              >
+                View Students
+              </button>
+            </div>
           </motion.div>
         ))}
       </div>

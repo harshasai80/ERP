@@ -10,18 +10,24 @@ import Footer from "../common/footer/Footer";
 
 const PrincipalDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [selectedDept, setSelectedDept] = useState("ALL");
   const location = useLocation();
 
   const data = location.state?.data;
 
+  const handleDeptClick = (dept, tab) => {
+    setSelectedDept(dept);
+    setActiveTab(tab);
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case "faculty":
-        return <FacultyList department={data.department} />;
+        return <FacultyList department={selectedDept} />;
       case "students":
-        return <StudentList />;
+        return <StudentList initialDepartment={selectedDept} />;
       default:
-        return <Dashboard department={data.department} />;
+        return <Dashboard onDeptClick={handleDeptClick} />;
     }
   };
 
@@ -42,10 +48,9 @@ const PrincipalDashboard = () => {
             <button
               key={tab}
               className={`capitalize text-sm sm:text-lg px-3 sm:px-5 py-2 transition-all font-medium rounded-t-md flex-1 sm:flex-none
-                ${
-                  activeTab === tab
-                    ? "bg-emerald-500 text-white"
-                    : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                ${activeTab === tab
+                  ? "bg-emerald-500 text-white"
+                  : "bg-gray-800 text-gray-300 hover:bg-gray-700"
                 }`}
               onClick={() => setActiveTab(tab)}>
               {tab}

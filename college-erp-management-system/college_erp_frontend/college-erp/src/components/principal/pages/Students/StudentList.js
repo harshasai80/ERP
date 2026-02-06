@@ -1,18 +1,18 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Api from "../../../../Api";
 import DataTable from "../../components/tables/DataTable";
 import AddStudentsTab from "../../components/tabs/AddStudentsTab";
 import DragDropCSVUpload from "../../../DragDropFileUpload";
 import EditStudentModal from "./EditStudentModal";
 
-const StudentList = () => {
+const StudentList = ({ initialDepartment = "" }) => {
   const [showAddStudent, setShowAddStudent] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [csvFile, setCsvFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [students, setStudents] = useState([]);
   const [filters, setFilters] = useState({ semester: "", section: "" });
-  const [department, setDepartment] = useState("");
+  const [department, setDepartment] = useState(initialDepartment);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [studentsPerPage] = useState(20);
@@ -21,6 +21,22 @@ const StudentList = () => {
   const [loading, setLoading] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [showModal, setShowModal] = useState(false);
+
+  // Auto-fetch all students on mount (Principal view)
+  useEffect(() => {
+    const fetchAll = async () => {
+      setLoading(true);
+      try {
+        const response = await Api.get("/student/all-students");
+        setStudents(response.data?.data || []);
+      } catch (err) {
+        console.error("Failed to fetch all students", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAll();
+  }, []);
 
   const columns = [
     "Registration Number",
@@ -32,12 +48,16 @@ const StudentList = () => {
   ];
 
   const filteredAndSortedStudents = useMemo(() => {
-    let filtered = students.filter(
-      (s) =>
+    let filtered = students.filter((s) => {
+      const matchesSearch =
         s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         s.registrationNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        s.department.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+        s.department.toLowerCase().includes(searchTerm.toLowerCase());
+
+      const matchesDept = department === "" || s.department.toUpperCase() === department.toUpperCase();
+
+      return matchesSearch && matchesDept;
+    });
 
     return filtered.sort((a, b) => {
       let aVal = (a[sortBy] || "").toString().toLowerCase();
@@ -157,11 +177,10 @@ const StudentList = () => {
           <button
             key={num}
             onClick={() => setCurrentPage(num)}
-            className={`px-3 py-1 rounded text-sm ${
-              currentPage === num
-                ? "bg-emerald-600 text-white"
-                : "bg-gray-700 text-white hover:bg-gray-600"
-            }`}
+            className={`px-3 py-1 rounded text-sm ${currentPage === num
+              ? "bg-emerald-600 text-white"
+              : "bg-gray-700 text-white hover:bg-gray-600"
+              }`}
           >
             {num}
           </button>
@@ -293,9 +312,9 @@ const StudentList = () => {
                         key === "department"
                           ? setDepartment(e.target.value)
                           : setFilters((prev) => ({
-                              ...prev,
-                              [key]: e.target.value,
-                            }))
+                            ...prev,
+                            [key]: e.target.value,
+                          }))
                       }
                     >
                       <option value="">All {label}s</option>
@@ -341,11 +360,10 @@ const StudentList = () => {
                     <button
                       key={field}
                       onClick={() => handleSort(field)}
-                      className={`text-xs px-2 py-1 rounded ${
-                        sortBy === field
-                          ? "bg-emerald-600 text-white"
-                          : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                      }`}
+                      className={`text-xs px-2 py-1 rounded ${sortBy === field
+                        ? "bg-emerald-600 text-white"
+                        : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                        }`}
                     >
                       {label}
                       {sortBy === field && (
