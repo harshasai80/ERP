@@ -41,19 +41,21 @@ public class UsersDAO {
     }
 
     public boolean login(String email, String password) {
-        System.out.println("Searching for user with email: " + email);
+        System.out.println("Login attempt for email: [" + email + "]");
         Optional<Users> user = findByEmail(email);
 
         if (user.isEmpty()) {
-            System.out.println("User not found");
-            return false; // No user found
-        }
-
-        if (!passwordEncoder.matches(password, user.get().getPassword())) {
+            System.out.println("DEBUG: User not found in database for email: [" + email + "]");
             return false;
         }
 
-        return true;
+        boolean matches = passwordEncoder.matches(password, user.get().getPassword());
+
+        if (!matches) {
+            System.out.println("Login failed: password mismatch for " + email);
+        }
+
+        return matches;
     }
 
     @Transactional
@@ -61,13 +63,20 @@ public class UsersDAO {
         try {
             Users users = new Users();
             users.setEmail(faculty.getEmail());
-            users.setPassword(passwordEncoder.encode("459" + faculty.getDepartment().toLowerCase()));
+
+            String department = faculty.getDepartment();
+            if (department == null || department.trim().isEmpty()) {
+                department = "PRINCIPAL";
+                faculty.setDepartment(department);
+            }
+
+            users.setPassword(passwordEncoder.encode("459" + department.toLowerCase()));
             // users.setResetToken(UUID.randomUUID().toString());
 
             userRepository.save(users);
 
             facultyRepository.save(faculty);
-            emailService.sendAccountCreationEmail(users.getEmail(), "459" + faculty.getDepartment().toLowerCase());
+            emailService.sendAccountCreationEmail(users.getEmail(), "459" + department.toLowerCase());
 
             return faculty;
 

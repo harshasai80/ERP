@@ -3,6 +3,7 @@ package com.sgp.erp.service;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Optional;
 // import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,10 +111,15 @@ public class UsersService {
         ResponseStructure<Faculty> structure = new ResponseStructure<Faculty>();
         boolean res = usersDAO.login(email, password);
         if (res) {
-            structure.setData(facultyRepository.findByEmail(email).get());
-            structure.setMessage("Login successfully");
-            structure.setStatus(HttpStatus.OK.value());
-            return new ResponseEntity<ResponseStructure<Faculty>>(structure, HttpStatus.OK);
+            Optional<Faculty> faculty = facultyRepository.findByEmail(email);
+            if (faculty.isPresent()) {
+                structure.setData(faculty.get());
+                structure.setMessage("Login successfully");
+                structure.setStatus(HttpStatus.OK.value());
+                return new ResponseEntity<ResponseStructure<Faculty>>(structure, HttpStatus.OK);
+            } else {
+                throw new InvalidCredentials("User account found but faculty profile missing.");
+            }
         }
 
         throw new InvalidCredentials();
