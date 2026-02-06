@@ -18,7 +18,13 @@ const Dashboard = ({ onDeptClick }) => {
         const studentRes = await Api.get("/student/all-students");
         const students = studentRes.data.data;
 
+        const requiredDepts = ["DCS", "DEEE", "DME", "DCE", "DMT"];
         const departmentCounts = {};
+
+        // Initialize required departments with 0 values
+        requiredDepts.forEach((dept) => {
+          departmentCounts[dept] = { faculty: 0, students: 0 };
+        });
 
         faculties.forEach((f) => {
           const dept = f.department ? f.department.toUpperCase() : "UNKNOWN";
