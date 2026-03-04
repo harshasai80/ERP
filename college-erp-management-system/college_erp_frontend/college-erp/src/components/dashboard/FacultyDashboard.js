@@ -1,18 +1,16 @@
 import { useState } from "react";
 import AttendanceTab from "../faculty/AttendanceTab";
-import AssessmentTab from "../faculty/AssessmentTab";
-import SyllabusTab from "../faculty/SyllabusTab";
+import IAMarksTab from "../faculty/IAMarksTab";
 import ViewStudentsTab from "../faculty/ViewStudentsTab";
-import AddSubjectTab from "../faculty/AddSubjectTab";
+import AssigningSubjects from "../faculty/AssigningSubjects";
+
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Marquee from "../common/Marquee";
 import Footer from "../common/footer/Footer";
 
 const FacultyDashboard = () => {
-  const [activeTab, setActiveTab] = useState("attendance");
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("assigning-subjects");
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -20,217 +18,128 @@ const FacultyDashboard = () => {
   const facultyName = data?.name || "Faculty";
   const facultyRole = data?.role || "Role";
 
-  const isNotFaculty = location.state?.isNotFaculty;
+  const isNotFaculty = data?.role === "HOD" || data?.role === "PRINCIPAL" || data?.role === "ADMIN";
 
   const tabs = [
     { id: "attendance", label: "Attendance", icon: "📋" },
     { id: "assessment", label: "Internal Assessment", icon: "📝" },
-    { id: "syllabus", label: "Syllabus", icon: "📚" },
+
     { id: "view-students", label: "View Students", icon: "👥" },
-    { id: "add-subject", label: "Add Subject", icon: "➕" },
+    { id: "assigning-subjects", label: "Subject Management", icon: "🔗" },
   ];
 
   const handleTabChange = (tabId) => {
     setActiveTab(tabId);
-    setMobileMenuOpen(false);
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 font-sans text-white">
-      {/* Header */}
-      <header className="bg-gradient-to-r from-emerald-700 to-emerald-900 text-white shadow-md px-4 sm:px-6 py-3 sm:py-4">
-        <div className="flex items-center justify-between max-w-7xl mx-auto">
-          {/* Left - Logo + Title */}
-          <div className="flex items-center gap-3 cursor-pointer">
-            <motion.img
-              src="/logo192.png"
-              alt="SGP Logo"
-              className="h-10 w-10 sm:h-12 sm:w-12"
-              whileHover={{ scale: 1.2 }}
-              transition={{ duration: 0.3 }}
-            />
-            <div>
-              <h1 className="text-lg sm:text-2xl font-bold tracking-wide leading-tight">
-                Sanjay Gandhi Polytechnic ERP
+    <div className="flex flex-col min-h-screen bg-mesh text-academic font-sans overflow-hidden">
+      {/* Premium Administrative Header */}
+      <header className="glass sticky top-0 z-[100] border-b-2 border-gold py-7 px-10">
+        <div className="max-w-[1500px] mx-auto flex flex-col md:flex-row justify-between items-center gap-10">
+          {/* Left: Academic Branding */}
+          <div className="flex items-center gap-6 group cursor-pointer" onClick={() => navigate("/")}>
+            <div className="relative">
+              <div className="absolute inset-x-0 bottom-0 h-1 bg-gold/20 blur-sm rounded-full" />
+              <img
+                src="/logo192.png"
+                alt="SGP Logo"
+                className="relative h-16 w-16 group-hover:rotate-[360deg] transition-transform duration-1000"
+              />
+            </div>
+            <div className="space-y-0.5">
+              <h1 className="text-2xl font-black tracking-[0.22em] text-academic classic-heading uppercase">
+                SGP <span className="text-gold">Registry</span>
               </h1>
-              <p className="text-emerald-100 text-xs sm:text-sm">
-                Faculty Dashboard
+              <p className="text-base uppercase font-bold tracking-[0.45em] text-faded-ink">
+                Directorate of Academics
               </p>
             </div>
           </div>
 
-          {/* Right - User Info + Buttons (Desktop) */}
-          <div className="hidden sm:flex items-center gap-4">
-            <div className="text-right">
-              <p className="text-sm font-semibold truncate max-w-[140px]">
-                {facultyName}
-              </p>
-              <p className="text-xs text-emerald-100 truncate max-w-[140px]">
-                {facultyRole}
-              </p>
-            </div>
-            <div className="flex gap-2">
-              <button
-                className="bg-yellow-500 hover:bg-yellow-600 px-3 py-2 rounded-md text-white text-sm font-medium transition"
-                onClick={() =>
-                  navigate("/reset-password", { state: { data } })
-                }>
-                Reset Password
-              </button>
-              <button
-                className="bg-emerald-600 hover:bg-emerald-700 px-3 py-2 rounded-md text-white text-sm font-medium transition"
-                onClick={() => navigate("/")}>
-                Logout
-              </button>
-              {isNotFaculty && (
-                <button
-                  onClick={() => {
-                    navigate("/hod-dashboard", { state: { data } });
-                  }}
-                  className="bg-purple-600 hover:bg-purple-700 px-3 py-2 rounded-md text-white text-sm font-medium transition">
-                  Switch to HOD
-                </button>
-              )}
+          {/* Center: Identity */}
+          <div className="flex flex-col items-center border-x border-gray-100 px-12">
+            <h2 className="text-2xl font-black text-academic classic-heading tracking-tight italic">Prof. {facultyName}</h2>
+            <div className="flex items-center gap-2.5 mt-1.5">
+              <span className="w-2 h-2 rounded-full bg-gold animate-pulse" />
+              <span className="text-base uppercase font-black text-academic tracking-[0.25em]">
+                {facultyRole} {data?.department && data.department !== "ALL" ? ` - ${data.department}` : ""}
+              </span>
             </div>
           </div>
 
-          {/* Right - Mobile Hamburger */}
-          <div className="sm:hidden">
+          {/* Right: Actions */}
+          <div className="flex items-center gap-4">
             <button
-              onClick={() => setUserMenuOpen(!userMenuOpen)}
-              className="p-2 rounded-md bg-emerald-600 hover:bg-emerald-700 transition">
-              {userMenuOpen ? "✖" : "☰"}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Dropdown Menu */}
-        {userMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            className="sm:hidden mt-3 bg-emerald-800 rounded-lg shadow-lg p-4 flex flex-col gap-3">
-            <div className="text-center border-b border-emerald-700 pb-2 mb-2">
-              <p className="text-sm font-semibold">{facultyName}</p>
-              <p className="text-xs text-emerald-100">{facultyRole}</p>
-            </div>
-            <button
-              className="bg-yellow-500 hover:bg-yellow-600 px-3 py-2 rounded-md text-white text-sm font-medium transition"
-              onClick={() => {
-                navigate("/reset-password", { state: { data } });
-                setUserMenuOpen(false);
-              }}>
-              Reset Password
+              className="px-6 py-3 text-academic text-base font-bold uppercase tracking-widest border border-academic hover:bg-academic/5 transition-all active:scale-95"
+              onClick={() => navigate("/reset-password", { state: { data } })}>
+              Security Reset
             </button>
             {isNotFaculty && (
               <button
                 onClick={() => {
-                  navigate("/hod-dashboard", { state: { data } });
-                  setUserMenuOpen(false);
+                  let path = "/hod-dashboard";
+                  if (data?.role === "PRINCIPAL") path = "/principal-dashboard";
+                  if (data?.role === "ADMIN") path = "/admin";
+                  navigate(path, { state: { data } });
                 }}
-                className="bg-purple-600 hover:bg-purple-700 px-3 py-2 rounded-md text-white text-sm font-medium transition">
-                Switch to HOD
+                className="btn-primary py-3 px-6 text-base">
+                Shift Role
               </button>
             )}
             <button
-              className="bg-emerald-600 hover:bg-emerald-700 px-3 py-2 rounded-md text-white text-sm font-medium transition"
-              onClick={() => {
-                navigate("/");
-                setUserMenuOpen(false);
-              }}>
-              Logout
+              className="px-6 py-3 bg-burgundy text-white text-base font-bold uppercase tracking-widest hover:bg-burgundy/90 transition-all active:scale-95 shadow-lg shadow-burgundy/20"
+              onClick={() => navigate("/")}>
+              Terminate Session
             </button>
-          </motion.div>
-        )}
+          </div>
+        </div>
       </header>
 
-      {/* Navigation Tabs */}
-      <nav className="bg-[#273036] shadow-md relative">
-        {/* Mobile */}
-        <div className="sm:hidden px-3 py-2">
-          <button
-            className="w-full bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-lg text-white font-medium text-sm flex items-center justify-between transition-colors"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-            <span className="flex items-center gap-2">
-              <span>{tabs.find((tab) => tab.id === activeTab)?.icon}</span>
-              <span>{tabs.find((tab) => tab.id === activeTab)?.label}</span>
-            </span>
-            <motion.span
-              animate={{ rotate: mobileMenuOpen ? 180 : 0 }}
-              transition={{ duration: 0.2 }}>
-              ▼
-            </motion.span>
-          </button>
-
-          {/* Dropdown */}
-          <motion.div
-            initial={false}
-            animate={{
-              height: mobileMenuOpen ? "auto" : 0,
-              opacity: mobileMenuOpen ? 1 : 0,
-            }}
-            transition={{ duration: 0.25 }}
-            className="overflow-hidden">
-            <div className="mt-2 bg-[#1f2937] rounded-lg shadow-lg">
-              {tabs.map((tab, index) => (
-                <button
-                  key={tab.id}
-                  className={`w-full px-4 py-3 text-left text-sm flex items-center gap-3 transition-colors ${
-                    activeTab === tab.id
-                      ? "bg-emerald-600 text-white"
-                      : "text-emerald-100 hover:bg-emerald-800 hover:text-white"
-                  } ${index === 0 ? "rounded-t-lg" : ""} ${
-                    index === tabs.length - 1 ? "rounded-b-lg" : ""
-                  }`}
-                  onClick={() => handleTabChange(tab.id)}>
+      {/* Modern Navigation Tabs */}
+      <nav className="bg-white/80 backdrop-blur-md border-b border-gray-100 sticky top-[105px] z-[90]">
+        <div className="max-w-[1500px] mx-auto px-10 py-6">
+          <div className="flex flex-wrap justify-center sm:justify-start items-center gap-5 bg-gray-50 p-2.5 rounded-lg w-fit border border-gray-200 shadow-inner">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                className={`relative px-9 py-4 rounded-md text-base font-black uppercase tracking-[0.15em] transition-all duration-300
+                        ${activeTab === tab.id
+                    ? "text-white shadow-xl"
+                    : "text-faded-ink hover:text-academic hover:bg-white"}`}
+                onClick={() => handleTabChange(tab.id)}>
+                <span className="relative z-20 flex items-center gap-3.5">
                   <span className="text-base">{tab.icon}</span>
                   <span>{tab.label}</span>
-                </button>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Desktop */}
-        <div className="hidden sm:block py-2 px-6">
-          <ul className="flex gap-3 md:gap-5 justify-center">
-            {tabs.map((tab) => (
-              <li key={tab.id}>
-                <button
-                  className={`px-4 py-2 rounded-lg font-medium text-sm md:text-base whitespace-nowrap transition-all flex items-center gap-2 ${
-                    activeTab === tab.id
-                      ? "bg-emerald-600 shadow-md text-white"
-                      : "text-emerald-100 hover:bg-emerald-800 hover:text-white"
-                  }`}
-                  onClick={() => handleTabChange(tab.id)}>
-                  <span className="hidden md:inline">{tab.icon}</span>
-                  <span>{tab.label}</span>
-                </button>
-              </li>
+                </span>
+                {activeTab === tab.id && (
+                  <motion.div
+                    layoutId="facultyTabUnderlay"
+                    className="absolute inset-0 bg-academic z-0"
+                    transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+                  />
+                )}
+              </button>
             ))}
-          </ul>
+          </div>
         </div>
       </nav>
 
       <Marquee />
 
-      {/* Main */}
-      <main className="flex-1 p-3 sm:p-4 md:p-6">
+      {/* Administrative Task Area */}
+      <main className="flex-grow p-8 sm:p-14 max-w-[1500px] mx-auto w-full">
         <motion.div
-          className="max-w-7xl mx-auto bg-[#2d2f36] rounded-lg p-3 sm:p-4 md:p-6 shadow-lg"
-          initial={{ opacity: 0, y: 20 }}
+          className="w-full bg-white border border-gray-100 shadow-[0_20px_100px_rgba(0,0,0,0.06)] p-10 sm:p-16 rounded-sm"
+          initial={{ opacity: 0, y: 25 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.6 }}
           key={activeTab}>
-          <div className="overflow-x-auto">
-            {activeTab === "attendance" && <AttendanceTab faculty={data} />}
-            {activeTab === "assessment" && <AssessmentTab faculty={data} />}
-            {activeTab === "syllabus" && <SyllabusTab />}
-            {activeTab === "view-students" && <ViewStudentsTab />}
-            {activeTab === "add-subject" && <AddSubjectTab faculty={data} />}
-          </div>
+          {activeTab === "attendance" && <AttendanceTab faculty={data} />}
+          {activeTab === "assessment" && <IAMarksTab faculty={data} />}
+
+          {activeTab === "view-students" && <ViewStudentsTab faculty={data} />}
+          {activeTab === "assigning-subjects" && <AssigningSubjects faculty={data} />}
         </motion.div>
       </main>
 
@@ -240,3 +149,7 @@ const FacultyDashboard = () => {
 };
 
 export default FacultyDashboard;
+
+
+
+

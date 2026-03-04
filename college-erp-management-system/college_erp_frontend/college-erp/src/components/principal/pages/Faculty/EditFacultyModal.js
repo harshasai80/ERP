@@ -36,7 +36,7 @@ const EditFacultyModal = ({ show, onClose, onUpdate, faculty }) => {
     <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
       <div className="bg-gradient-to-br from-gray-800 to-gray-900 text-white rounded-lg shadow-2xl p-6 w-full max-w-md relative">
         <button
-          className="absolute top-2 right-2 text-white hover:text-red-400 text-xl font-bold"
+          className="absolute top-2 right-2 text-white hover:text-red-400 text-base font-bold"
           onClick={onClose}
         >
           &times;
@@ -47,7 +47,7 @@ const EditFacultyModal = ({ show, onClose, onUpdate, faculty }) => {
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm text-emerald-200 mb-1">Name</label>
+            <label className="block text-base text-emerald-200 mb-1">Name</label>
             <input
               type="text"
               className="w-full px-3 py-2 bg-gray-700 text-white rounded-md focus:ring-2 focus:ring-emerald-500"
@@ -56,7 +56,7 @@ const EditFacultyModal = ({ show, onClose, onUpdate, faculty }) => {
             />
           </div>
           <div>
-            <label className="block text-sm text-emerald-200 mb-1">Email</label>
+            <label className="block text-base text-emerald-200 mb-1">Email</label>
             <input
               type="email"
               className="w-full px-3 py-2 bg-gray-700 text-white rounded-md focus:ring-2 focus:ring-emerald-500"
@@ -65,7 +65,7 @@ const EditFacultyModal = ({ show, onClose, onUpdate, faculty }) => {
             />
           </div>
           <div>
-            <label className="block text-sm text-emerald-200 mb-1">
+            <label className="block text-base text-emerald-200 mb-1">
               Department
             </label>
             <input
@@ -76,7 +76,7 @@ const EditFacultyModal = ({ show, onClose, onUpdate, faculty }) => {
             />
           </div>
           <div>
-            <label className="block text-sm text-emerald-200 mb-1">Role</label>
+            <label className="block text-base text-emerald-200 mb-1">Role</label>
             <input
               type="text"
               className="w-full px-3 py-2 bg-gray-700 text-white rounded-md focus:ring-2 focus:ring-emerald-500"
@@ -106,3 +106,7 @@ const EditFacultyModal = ({ show, onClose, onUpdate, faculty }) => {
 };
 
 export default EditFacultyModal;
+
+
+
+

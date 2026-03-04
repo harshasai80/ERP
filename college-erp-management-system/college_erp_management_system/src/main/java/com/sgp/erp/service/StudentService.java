@@ -153,4 +153,24 @@ public class StudentService {
         return new ResponseEntity<ResponseStructure<String>>(structure, HttpStatus.OK);
     }
 
+    @Transactional
+    public ResponseEntity<ResponseStructure<String>> updateAllRegistrationNumbers() {
+        ResponseStructure<String> structure = new ResponseStructure<String>();
+        int updatedCount = studentDao.updateAllRegistrationNumbers();
+        structure.setData("Registration numbers updated successfully");
+        structure.setMessage(updatedCount + " registration numbers updated successfully");
+        structure.setStatus(HttpStatus.OK.value());
+        return new ResponseEntity<ResponseStructure<String>>(structure, HttpStatus.OK);
+    }
+
+    @Transactional
+    public ResponseEntity<ResponseStructure<String>> migrateDepartment(String oldDepartment, String newDepartment) {
+        ResponseStructure<String> structure = new ResponseStructure<String>();
+        int updatedCount = studentDao.updateDepartmentForAllStudents(oldDepartment, newDepartment);
+        structure.setData("Department migration completed successfully");
+        structure.setMessage(updatedCount + " students migrated from " + oldDepartment + " to " + newDepartment);
+        structure.setStatus(HttpStatus.OK.value());
+        return new ResponseEntity<ResponseStructure<String>>(structure, HttpStatus.OK);
+    }
+
 }

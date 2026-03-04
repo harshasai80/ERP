@@ -29,7 +29,7 @@ const HourDropdown = ({ value, onChange, label, startTime, isEndTime }) => {
   return (
     <div>
       {label && (
-        <label className="block mb-1 text-sm text-white">{label}</label>
+        <label className="block mb-1 text-base text-white">{label}</label>
       )}
       <select
         value={value}
@@ -44,3 +44,7 @@ const HourDropdown = ({ value, onChange, label, startTime, isEndTime }) => {
 };
 
 export default HourDropdown;
+
+
+
+

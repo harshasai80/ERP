@@ -1,10 +1,14 @@
-// src/components/your-path/AddSubjectTab.js
 import React, { useState, useEffect } from "react";
 import Api from "../../Api";
+import DragDropCSVUpload from "../DragDropFileUpload";
 
 function AddSubjectTab({ faculty }) {
+  const isHOD = faculty?.role?.toUpperCase() === "HOD";
   const [formData, setFormData] = useState({
-    department: "",
+    department:
+      isHOD && faculty?.department && faculty.department !== "ALL"
+        ? faculty.department
+        : "DCS",
     semester: "",
     subjectId: "",
     subjectType: "",
@@ -21,6 +25,11 @@ function AddSubjectTab({ faculty }) {
   const [disabledSections, setDisabledSections] = useState([]);
   const [disabledDetails, setDisabledDetails] = useState({}); // { A: "Theory — Sem 2 (DCS)" }
 
+  // CSV Upload state
+  const [showCSVUpload, setShowCSVUpload] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
+
   // Fetch subject options
   useEffect(() => {
     const { department, semester } = formData;
@@ -34,7 +43,7 @@ function AddSubjectTab({ faculty }) {
     } else {
       setSubjectOptions([]);
     }
-  }, [formData.department, formData.semester]);
+  }, [formData.department, formData.semester, formData]);
 
   // Fetch existing assignments for this faculty (used to disable options)
   useEffect(() => {
@@ -92,7 +101,7 @@ function AddSubjectTab({ faculty }) {
     });
 
     setDisabledDetails(details);
-  }, [formData.subjectId, formData.subjectType, existingAssignments]);
+  }, [formData.subjectId, formData.subjectType, existingAssignments, formData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -211,10 +220,10 @@ function AddSubjectTab({ faculty }) {
       batches:
         formData.subjectType === "Lab"
           ? formData.batches.map((batch) => [
-              batch,
-              (batchRanges[batch]?.start || "").trim(),
-              (batchRanges[batch]?.end || "").trim(),
-            ])
+            batch,
+            (batchRanges[batch]?.start || "").trim(),
+            (batchRanges[batch]?.end || "").trim(),
+          ])
           : [],
     };
 
@@ -225,9 +234,9 @@ function AddSubjectTab({ faculty }) {
           assignment.faculty?.id === faculty.id &&
           assignment.subject?.subjectId === parseInt(formData.subjectId) &&
           String(assignment.section).toUpperCase() ===
-            formData.section.toUpperCase() &&
+          formData.section.toUpperCase() &&
           String(assignment.subjectType).toUpperCase() ===
-            formData.subjectType.toUpperCase() &&
+          formData.subjectType.toUpperCase() &&
           String(assignment.subject?.department) === formData.department &&
           parseInt(assignment.subject?.semester) === parseInt(formData.semester)
         );
@@ -270,227 +279,298 @@ function AddSubjectTab({ faculty }) {
     }
   };
 
+  const handleFileUpload = (file) => {
+    setSelectedFile(file);
+  };
+
+  const handleCSVSubmit = async () => {
+    if (!selectedFile) return;
+    setUploading(true);
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+    try {
+      await Api.post("/subjects/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      alert("Subject CSV uploaded successfully!");
+      setSelectedFile(null);
+      setShowCSVUpload(false);
+    } catch (error) {
+      console.error("Upload failed:", error);
+      alert("Failed to upload subject CSV.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const DownloadSampleCSV = () => {
+    const link = document.createElement("a");
+    link.href = "/csv files/subjectcsv.csv";
+    link.download = "subjectcsv.csv";
+    link.click();
+  };
+
   return (
-    <div className="max-w-xl mx-auto mt-10 p-6 bg-gradient-to-tr from-gray-800 to-gray-700 text-white shadow-2xl rounded-xl border border-emerald-500">
-      <h2 className="text-2xl font-semibold text-center text-emerald-300 mb-6">
-        Assign Subject to Faculty
-      </h2>
-
-      {/* Success message */}
-      {message && (
-        <div
-          className={`text-center mb-4 ${
-            message.includes("successfully")
-              ? "text-emerald-400"
-              : "text-red-400"
-          }`}
-        >
-          {message}
+    <div className="max-w-xl mx-auto mt-10 p-6 bg-gradient-to-tr from-gray-900 to-gray-800 text-white shadow-2xl rounded-2xl border border-emerald-500/30 relative">
+      <div className="flex justify-between items-center mb-8">
+        <h2 className="text-2xl font-black bg-gradient-to-r from-emerald-400 to-emerald-600 bg-clip-text text-transparent classic-heading uppercase tracking-widest">
+          Subject Management
+        </h2>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setShowCSVUpload(false)}
+            className={`px-4 py-2 rounded-lg text-base font-bold uppercase tracking-widest transition-all ${!showCSVUpload ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
+          >
+            Individual
+          </button>
+          <button
+            onClick={() => setShowCSVUpload(true)}
+            className={`px-4 py-2 rounded-lg text-base font-bold uppercase tracking-widest transition-all ${showCSVUpload ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
+          >
+            CSV Upload
+          </button>
         </div>
-      )}
+      </div>
 
-      {/* ERROR block */}
-      {errorMsg && (
-        <div className="mb-4 p-3 rounded bg-red-900 text-red-100 text-sm">
-          {errorMsg}
+      {showCSVUpload ? (
+        <div className="space-y-6">
+          <div className="bg-gray-800/50 p-6 rounded-2xl border border-gray-700">
+            <p className="text-base font-bold text-gray-400 uppercase tracking-[0.2em] mb-4 text-center">Batch Subject Enrollment</p>
+            <DragDropCSVUpload onChange={handleFileUpload} />
+
+            {selectedFile && (
+              <div className="mt-4 p-4 bg-indigo-500/10 border border-indigo-500/20 rounded-xl flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="text-base">📄</span>
+                  <div className="min-w-0">
+                    <p className="text-base font-bold truncate">{selectedFile.name}</p>
+                    <p className="text-base text-gray-500 uppercase">{(selectedFile.size / 1024).toFixed(2)} KB</p>
+                  </div>
+                </div>
+                <button onClick={() => setSelectedFile(null)} className="text-gray-400 hover:text-red-400">×</button>
+              </div>
+            )}
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <button
+              onClick={DownloadSampleCSV}
+              className="flex items-center justify-center gap-2 py-4 px-6 bg-gray-800 hover:bg-gray-700 rounded-xl text-base font-black uppercase tracking-widest transition-all"
+            >
+              <span>📥</span> Sample Template
+            </button>
+            <button
+              onClick={handleCSVSubmit}
+              disabled={!selectedFile || uploading}
+              className="flex items-center justify-center gap-2 py-4 px-6 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 rounded-xl text-base font-black uppercase tracking-widest transition-all shadow-lg shadow-emerald-600/20"
+            >
+              {uploading ? "Processing..." : "Deploy Database"}
+            </button>
+          </div>
+
+          <p className="text-base text-center text-gray-500 italic">
+            * Ensure the CSV follows the standard schema for subject inventory deployment.
+          </p>
         </div>
-      )}
+      ) : (
+        <>
+          {/* Success message */}
+          {message && (
+            <div className="mb-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-base font-bold text-center">
+              {message}
+            </div>
+          )}
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <select
-          name="department"
-          value={formData.department}
-          onChange={handleChange}
-          className="p-3 bg-gray-900 border border-gray-600 rounded-md"
-        >
-          <option value="">Select Department</option>
-          <option value="COMMON">COMMON SUBJECTS</option>
-          <option value="DCS">Diploma in Computer Science Engineering</option>
-          <option value="DEEE">
-            Diploma in Electrical and Electronics Engineering
-          </option>
-          <option value="DME">Diploma in Mechanical Engineering</option>
-          <option value="DCE">Diploma in Civil Engineering</option>
-          <option value="DMT">Diploma in Metallurgy Engineering</option>
-        </select>
+          {/* ERROR block */}
+          {errorMsg && (
+            <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-base font-bold text-center">
+              {errorMsg}
+            </div>
+          )}
 
-        <select
-          name="semester"
-          value={formData.semester}
-          onChange={handleChange}
-          className="p-3 bg-gray-900 border border-gray-600 rounded-md"
-        >
-          <option value="">Select Semester</option>
-          {[1, 2, 3, 4, 5].map((s) => (
-            <option key={s} value={s}>
-              Semester {s}
-            </option>
-          ))}
-        </select>
-
-        <select
-          name="subjectId"
-          value={formData.subjectId}
-          onChange={handleChange}
-          className="p-3 bg-gray-900 border border-gray-600 rounded-md"
-        >
-          <option value="">Select Subject</option>
-          {subjectOptions.map((subj) => (
-            <option key={subj.subjectId} value={subj.subjectId}>
-              {subj.subjectName} ({subj.subjectCode})
-            </option>
-          ))}
-        </select>
-
-        <select
-          name="subjectType"
-          value={formData.subjectType}
-          onChange={handleChange}
-          className="p-3 bg-gray-900 border border-gray-600 rounded-md"
-        >
-          <option value="">Select Subject Type</option>
-          <option value="Theory">Theory</option>
-          <option value="Lab">Lab</option>
-        </select>
-
-        {/* Section select with fancy tooltip */}
-        <div>
-          <div className="flex items-center gap-3">
-            <div className="flex-1">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            <div className="space-y-1">
+              <label className="text-base font-black text-emerald-500 uppercase tracking-widest ml-1">Stream</label>
               <select
-                name="section"
-                value={formData.section}
+                name="department"
+                value={formData.department}
                 onChange={handleChange}
-                className="p-3 bg-gray-900 border border-gray-600 rounded-md w-full"
+                disabled={isHOD && faculty?.department && faculty.department !== "ALL"}
+                className="w-full p-4 bg-gray-900 border border-gray-700 rounded-xl text-base font-bold focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all disabled:opacity-50"
               >
-                <option value="">Select Section</option>
-                {["A", "B", "C", "D"].map((sec) => {
-                  const isDisabled = disabledSections.includes(sec);
-                  return (
-                    <option key={sec} value={sec} disabled={isDisabled}>
-                      {sec} {isDisabled ? " (assigned)" : ""}
-                    </option>
-                  );
-                })}
+                <option value="">Select Stream</option>
+                <option value="COMMON">COMMON SUBJECTS</option>
+                <option value="DCS">Computer Science (DCS)</option>
+                <option value="DEEE">Electrical (DEEE)</option>
+                <option value="DME">Mechanical (DME)</option>
+                <option value="DCE">Civil (DCE)</option>
+                <option value="DMT">Metallurgy (DMT)</option>
               </select>
             </div>
 
-            {/* Fancy tooltip: shows reasons for disabled sections */}
-            <div className="relative">
-              <div className="group inline-flex items-center">
-                <button
-                  type="button"
-                  className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-800 border border-gray-600 text-gray-300 focus:outline-none"
-                  aria-label="Disabled sections info"
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <label className="text-base font-black text-emerald-500 uppercase tracking-widest ml-1">Term</label>
+                <select
+                  name="semester"
+                  value={formData.semester}
+                  onChange={handleChange}
+                  className="w-full p-4 bg-gray-900 border border-gray-700 rounded-xl text-base font-bold focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all"
                 >
-                  <svg
-                    className="w-4 h-4"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden
-                  >
-                    <circle cx="12" cy="12" r="10" />
-                    <line x1="12" y1="16" x2="12" y2="12" />
-                    <line x1="12" y1="8" x2="12.01" y2="8" />
-                  </svg>
-                </button>
+                  <option value="">Semester</option>
+                  {[1, 2, 3, 4, 5, 6].map((s) => (
+                    <option key={s} value={s}>Sem {s}</option>
+                  ))}
+                </select>
+              </div>
 
-                {/* Tooltip box */}
-                <div
-                  className="pointer-events-none opacity-0 group-hover:opacity-100 group-focus:opacity-100 transform scale-95 group-hover:scale-100 group-focus:scale-100 transition-all duration-150 ease-out absolute right-0 top-full mt-2 w-64 bg-gray-900 border border-gray-700 rounded-md shadow-lg z-50 p-3 text-xs text-gray-100"
-                  role="tooltip"
+              <div className="space-y-1">
+                <label className="text-base font-black text-emerald-500 uppercase tracking-widest ml-1">Modal</label>
+                <select
+                  name="subjectType"
+                  value={formData.subjectType}
+                  onChange={handleChange}
+                  className="w-full p-4 bg-gray-900 border border-gray-700 rounded-xl text-base font-bold focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all"
                 >
-                  <div className="font-medium mb-1">Disabled sections</div>
-                  {Object.keys(disabledDetails).length === 0 ? (
-                    <div className="text-gray-400">No disabled sections</div>
-                  ) : (
-                    <ul className="space-y-1">
-                      {Object.entries(disabledDetails).map(([sec, reason]) => (
-                        <li key={sec} className="flex items-start gap-2">
-                          <span className="font-semibold">{sec}:</span>
-                          <span className="text-gray-300">{reason}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                  <div className="mt-2 text-xs text-gray-400">
-                    Tip: change subject type to enable other options.
+                  <option value="">Type</option>
+                  <option value="Theory">Theory</option>
+                  <option value="Lab">Lab</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-base font-black text-emerald-500 uppercase tracking-widest ml-1">Subject Inventory</label>
+              <select
+                name="subjectId"
+                value={formData.subjectId}
+                onChange={handleChange}
+                className="w-full p-4 bg-gray-900 border border-gray-700 rounded-xl text-base font-bold focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all"
+              >
+                <option value="">Search Portfolio...</option>
+                {subjectOptions.map((subj) => (
+                  <option key={subj.subjectId} value={subj.subjectId}>
+                    {subj.subjectName} ({subj.subjectCode})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-base font-black text-emerald-500 uppercase tracking-widest ml-1">Academic Section</label>
+              <div className="flex items-center gap-3">
+                <div className="flex-1">
+                  <select
+                    name="section"
+                    value={formData.section}
+                    onChange={handleChange}
+                    className="w-full p-4 bg-gray-900 border border-gray-700 rounded-xl text-base font-bold focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all"
+                  >
+                    <option value="">Select Section</option>
+                    {["A", "B", "C", "D"].map((sec) => {
+                      const isDisabled = disabledSections.includes(sec);
+                      return (
+                        <option key={sec} value={sec} disabled={isDisabled}>
+                          {sec} {isDisabled ? " (Assigned)" : ""}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+
+                <div className="relative group">
+                  <button
+                    type="button"
+                    className="w-12 h-12 rounded-xl flex items-center justify-center bg-gray-900 border border-gray-700 text-emerald-500 hover:bg-emerald-500/10 transition-all focus:outline-none"
+                  >
+                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" />
+                    </svg>
+                  </button>
+
+                  <div className="pointer-events-none opacity-0 group-hover:opacity-100 transform scale-95 group-hover:scale-100 transition-all absolute right-0 top-full mt-3 w-64 bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl z-50 p-4 text-base">
+                    <p className="font-black text-emerald-500 uppercase tracking-widest mb-2 pb-2 border-b border-gray-800">Section Lock Details</p>
+                    {Object.keys(disabledDetails).length === 0 ? (
+                      <p className="text-gray-500 italic text-center">All sections available</p>
+                    ) : (
+                      <ul className="space-y-2">
+                        {Object.entries(disabledDetails).map(([sec, reason]) => (
+                          <li key={sec} className="flex flex-col">
+                            <span className="font-bold text-white">Section {sec}</span>
+                            <span className="text-gray-400">{reason}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Small inline fallback help for touch users */}
-          {Object.keys(disabledDetails).length > 0 &&
-            formData.subjectId &&
-            formData.subjectType && (
-              <p className="mt-2 text-xs text-yellow-300">
-                Some sections are disabled — tap the info icon to see details.
-              </p>
-            )}
-        </div>
+            {formData.subjectType === "Lab" && (
+              <div className="bg-gray-900/50 p-6 rounded-2xl border border-gray-700 space-y-6">
+                <div>
+                  <label className="text-base font-black text-emerald-500 uppercase tracking-widest ml-1 mb-3 block">Laboratory Batches (Max 2)</label>
+                  <div className="flex gap-6">
+                    {["B1", "B2"].map((batch) => (
+                      <label key={batch} className="flex items-center gap-3 cursor-pointer group">
+                        <input
+                          type="checkbox"
+                          className="w-5 h-5 rounded border-gray-700 bg-gray-800 text-emerald-500 focus:ring-0 focus:ring-offset-0 transition-all"
+                          checked={formData.batches.includes(batch)}
+                          onChange={() => handleBatchToggle(batch)}
+                        />
+                        <span className="text-base font-bold text-gray-400 group-hover:text-white transition-colors">{batch}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
 
-        {formData.subjectType === "Lab" && (
-          <>
-            <div>
-              <p className="mb-2 font-medium">Select Batch (max 2):</p>
-              <div className="flex gap-4">
-                {["B1", "B2"].map((batch) => (
-                  <label key={batch} className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={formData.batches.includes(batch)}
-                      onChange={() => handleBatchToggle(batch)}
-                    />
-                    {batch}
-                  </label>
+                {formData.batches.map((batch) => (
+                  <div key={batch} className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <span className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-base font-black text-emerald-500 border border-emerald-500/20">{batch}</span>
+                      <div className="h-px flex-1 bg-gray-800"></div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <input
+                        type="text"
+                        placeholder="Start Range"
+                        required
+                        value={batchRanges[batch]?.start || ""}
+                        onChange={(e) => handleRangeChange(batch, "start", e.target.value)}
+                        className="p-3 bg-gray-900 border border-gray-700 rounded-xl text-base font-mono tracking-widest focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all placeholder:text-gray-600"
+                      />
+                      <input
+                        type="text"
+                        placeholder="End Range"
+                        required
+                        value={batchRanges[batch]?.end || ""}
+                        onChange={(e) => handleRangeChange(batch, "end", e.target.value)}
+                        className="p-3 bg-gray-900 border border-gray-700 rounded-xl text-base font-mono tracking-widest focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all placeholder:text-gray-600"
+                      />
+                    </div>
+                  </div>
                 ))}
               </div>
-            </div>
+            )}
 
-            {formData.batches.map((batch) => (
-              <div key={batch} className="flex items-center gap-3">
-                <span className="w-10">{batch}</span>
-                <input
-                  type="text"
-                  placeholder="Start Reg No."
-                  required
-                  value={batchRanges[batch]?.start || ""}
-                  onChange={(e) =>
-                    handleRangeChange(batch, "start", e.target.value)
-                  }
-                  className="p-2 w-full bg-gray-900 border border-gray-600 rounded-md"
-                />
-                <input
-                  type="text"
-                  placeholder="End Reg No."
-                  required
-                  value={batchRanges[batch]?.end || ""}
-                  onChange={(e) =>
-                    handleRangeChange(batch, "end", e.target.value)
-                  }
-                  className="p-2 w-full bg-gray-900 border border-gray-600 rounded-md"
-                />
-              </div>
-            ))}
-          </>
-        )}
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="mt-4 bg-emerald-600 hover:bg-emerald-700 py-3 rounded-md font-medium transition duration-300 disabled:opacity-50"
-        >
-          {loading ? "Submitting..." : "Submit"}
-        </button>
-      </form>
+            <button
+              type="submit"
+              disabled={loading}
+              className="mt-4 bg-emerald-600 hover:bg-emerald-700 py-5 rounded-2xl text-base font-black uppercase tracking-[0.3em] shadow-xl shadow-emerald-600/20 transition-all active:scale-95 disabled:opacity-50"
+            >
+              {loading ? "Processing Assignment..." : "Link Faculty Duty"}
+            </button>
+          </form>
+        </>
+      )}
     </div>
   );
 }
 
 export default AddSubjectTab;
+
+
+
+

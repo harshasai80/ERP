@@ -82,14 +82,14 @@ export default function About() {
 
             {/* Enhanced text content */}
             <div className="space-y-1">
-              <h1 className="text-xl md:text-2xl font-bold tracking-tight">
+              <h1 className="text-base md:text-2xl font-bold tracking-tight">
                 <span className="bg-gradient-to-r from-white via-emerald-100 to-emerald-200 bg-clip-text text-transparent">
                   Sanjay Gandhi Polytechnic
                 </span>
               </h1>
               <div className="flex items-center gap-2">
                 <div className="w-1 h-1 bg-emerald-400 rounded-full animate-pulse"></div>
-                <p className="text-emerald-200/90 text-xs md:text-sm font-medium tracking-wide">
+                <p className="text-emerald-200/90 text-base md:text-base font-medium tracking-wide">
                   Get in Touch with Us
                 </p>
                 <div className="w-8 h-0.5 bg-gradient-to-r from-emerald-400/60 to-transparent rounded-full"></div>
@@ -114,12 +114,12 @@ export default function About() {
 
               {/* Button content */}
               <motion.span
-                className="relative text-lg"
+                className="relative text-base"
                 whileHover={{ x: -2 }}
                 transition={{ duration: 0.2 }}>
                 ←
               </motion.span>
-              <span className="relative text-sm md:text-base">
+              <span className="relative text-base md:text-base">
                 Back to Home
               </span>
 
@@ -167,7 +167,7 @@ export default function About() {
             About SGP
           </motion.h1>
           <motion.p
-            className="text-xl text-gray-300 leading-relaxed"
+            className="text-base text-gray-300 leading-relaxed"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}>
@@ -189,14 +189,14 @@ export default function About() {
               <h2 className="text-3xl font-bold mb-6 text-emerald-400">
                 Our Story
               </h2>
-              <p className="mb-4 leading-relaxed text-gray-300 text-lg">
+              <p className="mb-4 leading-relaxed text-gray-300 text-base">
                 Sanjay Gandhi Polytechnic, Ballari was the first premier private
                 co-educational Polytechnic established in the year{" "}
                 <span className="text-emerald-400 font-semibold">1992</span> to
                 provide quality technical education, affording young men and
                 women the opportunity to equip themselves for employment.
               </p>
-              <p className="leading-relaxed text-gray-300 text-lg">
+              <p className="leading-relaxed text-gray-300 text-base">
                 The Institute is recognised by the Government of Karnataka, the
                 All India Council for Technical Education (AICTE), New Delhi and
                 is affiliated to the Directorate of Technical Education,
@@ -238,7 +238,7 @@ export default function About() {
             <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">
               Courses Offered
             </h2>
-            <p className="text-gray-400 text-lg">
+            <p className="text-gray-400 text-base">
               Comprehensive technical education programs
             </p>
           </motion.div>
@@ -318,3 +318,7 @@ export default function About() {
     </div>
   );
 }
+
+
+
+

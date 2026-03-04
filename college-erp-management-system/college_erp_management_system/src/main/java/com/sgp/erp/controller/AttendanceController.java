@@ -28,17 +28,18 @@ public class AttendanceController {
 
     // Get attendance by date and register number
     @GetMapping("/{registerNo}/date")
-    public ResponseEntity<ResponseStructure<List<Attendance>>> getAttendanceByDate(@PathVariable String registerNo,
-            @RequestParam LocalDate date) {
+    public ResponseEntity<ResponseStructure<List<Attendance>>> getAttendanceByDate(
+            @PathVariable(name = "registerNo") String registerNo,
+            @RequestParam(name = "date") LocalDate date) {
         return attendanceService.getAttendanceByDateAndRegisterNo(date, registerNo);
     }
 
     // Get attendance by register number and date range
     @GetMapping("/{registerNo}/range")
     public ResponseEntity<ResponseStructure<List<Attendance>>> getAttendanceByDateRange(
-            @PathVariable String registerNo,
-            @RequestParam LocalDate startDate,
-            @RequestParam LocalDate endDate) {
+            @PathVariable(name = "registerNo") String registerNo,
+            @RequestParam(name = "startDate") LocalDate startDate,
+            @RequestParam(name = "endDate") LocalDate endDate) {
         return attendanceService.getAttendanceByRegisterNoAndDateRange(registerNo, startDate, endDate);
     }
 
@@ -51,8 +52,15 @@ public class AttendanceController {
 
     @GetMapping("/all-attendance")
     public ResponseEntity<ResponseStructure<List<Attendance>>> getAllAttendanceByRegisterNo(
-            @RequestParam String registerNo) {
+            @RequestParam(name = "registerNo") String registerNo) {
         return attendanceService.getAttendanceByRegisterNo(registerNo);
+    }
+
+    @PostMapping("/bulk-date-attendance")
+    public ResponseEntity<ResponseStructure<List<Attendance>>> getAttendanceByDateAndRegisterNos(
+            @RequestParam(name = "date") LocalDate date,
+            @RequestBody List<String> regNos) {
+        return attendanceService.getAttendanceByDateAndRegisterNos(date, regNos);
     }
 
 }

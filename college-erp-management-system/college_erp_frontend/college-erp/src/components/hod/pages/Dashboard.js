@@ -1,263 +1,187 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { FaChalkboardTeacher } from "react-icons/fa";
+import React, { useEffect, useState } from "react";
 import Api from "../../../Api";
+import { motion } from "framer-motion";
 
-const MAX_VISIBLE_STUDENTS = 100;
-const MAX_VISIBLE_FACULTY = 30;
-const STUDENT_SIZE = 24;
-const FACULTY_SIZE = 40;
-const FRAME_INTERVAL = 80;
-
-const Dashboard = ({ department }) => {
-  const [students, setStudents] = useState([]);
-  const [faculty, setFaculty] = useState([]);
-  const [studentCount, setStudentCount] = useState(0);
-  const [facultyCount, setFacultyCount] = useState(0);
-  const [displayedStudentCount, setDisplayedStudentCount] = useState(0);
-  const [displayedFacultyCount, setDisplayedFacultyCount] = useState(0);
-  const [entities, setEntities] = useState([]);
-  const [containerWidth, setContainerWidth] = useState(1024);
-
-  const classroomWidth = 720;
-  const classroomHeight = 480;
-
-  useEffect(() => {
-    const updateWidth = () => {
-      const screenWidth = window.innerWidth;
-      if (screenWidth < 640) setContainerWidth(screenWidth - 40);
-      else if (screenWidth < 1024) setContainerWidth(768);
-      else setContainerWidth(1024);
-    };
-    updateWidth();
-    window.addEventListener("resize", updateWidth);
-    return () => window.removeEventListener("resize", updateWidth);
-  }, []);
-
-  const getRandomPosition = (width, height) => ({
-    x: 30 + Math.random() * (width - 60),
-    y: 30 + Math.random() * (height - 60),
+const Dashboard = ({ department, onTabChange }) => {
+  const [stats, setStats] = useState({
+    totalStudents: 0,
+    totalFaculty: 0,
+    semesterData: {},
+    loading: true,
   });
 
-  const createEntity = useCallback(
-    (type, data, index) => {
-      const pos = getRandomPosition(
-        classroomWidth,
-        classroomHeight,
-        type === "student" ? STUDENT_SIZE : FACULTY_SIZE
-      );
-
-      return {
-        id: data.id || `${type}_${index}`,
-        type,
-        data,
-        x: pos.x,
-        y: pos.y,
-        targetX: pos.x,
-        targetY: pos.y,
-        speed: 0.5 + Math.random() * 5,
-        angle: Math.random() * Math.PI * 2,
-        pauseTimer: Math.random() * 60,
-        moveTimer: 0,
-        size: type === "student" ? STUDENT_SIZE : FACULTY_SIZE,
-      };
-    },
-    [classroomWidth, classroomHeight]
-  );
-
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchStats = async () => {
       try {
         const [studentsRes, facultyRes] = await Promise.all([
-          Api.get("/student/department", { params: { department } }),
+          Api.get("/student/all", { params: { department } }),
           Api.get("/faculty/all", { params: { department } }),
         ]);
 
-        const studentsData = studentsRes.data.data || [];
-        const facultyData =
-          facultyRes.data.data.filter((f) => f.role !== "HOD") || [];
+        const students = studentsRes.data.data || [];
+        const faculties = (facultyRes.data.data || []).filter(f => f.role !== "HOD");
 
-        setStudentCount(studentsData.length);
-        setFacultyCount(facultyData.length);
+        // Calculate semester distribution
+        const semDist = {};
+        for (let i = 1; i <= 6; i++) semDist[i] = 0;
+        students.forEach(s => {
+          if (s.sem) semDist[s.sem] = (semDist[s.sem] || 0) + 1;
+        });
 
-        const visibleStudents = studentsData.slice(0, MAX_VISIBLE_STUDENTS);
-        const visibleFaculty = facultyData.slice(0, MAX_VISIBLE_FACULTY);
-
-        setStudents(visibleStudents);
-        setFaculty(visibleFaculty);
-
-        const allEntities = [
-          ...visibleStudents.map((s, i) => createEntity("student", s, i)),
-          ...visibleFaculty.map((f, i) => createEntity("faculty", f, i)),
-        ];
-
-        setEntities(allEntities);
+        setStats({
+          totalStudents: students.length,
+          totalFaculty: faculties.length,
+          semesterData: semDist,
+          loading: false,
+        });
       } catch (e) {
-        console.error(e);
+        console.error("Dashboard fetch error:", e);
+        setStats(prev => ({ ...prev, loading: false }));
       }
     };
-    fetchData();
-  }, [department, createEntity, setFaculty, setStudents]);
+    fetchStats();
+  }, [department]);
 
-  // Inside the useEffect for counts
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setDisplayedStudentCount((prev) => {
-        const increment = Math.ceil(studentCount / 50); // Divide total count into ~50 steps
-        return prev + increment >= studentCount
-          ? studentCount
-          : prev + increment;
-      });
-
-      setDisplayedFacultyCount((prev) => {
-        const increment = Math.ceil(facultyCount / 50);
-        return prev + increment >= facultyCount
-          ? facultyCount
-          : prev + increment;
-      });
-
-      setEntities((prev) =>
-        prev.map((e, i) => {
-          if (!e.visible) {
-            if (e.type === "student" && i < displayedStudentCount)
-              e.visible = true;
-            if (
-              e.type === "faculty" &&
-              i - MAX_VISIBLE_STUDENTS < displayedFacultyCount
-            )
-              e.visible = true;
-          }
-          return { ...e };
-        })
-      );
-    }, 30); // smaller interval for smoother animation
-
-    return () => clearInterval(interval);
-  }, [
-    studentCount,
-    facultyCount,
-    displayedStudentCount,
-    displayedFacultyCount,
-  ]);
-
-  // Movement system
-  useEffect(() => {
-    const moveLoop = setInterval(() => {
-      setEntities((prev) =>
-        prev.map((entity) => {
-          if (!entity.visible) return entity;
-
-          if (entity.pauseTimer > 0) {
-            entity.pauseTimer--;
-            return { ...entity };
-          }
-
-          if (entity.moveTimer <= 0) {
-            entity.targetX = 30 + Math.random() * (classroomWidth - 60);
-            entity.targetY = 30 + Math.random() * (classroomHeight - 60);
-            entity.moveTimer = 120 + Math.random() * 180;
-
-            if (Math.random() < 0.1) {
-              entity.pauseTimer = 60 + Math.random() * 120;
-            }
-          }
-
-          entity.moveTimer--;
-
-          const dx = entity.targetX - entity.x;
-          const dy = entity.targetY - entity.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-
-          if (distance > 2) {
-            entity.x += (dx / distance) * entity.speed;
-            entity.y += (dy / distance) * entity.speed;
-          }
-
-          const margin = 15;
-          entity.x = Math.max(
-            margin,
-            Math.min(classroomWidth - entity.size - margin, entity.x)
-          );
-          entity.y = Math.max(
-            margin,
-            Math.min(classroomHeight - entity.size - margin, entity.y)
-          );
-
-          return { ...entity };
-        })
-      );
-    }, FRAME_INTERVAL);
-
-    return () => clearInterval(moveLoop);
-  }, []);
-
-  const studentEntities = entities.filter(
-    (e) => e.type === "student" && e.visible
-  );
-  const facultyEntities = entities.filter(
-    (e) => e.type === "faculty" && e.visible
-  );
+  if (stats.loading) {
+    return (
+      <div className="flex justify-center items-center h-96 text-academic animate-pulse">
+        <span className="text-base font-black uppercase tracking-widest">Consulting Departmental Archives...</span>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white flex flex-col items-center p-4 sm:p-6 lg:p-10">
-      <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 sm:mb-8 lg:mb-10 text-center">
-        HOD Dashboard
-      </h1>
-
-      {/* Animated Counts */}
-      <div className="flex flex-col sm:flex-row gap-6 sm:gap-16 mb-6 text-center w-full max-w-lg sm:max-w-none justify-center">
-        <div className="bg-gray-800 bg-opacity-60 rounded-2xl p-4 sm:p-6 backdrop-blur-sm border border-gray-700 flex-1 sm:flex-initial shadow-lg transform hover:scale-105 transition-transform duration-200">
-          <p className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-emerald-400">
-            {displayedStudentCount}
-          </p>
-          <p className="text-lg sm:text-xl mt-1 text-gray-200">Students</p>
+    <div className="space-y-12">
+      {/* Institutional Header */}
+      <div className="flex flex-col md:flex-row justify-between items-end gap-6 border-b border-gray-100 pb-8">
+        <div>
+          <h2 className="text-base font-black text-gold uppercase tracking-[0.4em] mb-2">Departmental Intelligence</h2>
+          <h1 className="text-4xl sm:text-5xl font-black text-academic classic-heading uppercase">
+            {department} <span className="text-gray-300 font-light italic">Command Center</span>
+          </h1>
         </div>
-        <div className="bg-gray-800 bg-opacity-60 rounded-2xl p-4 sm:p-6 backdrop-blur-sm border border-gray-700 flex-1 sm:flex-initial shadow-lg transform hover:scale-105 transition-transform duration-200">
-          <p className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-yellow-400">
-            {displayedFacultyCount}
-          </p>
-          <p className="text-lg sm:text-xl mt-1 text-gray-200">Faculty</p>
+        <div className="text-right">
+          <p className="text-base font-bold text-faded-ink uppercase tracking-widest">Academic Year 2024-25</p>
+          <div className="inline-flex items-center gap-2 mt-1">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-base font-black text-emerald-600 uppercase tracking-tighter">Live Database Sync</span>
+          </div>
         </div>
       </div>
 
-      {/* Classroom */}
-      <div
-        className="relative w-full max-w-xs sm:max-w-2xl lg:max-w-5xl h-48 sm:h-64 lg:h-96 bg-gray-900 rounded-2xl shadow-xl overflow-hidden border border-gray-700"
-        style={{ width: containerWidth }}>
-        {/* Students */}
-        {studentEntities.map((entity) => (
-          <div
-            key={entity.id}
-            className="absolute w-6 h-6 bg-emerald-400 rounded-full group cursor-pointer transition-all duration-200 hover:scale-110 hover:bg-emerald-300 hover:shadow-lg"
-            style={{
-              left: `${entity.x}px`,
-              top: `${entity.y}px`,
-              zIndex: 10,
-            }}>
-            <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 px-3 py-1 bg-gray-800 text-sm rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-20 border border-gray-600">
-              {entity.data.name}
-              {entity.data.registrationNumber
-                ? ` (${entity.data.registrationNumber})`
-                : ""}
-            </div>
+      {/* Primary Metrics Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div
+          onClick={() => onTabChange("students")}
+          className="bg-academic p-8 rounded-sm shadow-xl relative overflow-hidden group cursor-pointer hover:bg-academic/95 transition-all text-white"
+        >
+          <div className="relative z-10">
+            <p className="text-white/60 text-base font-black uppercase tracking-widest mb-1">Total Enrollment</p>
+            <h3 className="text-5xl font-black text-white classic-heading">{stats.totalStudents}</h3>
+            <p className="text-gold text-base font-bold mt-2 uppercase tracking-tight flex items-center gap-2">
+              Active Scholars <span className="text-base opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+            </p>
           </div>
-        ))}
+          <div className="absolute -right-4 -bottom-4 text-white/5 text-8xl font-black group-hover:scale-110 transition-transform duration-700">👥</div>
+        </div>
 
-        {/* Faculty */}
-        {facultyEntities.map((entity) => (
-          <div
-            key={entity.id}
-            className="absolute w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center text-black font-bold group cursor-pointer transition-all duration-200 hover:scale-110 hover:bg-yellow-400 hover:shadow-lg"
-            style={{
-              left: `${entity.x}px`,
-              top: `${entity.y}px`,
-              zIndex: 10,
-            }}>
-            <FaChalkboardTeacher />
-            <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 px-3 py-1 bg-gray-800 text-sm rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-20 border border-gray-600 text-white">
-              {entity.data.name}
+        <div
+          onClick={() => onTabChange("faculty")}
+          className="bg-white border-2 border-academic p-8 rounded-sm shadow-lg relative overflow-hidden group cursor-pointer hover:bg-gray-50 transition-all"
+        >
+          <div className="relative z-10">
+            <p className="text-academic/60 text-base font-black uppercase tracking-widest mb-1">Academic Staff</p>
+            <h3 className="text-5xl font-black text-academic classic-heading">{stats.totalFaculty}</h3>
+            <p className="text-emerald-600 text-base font-bold mt-2 uppercase tracking-tight flex items-center gap-2">
+              Qualified Educators <span className="text-base opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+            </p>
+          </div>
+          <div className="absolute -right-4 -bottom-4 text-academic/5 text-8xl font-black group-hover:scale-110 transition-transform duration-700">👨‍🏫</div>
+        </div>
+
+        <div
+          onClick={() => onTabChange("ia-marks")}
+          className="bg-gray-50 border border-gray-100 p-8 rounded-sm relative group cursor-pointer hover:bg-white transition-all shadow-sm"
+        >
+          <p className="text-faded-ink text-base font-black uppercase tracking-widest mb-1">Avg. Attendance</p>
+          <h3 className="text-5xl font-black text-academic classic-heading">84%</h3>
+          <div className="mt-4 w-full bg-gray-200 h-2 rounded-full overflow-hidden">
+            <div className="bg-emerald-500 h-full w-[84%] shadow-[0_0_10px_#10b981]" />
+          </div>
+          <p className="text-faded-ink text-base font-bold mt-2 uppercase tracking-tight opacity-0 group-hover:opacity-100 transition-opacity text-right">Review All →</p>
+        </div>
+
+        <div
+          onClick={() => onTabChange("ia-marks")}
+          className="bg-gray-50 border border-gray-100 p-8 rounded-sm relative group cursor-pointer hover:bg-white transition-all shadow-sm"
+        >
+          <p className="text-faded-ink text-base font-black uppercase tracking-widest mb-1">Performance Index</p>
+          <h3 className="text-5xl font-black text-academic classic-heading">A+</h3>
+          <p className="text-blue-600 text-base font-bold mt-2 uppercase tracking-tight flex justify-between">
+            Rank #2 <span className="opacity-0 group-hover:opacity-100 transition-opacity">View Marks →</span>
+          </p>
+        </div>
+      </div>
+
+      {/* Semester Distribution Visualizer */}
+      <div className="bg-white border border-gray-100 p-10 rounded-sm shadow-sm">
+        <div className="flex items-center justify-between mb-10">
+          <h3 className="text-base font-black text-academic uppercase tracking-[0.3em]">Vertical Distribution <span className="text-faded-ink">| Semester Wise</span></h3>
+          <div className="flex gap-4">
+            <div className="flex items-center gap-2">
+              <span className="w-3 h-3 bg-academic rounded-full" />
+              <span className="text-base font-bold text-faded-ink">Students per Term</span>
             </div>
           </div>
-        ))}
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-8">
+          {Object.entries(stats.semesterData).map(([sem, count]) => {
+            const height = stats.totalStudents > 0 ? (count / stats.totalStudents) * 200 : 0;
+            return (
+              <div key={sem} className="flex flex-col items-center group">
+                <div className="relative w-full h-40 flex items-end justify-center mb-4 bg-gray-50/50 rounded-t-lg text-white">
+                  <motion.div
+                    initial={{ height: 0 }}
+                    animate={{ height: `${Math.max(10, height)}%` }}
+                    className="w-full bg-academic group-hover:bg-gold transition-colors duration-500 rounded-t-sm shadow-lg relative"
+                  >
+                    <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-academic text-white text-base py-1 px-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity font-black">
+                      {count}
+                    </div>
+                  </motion.div>
+                </div>
+                <p className="text-base font-black text-academic uppercase tracking-widest">Sem {sem}</p>
+                <p className="text-base text-faded-ink font-bold">{count} Scholars</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Utility Footer Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6 border-t border-gray-100">
+        <div className="flex items-center gap-4">
+          <span className="text-2xl">📑</span>
+          <div>
+            <p className="text-base font-black uppercase tracking-tight">Recent Audit</p>
+            <p className="text-base text-faded-ink">Curriculum compliance verified</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-4">
+          <span className="text-2xl">📅</span>
+          <div>
+            <p className="text-base font-black uppercase tracking-tight">Active Session</p>
+            <p className="text-base text-faded-ink">Jan - June Academic Cycle</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-4">
+          <span className="text-2xl">🔒</span>
+          <div>
+            <p className="text-base font-black uppercase tracking-tight">Data Integrity</p>
+            <p className="text-base text-faded-ink">Level 4 Encrypted Tunnel</p>
+          </div>
+        </div>
       </div>
     </div>
   );

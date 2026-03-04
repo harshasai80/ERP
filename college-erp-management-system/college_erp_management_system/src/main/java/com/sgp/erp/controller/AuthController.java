@@ -20,7 +20,8 @@ public class AuthController {
 	private UsersService usersService;
 
 	@PostMapping("/login")
-	public ResponseEntity<ResponseStructure<Faculty>> login(@RequestParam String email, @RequestParam String password) {
+	public ResponseEntity<ResponseStructure<Faculty>> login(@RequestParam(name = "email") String email,
+			@RequestParam(name = "password") String password) {
 		return usersService.login(email, password);
 	}
 }

@@ -4,9 +4,13 @@ import Api from "../../Api";
 import HourDropdown from "./HourDropDown";
 
 function AttendanceTab({ faculty }) {
-  const [department, setDepartment] = useState("");
+  const isHOD = faculty?.role?.toUpperCase() === "HOD";
+  const facultyDept = faculty?.department || "";
+
+  const [department, setDepartment] = useState(isHOD ? (facultyDept === "ALL" ? "DCS" : facultyDept) : (facultyDept || "DCS"));
   const [semester, setSemester] = useState("");
   const [subjectId, setSubjectId] = useState("");
+  const [section, setSection] = useState("");
   const [batch, setBatch] = useState("");
   const [subjectType, setSubjectType] = useState("");
   const [availableBatches, setAvailableBatches] = useState([]);
@@ -21,47 +25,106 @@ function AttendanceTab({ faculty }) {
 
   const fetchSubjects = useCallback(async () => {
     try {
-      const response = await Api.get(`/subjects/all?facultyId=${faculty.id}`);
-      const data = response.data?.data || [];
+      const isHOD = faculty?.role?.toUpperCase() === "HOD";
+      if (isHOD) {
+        if (department && semester) {
+          const mainResp = await Api.get(`/subjects/department/${department}/semester/${semester}`);
+          const fetchedData = mainResp.data?.data || [];
 
-      const subjectsAsSemester = data.filter(
-        (subject) => subject.subject?.semester === parseInt(semester)
-      );
-      setSubjects(subjectsAsSemester);
-    } catch (error) {
-      console.error("Error fetching subjects", error);
-      setSubjects([]);
-      showAlert("Failed to load subjects", "error");
-    }
-  }, [faculty.id, semester]);
+          let allSubjectsData = [...fetchedData];
 
-  useEffect(() => {
-    if (department && semester) {
-      fetchSubjects();
-    }
-  }, [department, semester, fetchSubjects]);
+          // Also fetch COMMON subjects for that semester if current dept isn't COMMON
+          if (department !== "COMMON") {
+            try {
+              const commonResp = await Api.get(`/subjects/department/COMMON/semester/${semester}`);
+              const commonData = commonResp.data?.data || [];
+              // Avoid duplicates if a common subject is already in the main list
+              commonData.forEach(s => {
+                if (!allSubjectsData.some(existing => existing.subjectId === s.subjectId)) {
+                  allSubjectsData.push(s);
+                }
+              });
+            } catch (e) {
+              console.log("No COMMON subjects found for HOD fetch");
+            }
+          }
 
-  useEffect(() => {
-    if (subjectId) {
-      const selected = subjects.find((s) => s.id.toString() === subjectId);
-      if (selected) {
-        setSubjectType(selected.subjectType);
-        setAvailableBatches(selected.batches || []);
-        if (selected.subjectType === "LAB" && selected.batches?.length === 0) {
-          showAlert("No batches assigned for selected lab subject", "error");
+          console.log("HOD Subjects combined:", allSubjectsData);
+
+          const subjectsFormatted = allSubjectsData.map(s => ({
+            id: s.subjectId,
+            subject: s,
+            section: section || "A",
+            subjectType: "THEORY",
+            batches: []
+          }));
+          setSubjects(subjectsFormatted);
+        } else {
+          setSubjects([]);
         }
+      } else {
+        if (!faculty?.id) {
+          console.warn("Faculty ID missing, skipping subject fetch");
+          return;
+        }
+        const response = await Api.get(`/subjects/all?facultyId=${faculty.id}`);
+        const fetchedData = response.data?.data || [];
+        console.log("Faculty Subjects fetched:", fetchedData);
+
+        // For faculty, if no filters are chosen, show all. If filters chosen, show matching.
+        let result = fetchedData;
+        if (semester || department) {
+          result = fetchedData.filter((subject) => {
+            const subjectSem = subject.subject?.semester;
+            const isMatch = semester ? String(subjectSem) === String(semester) : true;
+
+            const subjectDept = subject.subject?.department;
+            const deptMatch = department ? (subjectDept === department || subjectDept?.toUpperCase() === "COMMON") : true;
+
+            return isMatch && deptMatch;
+          });
+        }
+        setSubjects(result);
+      }
+    } catch (error) {
+      console.error("Error fetching subjects:", error);
+      setSubjects([]);
+
+      // Don't show scary alert for "not found" which might just mean empty list
+      if (error.response?.status === 404) {
+        console.log("No subjects found for current selection (404)");
+      } else {
+        showAlert(`Failed to load subjects: ${error.response?.data?.message || error.message}`, "error");
       }
     }
-  }, [subjectId, subjects]);
+  }, [faculty?.id, faculty?.role, semester, department, section]);
 
-  const fetchStudents = async (selectedBatch = null) => {
+  useEffect(() => {
+    if (isHOD) {
+      if (department && semester) {
+        fetchSubjects();
+      } else {
+        setSubjects([]);
+      }
+    } else {
+      // For faculty, we fetch on mount or when filters change (filters are optional)
+      fetchSubjects();
+    }
+  }, [department, semester, section, isHOD, fetchSubjects]);
+
+  const fetchStudents = useCallback(async (selectedBatch = null) => {
     try {
       const selectedSubject = subjects.find(
         (s) => s.id.toString() === subjectId
       );
-      let url = `/student/all?department=${department}&semester=${semester}&section=${
-        selectedSubject?.section || ""
-      }`;
+      if (!selectedSubject) return;
+
+      // Use values from state as the primary source of truth
+      const targetDept = department || (selectedSubject.subject?.department === "COMMON" ? (faculty?.department || "DCS") : selectedSubject.subject?.department);
+      const targetSem = semester || selectedSubject.subject?.semester;
+      const targetSection = section || selectedSubject.section;
+
+      let url = `/student/all?department=${targetDept}&semester=${targetSem}&section=${targetSection || ""}`;
       if (selectedBatch) {
         const [startRegNo, endRegNo] = selectedBatch.split(",");
         if (startRegNo && endRegNo) {
@@ -78,7 +141,37 @@ function AttendanceTab({ faculty }) {
       setStudents([]);
       showAlert("Failed to load students", "error");
     }
-  };
+  }, [subjectId, subjects, department, semester, section, faculty?.department]);
+
+  useEffect(() => {
+    if (subjectId) {
+      const selected = subjects.find((s) => s.id.toString() === subjectId);
+      if (selected) {
+        setSubjectType(selected.subjectType);
+        setAvailableBatches(selected.batches || []);
+
+        // Auto-update filters for Faculty to match the subject ONLY if they are not already set/differ
+        if (!isHOD) {
+          if (selected.subject?.semester && String(semester) !== String(selected.subject.semester)) {
+            setSemester(selected.subject.semester.toString());
+          }
+          if (selected.section && section !== selected.section && !section) {
+            setSection(selected.section);
+          }
+          if (!department && selected.subject?.department) {
+            setDepartment(selected.subject.department === "COMMON" ? (faculty?.department || "DCS") : selected.subject.department);
+          }
+        }
+
+        if (selected.subjectType === "LAB" && selected.batches?.length === 0) {
+          showAlert("No batches assigned for selected lab subject", "error");
+        } else if (selected.subjectType !== "LAB") {
+          // Auto-load students for THEORY subjects immediately when subject or section changes
+          fetchStudents();
+        }
+      }
+    }
+  }, [subjectId, subjects, isHOD, faculty?.department, section, fetchStudents]);
 
   const handleAttendanceChange = (e, rollNo) => {
     if (e.target.checked) {
@@ -106,6 +199,63 @@ function AttendanceTab({ faculty }) {
     4: "17:00",
     5: "17:00",
     6: "17:00",
+  };
+
+  const loadAttendance = async () => {
+    if (!date || !startTime || !endTime || !subjectId || students.length === 0) {
+      showAlert("Please load students and select date/time first", "error");
+      return;
+    }
+
+    const selectedSubject = subjects.find((s) => s.id.toString() === subjectId);
+    if (!selectedSubject) return;
+
+    const selectedStartTime = new Date(`${date}T${startTime}`);
+    const selectedEndTime = new Date(`${date}T${endTime}`);
+    const collegeEndTime = collegeEndTimes[semester];
+
+    let selectedSessionNums = [];
+    predefinedSessions.forEach((session, index) => {
+      const sessionStart = new Date(`${date}T${session.start}`);
+      const sessionEnd = new Date(`${date}T${session.end}`);
+      if (collegeEndTime && sessionEnd > new Date(`${date}T${collegeEndTime}`)) return;
+      if (sessionStart >= selectedStartTime && sessionEnd <= selectedEndTime) {
+        selectedSessionNums.push(index + 1);
+      }
+    });
+
+    try {
+      const regNos = students.map(s => s.registrationNumber);
+      const response = await Api.post(`/students/bulk-date-attendance?date=${date}`, regNos);
+      const attendanceRecords = response.data?.data || [];
+
+      const newAbsentStudents = [];
+      attendanceRecords.forEach(record => {
+        try {
+          const sessions = JSON.parse(record.sessions || "[]");
+          const isAbsent = sessions.some(s =>
+            selectedSessionNums.includes(s.session) &&
+            s.subjectId === selectedSubject.subject.subjectId &&
+            s.status === "absent"
+          );
+          if (isAbsent) {
+            newAbsentStudents.push(record.student.registrationNumber);
+          }
+        } catch (e) {
+          console.error("Error parsing sessions for record", record);
+        }
+      });
+
+      setAbsentStudents(newAbsentStudents);
+      showAlert(`Loaded existing attendance. ${newAbsentStudents.length} students were absent.`, "success");
+    } catch (error) {
+      console.error("Load attendance failed", error);
+      if (error.response?.status === 404) {
+        showAlert("No attendance records found for this date", "info");
+      } else {
+        showAlert("Failed to load attendance records", "error");
+      }
+    }
   };
 
   const saveAttendance = async () => {
@@ -155,6 +305,7 @@ function AttendanceTab({ faculty }) {
         date,
         semester: semester,
         subjectId: selectedSubject.subject.subjectId,
+        section: faculty?.role?.toUpperCase() === "HOD" ? section : selectedSubject.section,
         batch: selectedSubject.subjectType === "LAB" ? batch : null,
         sessions,
       };
@@ -191,7 +342,7 @@ function AttendanceTab({ faculty }) {
   return (
     <div className="bg-gray-800 p-3 sm:p-6 rounded-md shadow-md mt-5 text-white max-w-full">
       {/* Header */}
-      <h2 className="text-lg sm:text-xl md:text-2xl font-bold mb-4 text-emerald-400 text-center sm:text-left">
+      <h2 className="text-base sm:text-base md:text-2xl font-bold mb-4 text-emerald-400 text-center sm:text-left">
         Mark Student Attendance
       </h2>
 
@@ -200,13 +351,14 @@ function AttendanceTab({ faculty }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           {/* Department */}
           <div className="w-full">
-            <label className="block text-xs sm:text-sm text-gray-300 mb-1">
+            <label className="block text-base font-black text-gray-300 mb-1 uppercase tracking-widest">
               Department:
             </label>
             <select
               value={department}
               onChange={(e) => setDepartment(e.target.value)}
-              className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+              disabled={faculty?.department && faculty?.department !== "ALL" && (isHOD || faculty?.role?.toUpperCase() === "FACULTY")}
+              className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-base sm:text-base focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed">
               <option value="">Select Department</option>
               <option value="DCS">DCS</option>
               <option value="DEEE">DEEE</option>
@@ -218,7 +370,7 @@ function AttendanceTab({ faculty }) {
 
           {/* Semester */}
           <div className="w-full">
-            <label className="block text-xs sm:text-sm text-gray-300 mb-1">
+            <label className="block text-base font-black text-gray-300 mb-1 uppercase tracking-widest">
               Semester:
             </label>
             <select
@@ -226,7 +378,7 @@ function AttendanceTab({ faculty }) {
               onChange={(e) => {
                 setSemester(e.target.value);
               }}
-              className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+              className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-base sm:text-base focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
               <option value="">Select Semester</option>
               {[...Array(6)].map((_, i) => (
                 <option key={i + 1} value={i + 1}>{`${i + 1}`}</option>
@@ -234,15 +386,31 @@ function AttendanceTab({ faculty }) {
             </select>
           </div>
 
+          {/* Section */}
+          <div className="w-full">
+            <label className="block text-base font-black text-gray-300 mb-1 uppercase tracking-widest">
+              Section:
+            </label>
+            <select
+              value={section}
+              onChange={(e) => setSection(e.target.value)}
+              className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-base sm:text-base focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+              <option value="">Select Section</option>
+              {["A", "B", "C", "D"].map((sec) => (
+                <option key={sec} value={sec}>{sec}</option>
+              ))}
+            </select>
+          </div>
+
           {/* Subject */}
           <div className="w-full sm:col-span-2 lg:col-span-1">
-            <label className="block text-xs sm:text-sm text-gray-300 mb-1">
+            <label className="block text-base font-black text-gray-300 mb-1 uppercase tracking-widest">
               Subject:
             </label>
             <select
               value={subjectId}
               onChange={(e) => setSubjectId(e.target.value)}
-              className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+              className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-base sm:text-base focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
               <option value="">Select Subject</option>
               {subjects.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -259,13 +427,13 @@ function AttendanceTab({ faculty }) {
           {/* Batch (only for LAB subjects) */}
           {subjectType === "LAB" && (
             <div className="w-full sm:col-span-2 lg:col-span-3">
-              <label className="block text-xs sm:text-sm text-gray-300 mb-1">
+              <label className="block text-base sm:text-base text-gray-300 mb-1">
                 Batch:
               </label>
               <select
                 value={batch}
                 onChange={(e) => setBatch(e.target.value)}
-                className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-base sm:text-base focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
                 <option value="">Select Batch</option>
                 {availableBatches.map((b) => (
                   <option key={b} value={b}>
@@ -283,7 +451,7 @@ function AttendanceTab({ faculty }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           {/* Date */}
           <div className="w-full">
-            <label className="block mb-1 text-xs sm:text-sm text-white">
+            <label className="block mb-1 text-base sm:text-base text-white">
               Date:
             </label>
             <input
@@ -291,7 +459,7 @@ function AttendanceTab({ faculty }) {
               value={date}
               onChange={(e) => setDate(e.target.value)}
               max={new Date().toISOString().split("T")[0]}
-              className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-base sm:text-base focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
             />
           </div>
 
@@ -332,78 +500,73 @@ function AttendanceTab({ faculty }) {
             <div className="flex gap-3 items-center">
               <button
                 onClick={toggleAllStudents}
-                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 rounded text-white transition-colors text-sm">
+                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 rounded text-white transition-colors text-base">
                 {absentStudents.length === students.length ? "Mark All Present" : "Mark All Absent"}
               </button>
-              <div className="text-sm text-gray-300">
-                Present: <span className="text-emerald-400 font-semibold">{students.length - absentStudents.length}</span> | 
-                Absent: <span className="text-red-400 font-semibold">{absentStudents.length}</span>
+              <div className="text-base text-gray-300 font-bold">
+                Present: <span className="text-emerald-400 font-black">{students.length - absentStudents.length}</span> |
+                Absent: <span className="text-red-400 font-black">{absentStudents.length}</span>
               </div>
             </div>
           </div>
 
-          {/* Clean Student Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2 max-h-80 overflow-y-auto">
-            {students.map((student) => {
-              const isAbsent = absentStudents.includes(student.registrationNumber);
-              
-              return (
-                <div
-                  key={student.registrationNumber}
-                  className={`flex items-center p-2 rounded border-2 cursor-pointer transition-all duration-200 hover:shadow-md ${
-                    isAbsent
-                      ? "bg-red-900 border-red-500 hover:bg-red-800"
-                      : "bg-gray-700 border-emerald-500 hover:bg-gray-600"
-                  }`}
-                  onClick={() =>
-                    handleAttendanceChange(
-                      { target: { checked: !isAbsent } },
-                      student.registrationNumber
-                    )
-                  }>
-                  
-                  {/* Status Checkbox */}
-                  <div className="flex-shrink-0 mr-2">
-                    <div className={`w-4 h-4 rounded border flex items-center justify-center ${
-                      isAbsent 
-                        ? "bg-red-600 border-red-400" 
-                        : "bg-emerald-600 border-emerald-400"
-                    }`}>
-                      {isAbsent ? (
-                        <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                        </svg>
-                      ) : (
-                        <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Student Info */}
-                  <div className="flex-1 min-w-0">
-                    <div className="text-xs font-semibold text-white truncate leading-tight" title={student.name}>
-                      {student.name}
-                    </div>
-                    <div className="text-xs text-gray-300 font-mono leading-tight" title={student.registrationNumber}>
-                      {student.registrationNumber}
-                    </div>
-                  </div>
-
-                  {/* Hidden checkbox for accessibility */}
-                  <input
-                    type="checkbox"
-                    onChange={(e) =>
-                      handleAttendanceChange(e, student.registrationNumber)
-                    }
-                    checked={isAbsent}
-                    className="sr-only"
-                    tabIndex={-1}
-                  />
-                </div>
-              );
-            })}
+          {/* Professional Student Attendance Table */}
+          <div className="overflow-x-auto border border-gray-700 shadow-2xl">
+            <table className="w-full text-left border-collapse bg-gray-900/50 backdrop-blur-sm">
+              <thead>
+                <tr className="bg-academic text-white border-b-2 border-gold">
+                  <th className="px-6 py-4 text-base font-black uppercase tracking-widest text-center w-20">S.No</th>
+                  <th className="px-6 py-4 text-base font-black uppercase tracking-widest">Registration ID</th>
+                  <th className="px-6 py-4 text-base font-black uppercase tracking-widest">Student Name</th>
+                  <th className="px-6 py-4 text-base font-black uppercase tracking-widest text-center w-40">Attendance Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-800">
+                {students.map((student, index) => {
+                  const isAbsent = absentStudents.includes(student.registrationNumber);
+                  return (
+                    <tr
+                      key={student.registrationNumber}
+                      onClick={() => handleAttendanceChange({ target: { checked: !isAbsent } }, student.registrationNumber)}
+                      className={`group transition-all duration-200 cursor-pointer ${isAbsent
+                        ? "bg-red-950/40 hover:bg-red-900/60"
+                        : "bg-transparent hover:bg-emerald-950/20"
+                        }`}
+                    >
+                      <td className="px-6 py-5 text-center text-base font-bold text-gray-400 group-hover:text-white">
+                        {index + 1}
+                      </td>
+                      <td className="px-6 py-5">
+                        <span className="text-base font-black font-mono tracking-wider text-emerald-400 group-hover:text-emerald-300">
+                          {student.registrationNumber}
+                        </span>
+                      </td>
+                      <td className="px-6 py-5">
+                        <span className="text-base font-black uppercase tracking-tight text-white/90 group-hover:text-white">
+                          {student.name}
+                        </span>
+                      </td>
+                      <td className="px-6 py-5 text-center">
+                        <div className={`mx-auto inline-flex items-center px-4 py-1.5 rounded-full text-base font-black uppercase tracking-[0.15em] transition-all border ${isAbsent
+                          ? "bg-red-600/20 border-red-500 text-red-400 group-hover:bg-red-600 group-hover:text-white"
+                          : "bg-emerald-600/20 border-emerald-500 text-emerald-400 group-hover:bg-emerald-600 group-hover:text-white"
+                          }`}>
+                          {isAbsent ? (
+                            <span className="flex items-center gap-2">
+                              <span className="text-lg">✖</span> Absent
+                            </span>
+                          ) : (
+                            <span className="flex items-center gap-2">
+                              <span className="text-lg">✔</span> Present
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
@@ -411,16 +574,26 @@ function AttendanceTab({ faculty }) {
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-3">
         <button
-          onClick={() => fetchStudents(subjectType === "LAB" ? batch : null)}
+          onClick={() => {
+            fetchStudents(subjectType === "LAB" ? batch : null);
+            setAbsentStudents([]); // Clear current absent state when loading a fresh student list
+          }}
           disabled={!department || !semester || !subjectId}
-          className="flex-1 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white py-2.5 px-4 rounded-md transition-colors text-xs sm:text-sm font-medium">
+          className="flex-1 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white py-4 px-6 rounded-xl transition-all text-base font-black uppercase tracking-widest shadow-lg active:scale-95">
           Load Students
+        </button>
+
+        <button
+          onClick={loadAttendance}
+          disabled={students.length === 0 || !date || !startTime || !endTime}
+          className="flex-1 bg-amber-600 hover:bg-amber-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white py-4 px-6 rounded-xl transition-all text-base font-black uppercase tracking-widest shadow-lg active:scale-95">
+          Edit Attendance
         </button>
 
         <button
           onClick={saveAttendance}
           disabled={students.length === 0}
-          className="flex-1 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white py-2.5 px-4 rounded-md transition-colors text-xs sm:text-sm font-medium">
+          className="flex-1 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white py-4 px-6 rounded-xl transition-all text-base font-black uppercase tracking-widest shadow-lg active:scale-95">
           Save Attendance
         </button>
       </div>
@@ -432,3 +605,7 @@ function AttendanceTab({ faculty }) {
 }
 
 export default AttendanceTab;
+
+
+
+

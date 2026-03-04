@@ -20,14 +20,24 @@ public class IAMarksController {
 
     @GetMapping("/student/{registrationNumber}")
     public ResponseEntity<ResponseStructure<List<IAMarks>>> getByRegistrationNumber(
-            @PathVariable String registrationNumber) {
+            @PathVariable(name = "registrationNumber") String registrationNumber) {
         return iaMarksService.getByRegistrationNumber(registrationNumber);
     }
 
     @GetMapping("/student/{registrationNumber}/subject/{subjectName}")
     public ResponseEntity<ResponseStructure<List<IAMarks>>> getByRegistrationNumberAndSubject(
-            @PathVariable String registrationNumber,
-            @PathVariable String subjectName) {
+            @PathVariable(name = "registrationNumber") String registrationNumber,
+            @PathVariable(name = "subjectName") String subjectName) {
         return iaMarksService.getByRegistrationNumberAndSubject(registrationNumber, subjectName);
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<ResponseStructure<IAMarks>> addIAMarks(@RequestBody IAMarks iaMarks) {
+        return iaMarksService.addIAMarks(iaMarks);
+    }
+
+    @PostMapping("/add-bulk")
+    public ResponseEntity<ResponseStructure<String>> bulkAddIAMarks(@RequestBody List<IAMarks> iaMarksList) {
+        return iaMarksService.bulkAddIAMarks(iaMarksList);
     }
 }

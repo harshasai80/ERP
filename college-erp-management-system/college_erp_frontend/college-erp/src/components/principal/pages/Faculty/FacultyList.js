@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import Api from "../../../../Api";
 import DataTable from "../../components/tables/DataTable";
 import DragDropCSVUpload from "../../../DragDropFileUpload";
@@ -33,9 +34,14 @@ const FacultyList = ({ department }) => {
     setLoading(true);
     try {
       const response = await Api.get("/faculty/all-faculties");
-      const HodFaculties = response.data.data.filter(
-        (faculty) => faculty.department !== "SGP"
-      );
+      const HodFaculties = response.data.data
+        .filter((faculty) => faculty.department !== "SGP")
+        .map((faculty) => ({
+          ...faculty,
+          department: faculty.department
+            ? faculty.department.toUpperCase()
+            : "UNKNOWN",
+        }));
       setFaculties(HodFaculties);
     } catch (error) {
       console.error("Error fetching faculties:", error);
@@ -162,13 +168,13 @@ const FacultyList = ({ department }) => {
     actions: (
       <div className="flex flex-row gap-1 justify-center items-center">
         <button
-          className="px-2 py-1 text-xs text-black bg-yellow-400 rounded hover:bg-yellow-500 min-w-[45px]"
+          className="px-2 py-1 text-base text-black bg-yellow-400 rounded hover:bg-yellow-500 min-w-[45px]"
           onClick={() => handleEdit(faculty)}
         >
           Edit
         </button>
         <button
-          className="px-2 py-1 text-xs text-white bg-red-600 rounded hover:bg-red-700 min-w-[50px]"
+          className="px-2 py-1 text-base text-white bg-red-600 rounded hover:bg-red-700 min-w-[50px]"
           onClick={() => handleDelete(faculty)}
         >
           Delete
@@ -191,149 +197,169 @@ const FacultyList = ({ department }) => {
   };
 
   return (
-    <div className="p-3 sm:p-6 max-w-6xl mx-auto text-white">
+    <div className="p-4 sm:p-10 max-w-7xl mx-auto text-gray-900">
       {showAddFaculty ? (
         <AddFacultyTab onClose={() => setShowAddFaculty(false)} />
       ) : (
         <>
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
-            <h1 className="text-2xl sm:text-3xl font-bold text-center sm:text-left">
-              Faculty List
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-10 gap-6">
+            <h1 className="text-4xl sm:text-5xl font-bold text-center sm:text-left text-emerald-600 classic-heading">
+              Faculty <span className="font-light italic text-gray-400">Directorate</span>
             </h1>
             <div className="flex flex-col sm:flex-row gap-3">
               <button
-                className="px-4 sm:px-5 py-2 bg-emerald-600 hover:bg-emerald-700 rounded-lg text-white text-sm sm:text-base"
+                className="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-base font-bold uppercase tracking-widest transition-all duration-300 shadow-lg shadow-emerald-500/20 active:scale-95"
                 onClick={handleAddFaculty}
               >
-                Add New Faculty
+                Enroll Faculty
               </button>
               <button
-                className="px-4 sm:px-5 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-white text-sm sm:text-base"
+                className="px-6 py-3 bg-gray-900 hover:bg-black text-white rounded-xl text-base font-bold uppercase tracking-widest transition-all duration-300 shadow-lg active:scale-95"
                 onClick={handleAddSubjects}
               >
-                Add Subjects (CSV)
+                Provision Subjects
               </button>
             </div>
           </div>
 
-          {/* Department Filter Section */}
-          <div className="mb-6 flex flex-col sm:flex-row items-center gap-3">
-            <label htmlFor="departmentFilter" className="text-white font-semibold text-sm sm:text-base">
-              Filter by Department:
-            </label>
-            <select
-              id="departmentFilter"
-              value={selectedDepartment}
-              onChange={(e) => setSelectedDepartment(e.target.value)}
-              className="px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base min-w-[150px]"
-            >
-              <option value="ALL">All Departments</option>
-              {getUniqueDepartments().map((dept) => (
-                <option key={dept} value={dept}>
-                  {dept.toUpperCase()}
-                </option>
-              ))}
-            </select>
-            <span className="text-gray-400 text-sm">
-              ({filteredFaculties.length} of {faculties.length} faculties)
-            </span>
+          {/* Institutional Filters */}
+          <div className="mb-10 p-6 bg-emerald-500/5 rounded-2xl border border-emerald-500/10 flex flex-col sm:flex-row items-center gap-6 shadow-sm">
+            <div className="flex items-center gap-4">
+              <div className="p-2 bg-white rounded-lg shadow-sm">
+                <span className="text-base">🏢</span>
+              </div>
+              <label htmlFor="departmentFilter" className="text-base font-bold text-gray-400 uppercase tracking-[0.2em]">
+                Filter by Faculty Department
+              </label>
+            </div>
+            <div className="flex-grow flex items-center gap-4">
+              <select
+                id="departmentFilter"
+                value={selectedDepartment}
+                onChange={(e) => setSelectedDepartment(e.target.value)}
+                className="flex-grow sm:flex-grow-0 px-6 py-3 bg-white border border-emerald-500/10 rounded-xl text-gray-700 font-bold text-base uppercase tracking-widest focus:ring-4 focus:ring-emerald-500/5 transition-all outline-none min-w-[200px] shadow-sm cursor-pointer"
+              >
+                <option value="ALL">All Departments</option>
+                {getUniqueDepartments().map((dept) => (
+                  <option key={dept} value={dept}>
+                    {dept.toUpperCase()}
+                  </option>
+                ))}
+              </select>
+              <span className="text-base font-bold text-emerald-600 uppercase tracking-widest bg-white px-3 py-1 rounded-full shadow-sm">
+                {filteredFaculties.length} Records
+              </span>
+            </div>
           </div>
 
-          {/* Upload Faculty CSV / Add Individually Options */}
+          {/* Action Modals / Panels */}
           {showUpload && (
-            <div className="mb-5 p-4 sm:p-5 bg-gradient-to-br from-gray-900 to-gray-800 shadow-lg rounded-xl flex flex-col items-center gap-3 w-full max-w-md mx-auto">
-              <p className="text-base sm:text-lg font-semibold text-white text-center">
-                Choose an option:
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="mb-12 p-8 glass rounded-[2.5rem] flex flex-col items-center gap-6 w-full max-w-md mx-auto shadow-2xl animate-float"
+            >
+              <p className="text-base font-bold text-emerald-600 classic-heading">
+                Faculty Intake
               </p>
               <button
-                className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 w-full text-sm sm:text-base"
+                className="px-6 py-3 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 w-full text-base font-bold uppercase tracking-widest transition-all duration-300 shadow-lg shadow-emerald-500/20 active:scale-95"
                 onClick={() => {
                   setShowAddFaculty(true);
                   setShowUpload(false);
                 }}
               >
-                Add Individually
+                Direct Entry
               </button>
 
               <div className="w-full text-center">
                 <DragDropCSVUpload onChange={handleFileUpload} />
                 {selectedFile && (
-                  <div className="mt-2 p-2 bg-gray-800 border border-gray-700 rounded text-white flex justify-between items-center text-sm">
+                  <div className="mt-3 p-3 bg-emerald-500/5 border border-emerald-500/10 rounded-xl text-emerald-700 flex justify-between items-center text-base font-bold">
                     <span className="truncate pr-2">{selectedFile.name}</span>
                     <button
-                      className="ml-2 text-red-500 hover:text-red-700 flex-shrink-0"
+                      className="text-red-500 hover:text-red-700 font-bold"
                       onClick={() => setSelectedFile(null)}
                     >
                       ×
                     </button>
                   </div>
                 )}
-                <button
-                  className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 w-full text-sm sm:text-base"
-                  onClick={DownloadFacultyCSV}
-                >
-                  Download Sample CSV
-                </button>
-                {selectedFile && (
+
+                <div className="flex flex-col gap-2 mt-4">
                   <button
-                    className="mt-2 px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 w-full text-sm sm:text-base"
-                    onClick={handleUpload}
-                    disabled={uploading}
+                    className="px-6 py-3 text-gray-400 hover:text-emerald-600 text-base font-bold uppercase tracking-widest transition-all"
+                    onClick={DownloadFacultyCSV}
                   >
-                    {uploading ? "Uploading..." : "Upload File"}
+                    Download Manifest Template
                   </button>
-                )}
+                  {selectedFile && (
+                    <button
+                      className="px-6 py-3 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 w-full text-base font-bold uppercase tracking-widest transition-all duration-300 shadow-lg active:scale-95"
+                      onClick={handleUpload}
+                      disabled={uploading}
+                    >
+                      {uploading ? "Uploading..." : "Injest Faculty CSV"}
+                    </button>
+                  )}
+                </div>
               </div>
 
               <button
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 w-full text-sm sm:text-base"
+                className="px-6 py-2 text-red-500 hover:text-red-700 text-base font-bold uppercase tracking-widest"
                 onClick={() => setShowUpload(false)}
               >
                 Cancel
               </button>
-            </div>
+            </motion.div>
           )}
 
-          {/* Upload Subject CSV Only */}
           {showSubjectUpload && (
-            <div className="mb-5 p-4 sm:p-5 bg-gray-900 shadow-lg rounded-xl flex flex-col items-center gap-3 w-full max-w-md mx-auto">
-              <p className="text-base sm:text-lg font-semibold text-center">
-                Upload Subject CSV
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="mb-12 p-8 glass rounded-[2.5rem] flex flex-col items-center gap-6 w-full max-w-md mx-auto shadow-2xl animate-float"
+            >
+              <p className="text-base font-bold text-emerald-600 classic-heading text-center">
+                Provision Academic Subjects
               </p>
               <DragDropCSVUpload onChange={handleSubjectFileUpload} />
               {subjectFile && (
-                <div className="mt-2 p-2 bg-gray-800 border border-gray-700 rounded text-white flex justify-between items-center w-full text-sm">
+                <div className="mt-3 p-3 bg-indigo-500/5 border border-indigo-500/10 rounded-xl text-indigo-700 flex justify-between items-center w-full text-base font-bold">
                   <span className="truncate pr-2">{subjectFile.name}</span>
                   <button
-                    className="ml-2 text-red-500 hover:text-red-700 flex-shrink-0"
+                    className="text-red-500 hover:text-red-700 font-bold"
                     onClick={() => setSubjectFile(null)}
                   >
                     ×
                   </button>
                 </div>
               )}
-              {subjectFile && (
+
+              <div className="flex flex-col gap-2 mt-4 w-full">
                 <button
-                  className="mt-2 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 w-full text-sm sm:text-base"
-                  onClick={handleSubjectUpload}
-                  disabled={uploadingSubject}
+                  className="px-6 py-3 text-gray-400 hover:text-indigo-600 text-base font-bold uppercase tracking-widest transition-all"
+                  onClick={DownloadSubjectCSV}
                 >
-                  {uploadingSubject ? "Uploading..." : "Upload File"}
+                  Download Subject Template
                 </button>
-              )}
+                {subjectFile && (
+                  <button
+                    className="px-6 py-4 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 w-full text-base font-bold uppercase tracking-widest transition-all duration-300 shadow-lg active:scale-95"
+                    onClick={handleSubjectUpload}
+                    disabled={uploadingSubject}
+                  >
+                    {uploadingSubject ? "Uploading..." : "Provision Records"}
+                  </button>
+                )}
+              </div>
               <button
-                className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 w-full text-sm sm:text-base"
-                onClick={DownloadSubjectCSV}
-              >
-                Download Sample CSV
-              </button>
-              <button
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 w-full text-sm sm:text-base"
+                className="px-6 py-2 text-red-500 hover:text-red-700 text-base font-bold uppercase tracking-widest"
                 onClick={() => setShowSubjectUpload(false)}
               >
                 Cancel
               </button>
-            </div>
+            </motion.div>
           )}
 
           {showModal && (
@@ -346,7 +372,10 @@ const FacultyList = ({ department }) => {
           )}
 
           {loading ? (
-            <p className="text-center text-gray-300">Loading faculty data...</p>
+            <div className="flex flex-col items-center justify-center py-20">
+              <div className="w-12 h-12 border-4 border-emerald-500/10 border-t-emerald-500 rounded-full animate-spin" />
+              <p className="mt-4 text-base font-bold text-gray-400 uppercase tracking-widest">Consulting Faculty Register...</p>
+            </div>
           ) : (
             <DataTable columns={columns} data={facultyData} />
           )}
@@ -357,3 +386,7 @@ const FacultyList = ({ department }) => {
 };
 
 export default FacultyList;
+
+
+
+

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PiEyeClosedBold, PiEyeBold } from "react-icons/pi";
-import { IoClose } from "react-icons/io5"; // Import X icon
+import { IoClose } from "react-icons/io5";
+import { motion } from "framer-motion";
 import Api from "../Api";
 
 export default function ResetPassword() {
@@ -54,89 +55,128 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white font-sans">
-      <div className="w-full max-w-md bg-[#2d2f36] p-8 rounded-xl shadow-lg relative">
-        {/* X button to cancel */}
+    <div className="min-h-screen flex items-center justify-center bg-mesh text-gray-900 font-sans p-6">
+      {/* Decorative Atmosphere */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-500/5 blur-[120px] rounded-full -z-10" />
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="w-full max-w-md lux-card glass-gold p-10 sm:p-14 shadow-2xl relative overflow-hidden">
+
+        {/* Institutional Cancel Action */}
         <button
           type="button"
-          className="absolute top-4 right-4 text-2xl text-red-500 hover:text-red-400"
-          onClick={() => navigate(-1)} // go back
+          className="absolute top-6 right-6 p-2 bg-red-500/5 hover:bg-red-500 text-red-500 hover:text-white rounded-full transition-all duration-300 border border-red-500/10 active:scale-95"
+          onClick={() => navigate(-1)}
         >
-          <IoClose />
+          <IoClose size={20} />
         </button>
 
-        <h2 className="text-2xl font-bold text-center mb-6">
-          Reset Your Password
-        </h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="mb-10 text-center">
+          <h4 className="text-base font-bold text-emerald-600 uppercase tracking-[0.4em] mb-3">
+            Credential Management
+          </h4>
+          <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-emerald-600 to-emerald-800 bg-clip-text text-transparent classic-heading uppercase">
+            Reset <span className="font-light italic text-gray-400">Secure</span>
+          </h2>
+          <div className="w-12 h-1 bg-emerald-500/20 mx-auto mt-6 rounded-full" />
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
           {/* Old Password */}
-          <div className="relative">
-            <label className="block text-sm font-medium text-emerald-200 mb-1">
-              Old Password
+          <div className="space-y-2 relative">
+            <label className="text-base font-bold text-gray-400 uppercase tracking-widest ml-1">
+              Current Administrative Password
             </label>
-            <input
-              type={showOldPassword ? "text" : "password"}
-              value={oldPassword}
-              onChange={(e) => setOldPassword(e.target.value)}
-              required
-              className="w-full bg-[#1f1f25] text-white border border-gray-700 p-2 rounded focus:outline-none"
-            />
-            <button
-              type="button"
-              className="absolute right-3 top-9 text-xl text-emerald-300"
-              onClick={() => setShowOldPassword(!showOldPassword)}
-            >
-              {showOldPassword ? <PiEyeClosedBold /> : <PiEyeBold />}
-            </button>
+            <div className="relative group">
+              <input
+                type={showOldPassword ? "text" : "password"}
+                value={oldPassword}
+                onChange={(e) => setOldPassword(e.target.value)}
+                required
+                className="w-full pl-5 pr-12 py-4 rounded-2xl bg-white border border-gray-100 focus:border-emerald-500/30 focus:ring-4 focus:ring-emerald-500/5 focus:outline-none transition-all text-base font-medium shadow-sm group-hover:border-emerald-500/20"
+                placeholder="••••••••"
+              />
+              <button
+                type="button"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-emerald-600 transition-colors p-1"
+                onClick={() => setShowOldPassword(!showOldPassword)}
+              >
+                {showOldPassword ? <PiEyeClosedBold size={18} /> : <PiEyeBold size={18} />}
+              </button>
+            </div>
           </div>
 
           {/* New Password */}
-          <div className="relative">
-            <label className="block text-sm font-medium text-emerald-200 mb-1">
-              New Password
+          <div className="space-y-2 relative">
+            <label className="text-base font-bold text-gray-400 uppercase tracking-widest ml-1">
+              New Institutional Password
             </label>
-            <input
-              type={showPassword ? "text" : "password"}
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              required
-              className="w-full bg-[#1f1f25] text-white border border-gray-700 p-2 rounded focus:outline-none"
-            />
-            <button
-              type="button"
-              className="absolute right-3 top-9 text-xl text-emerald-300"
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              {showPassword ? <PiEyeClosedBold /> : <PiEyeBold />}
-            </button>
+            <div className="relative group">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                required
+                className="w-full pl-5 pr-12 py-4 rounded-2xl bg-white border border-gray-100 focus:border-emerald-500/30 focus:ring-4 focus:ring-emerald-500/5 focus:outline-none transition-all text-base font-medium shadow-sm group-hover:border-emerald-500/20"
+                placeholder="••••••••"
+              />
+              <button
+                type="button"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-emerald-600 transition-colors p-1"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <PiEyeClosedBold size={18} /> : <PiEyeBold size={18} />}
+              </button>
+            </div>
           </div>
 
           {/* Confirm Password */}
-          <div>
-            <label className="block text-sm font-medium text-emerald-200 mb-1">
-              Confirm Password
+          <div className="space-y-2">
+            <label className="text-base font-bold text-gray-400 uppercase tracking-widest ml-1">
+              Confirm Authorization Key
             </label>
-            <input
-              type={showPassword ? "text" : "password"}
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-              className="w-full bg-[#1f1f25] text-white border border-gray-700 p-2 rounded focus:outline-none"
-            />
+            <div className="relative group">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                className="w-full pl-5 pr-5 py-4 rounded-2xl bg-white border border-gray-100 focus:border-emerald-500/30 focus:ring-4 focus:ring-emerald-500/5 focus:outline-none transition-all text-base font-medium shadow-sm group-hover:border-emerald-500/20"
+                placeholder="••••••••"
+              />
+            </div>
           </div>
 
           {/* Error message */}
-          {error && <p className="text-red-400 text-sm">{error}</p>}
+          {error && (
+            <div className="p-4 bg-red-50 border border-red-100 rounded-xl flex items-center gap-3">
+              <span className="text-red-500">⚠️</span>
+              <p className="text-red-600 text-base font-bold uppercase tracking-widest">{error}</p>
+            </div>
+          )}
 
           {/* Submit */}
           <button
             type="submit"
-            className="w-full bg-emerald-600 hover:bg-emerald-700 transition p-2 rounded-md font-semibold text-white"
-          >
-            Reset Password
+            className="w-full mt-4 bg-gray-900 hover:bg-black text-white font-bold py-4 rounded-2xl shadow-xl shadow-gray-900/10 transition-all duration-300 active:scale-95 text-base uppercase tracking-[0.2em] relative overflow-hidden group">
+            <span className="relative z-10">Confirm Reset</span>
+            <div className="absolute inset-x-0 bottom-0 h-1 bg-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity" />
           </button>
         </form>
-      </div>
+
+        <div className="mt-12 pt-8 border-t border-emerald-500/10 text-center">
+          <p className="text-base font-bold text-gray-400 uppercase tracking-[0.3em]">
+            SGP Secure Governance Protocol
+          </p>
+        </div>
+      </motion.div>
     </div>
   );
 }
+
+
+
+

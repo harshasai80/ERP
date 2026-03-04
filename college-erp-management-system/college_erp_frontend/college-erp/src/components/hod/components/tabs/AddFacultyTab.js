@@ -51,7 +51,7 @@ const AddFacultyTab = ({ onClose }) => {
       <h2 className="text-2xl font-bold mb-4">Add New Faculty</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block mb-1 text-sm font-medium">Name</label>
+          <label className="block mb-1 text-base font-medium">Name</label>
           <input
             type="text"
             name="name"
@@ -62,7 +62,7 @@ const AddFacultyTab = ({ onClose }) => {
           />
         </div>
         <div>
-          <label className="block mb-1 text-sm font-medium">Email</label>
+          <label className="block mb-1 text-base font-medium">Email</label>
           <input
             type="email"
             name="email"
@@ -73,7 +73,7 @@ const AddFacultyTab = ({ onClose }) => {
           />
         </div>
         <div>
-          <label className="block mb-1 text-sm font-medium">Department</label>
+          <label className="block mb-1 text-base font-medium">Department</label>
           <select
             name="department"
             value={formData.department}
@@ -90,7 +90,7 @@ const AddFacultyTab = ({ onClose }) => {
           </select>
         </div>
         <div>
-          <label className="block mb-1 text-sm font-medium">Role</label>
+          <label className="block mb-1 text-base font-medium">Role</label>
           <select
             name="role"
             value={formData.role}
@@ -124,3 +124,7 @@ const AddFacultyTab = ({ onClose }) => {
 };
 
 export default AddFacultyTab;
+
+
+
+

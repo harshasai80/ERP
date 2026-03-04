@@ -80,7 +80,7 @@ export default function InstallPWA() {
 
       {/* Floating iOS Instruction Card */}
       {showIosMsg && (
-        <div className="fixed bottom-5 right-5 max-w-xs p-3 rounded-xl bg-gray-100 text-sm text-gray-700 shadow-lg">
+        <div className="fixed bottom-5 right-5 max-w-xs p-3 rounded-xl bg-gray-100 text-base text-gray-700 shadow-lg">
           📲 To install:
           <br />
           Tap <strong>Share</strong> → <strong>Add to Home Screen</strong>
@@ -96,3 +96,7 @@ export default function InstallPWA() {
     </>
   );
 }
+
+
+
+

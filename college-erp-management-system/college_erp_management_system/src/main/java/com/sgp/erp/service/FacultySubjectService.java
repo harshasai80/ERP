@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.sgp.erp.dao.FacultySubjectDao;
 import com.sgp.erp.dto.ResponseStructure;
-import com.sgp.erp.exception.DataNotFoundException;
 import com.sgp.erp.model.FacultySubject;
 
 @Service
@@ -22,12 +21,11 @@ public class FacultySubjectService {
     public ResponseEntity<ResponseStructure<List<FacultySubject>>> findByFacultyId(Long facultyId) {
         ResponseStructure<List<FacultySubject>> structure = new ResponseStructure<List<FacultySubject>>();
         Optional<List<FacultySubject>> facultySubjects = facultySubjectDao.findByFacultyId(facultyId);
-        if (facultySubjects.isPresent()) {
-            structure.setData(facultySubjects.get());
-            structure.setMessage("Subjects found");
-            structure.setStatus(HttpStatus.OK.value());
-            return new ResponseEntity<ResponseStructure<List<FacultySubject>>>(structure, HttpStatus.OK);
-        }
-        throw new DataNotFoundException();
+
+        List<FacultySubject> data = facultySubjects.orElse(List.of());
+        structure.setData(data);
+        structure.setMessage(data.isEmpty() ? "No subjects found for this faculty" : "Subjects found");
+        structure.setStatus(HttpStatus.OK.value());
+        return new ResponseEntity<ResponseStructure<List<FacultySubject>>>(structure, HttpStatus.OK);
     }
 }

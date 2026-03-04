@@ -79,10 +79,10 @@ const EditStudentModal = ({ show, student, onClose, onUpdate }) => {
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center px-4">
       <div className="bg-gradient-to-br from-gray-800 to-gray-900 text-white rounded-xl shadow-xl w-full max-w-lg p-6">
         <div className="flex justify-between items-center mb-4 border-b border-gray-700 pb-2">
-          <h2 className="text-emerald-400 text-xl font-bold">Edit Student</h2>
+          <h2 className="text-emerald-400 text-base font-bold">Edit Student</h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-red-500 text-xl font-bold"
+            className="text-gray-400 hover:text-red-500 text-base font-bold"
           >
             &times;
           </button>
@@ -91,7 +91,7 @@ const EditStudentModal = ({ show, student, onClose, onUpdate }) => {
         <div className="space-y-4">
           {/* Name */}
           <div>
-            <label className="block text-sm text-emerald-200 mb-1">Name</label>
+            <label className="block text-base text-emerald-200 mb-1">Name</label>
             <input
               type="text"
               className={`w-full px-3 py-2 rounded-md bg-gray-700 text-white focus:ring-2 ${
@@ -103,13 +103,13 @@ const EditStudentModal = ({ show, student, onClose, onUpdate }) => {
               onChange={(e) => setName(e.target.value)}
             />
             {errors.name && (
-              <p className="text-sm text-red-500 mt-1">{errors.name}</p>
+              <p className="text-base text-red-500 mt-1">{errors.name}</p>
             )}
           </div>
 
           {/* Registration Number */}
           <div>
-            <label className="block text-sm text-emerald-200 mb-1">
+            <label className="block text-base text-emerald-200 mb-1">
               Registration Number
             </label>
             <input
@@ -123,7 +123,7 @@ const EditStudentModal = ({ show, student, onClose, onUpdate }) => {
               onChange={(e) => setRegistrationNumber(e.target.value)}
             />
             {errors.registrationNumber && (
-              <p className="text-sm text-red-500 mt-1">
+              <p className="text-base text-red-500 mt-1">
                 {errors.registrationNumber}
               </p>
             )}
@@ -131,7 +131,7 @@ const EditStudentModal = ({ show, student, onClose, onUpdate }) => {
 
           {/* Department Dropdown */}
           <div>
-            <label className="block text-sm text-emerald-200 mb-1">
+            <label className="block text-base text-emerald-200 mb-1">
               Department
             </label>
             <select
@@ -151,13 +151,13 @@ const EditStudentModal = ({ show, student, onClose, onUpdate }) => {
               <option value="DCE">DCE</option>
             </select>
             {errors.department && (
-              <p className="text-sm text-red-500 mt-1">{errors.department}</p>
+              <p className="text-base text-red-500 mt-1">{errors.department}</p>
             )}
           </div>
 
           {/* Semester Dropdown */}
           <div>
-            <label className="block text-sm text-emerald-200 mb-1">
+            <label className="block text-base text-emerald-200 mb-1">
               Semester
             </label>
             <select
@@ -180,13 +180,13 @@ const EditStudentModal = ({ show, student, onClose, onUpdate }) => {
               })}
             </select>
             {errors.sem && (
-              <p className="text-sm text-red-500 mt-1">{errors.sem}</p>
+              <p className="text-base text-red-500 mt-1">{errors.sem}</p>
             )}
           </div>
 
           {/* Section Dropdown */}
           <div>
-            <label className="block text-sm text-emerald-200 mb-1">
+            <label className="block text-base text-emerald-200 mb-1">
               Section
             </label>
             <select
@@ -206,7 +206,7 @@ const EditStudentModal = ({ show, student, onClose, onUpdate }) => {
               ))}
             </select>
             {errors.section && (
-              <p className="text-sm text-red-500 mt-1">{errors.section}</p>
+              <p className="text-base text-red-500 mt-1">{errors.section}</p>
             )}
           </div>
         </div>
@@ -231,3 +231,7 @@ const EditStudentModal = ({ show, student, onClose, onUpdate }) => {
 };
 
 export default EditStudentModal;
+
+
+
+

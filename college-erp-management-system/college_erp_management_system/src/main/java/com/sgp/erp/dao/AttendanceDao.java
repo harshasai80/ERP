@@ -78,22 +78,22 @@ public class AttendanceDao {
 
                     Integer newSessionNumber = (Integer) newSession.get("session");
 
-                    boolean isDuplicate = existingSessions.stream()
-                            .anyMatch(existing -> Objects.equals(existing.get("subjectId"), newSession.get("subjectId"))
-                                    &&
-                                    Objects.equals(existing.get("batch"), newSession.get("batch")) &&
-                                    Objects.equals(existing.get("session"), newSessionNumber));
+                    Optional<Map<String, Object>> existingSessionOpt = existingSessions.stream()
+                            .filter(existing -> Objects.equals(existing.get("subjectId"), newSession.get("subjectId"))
+                                    && Objects.equals(existing.get("batch"), newSession.get("batch"))
+                                    && Objects.equals(existing.get("session"), newSessionNumber))
+                            .findFirst();
 
-                    if (isDuplicate) {
-                        throw new DuplicateDataEntryException(
-                                "Duplicate session detected for student " + registerNo + " on " + date);
+                    if (existingSessionOpt.isPresent()) {
+                        // Update existing session status
+                        existingSessionOpt.get().put("status", newSession.get("status"));
+                    } else {
+                        // Add new session
+                        existingSessions.add(newSession);
                     }
                 }
 
-                // Add the new sessions to existing
-                existingSessions.addAll(sessions);
                 attendance.setSessions(objectMapper.writeValueAsString(existingSessions));
-
                 savedAttendances.add(attendance);
 
             } catch (Exception e) {
@@ -106,6 +106,10 @@ public class AttendanceDao {
 
     public List<Attendance> getAttendanceByRegisterNo(String registerNo) {
         return attendanceRepository.findAttendanceByRegistrationNumber(registerNo);
+    }
+
+    public List<Attendance> getAttendanceByDateAndRegisterNos(LocalDate date, List<String> regNos) {
+        return attendanceRepository.findAttendanceByDateAndRegistrationNumbers(date, regNos);
     }
 
 }

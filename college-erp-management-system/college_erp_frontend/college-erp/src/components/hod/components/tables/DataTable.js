@@ -13,7 +13,7 @@ const DataTable = ({ columns, data }) => {
                 return (
                   <th
                     key={index}
-                    className="bg-emerald-700 text-white p-3 lg:p-4 text-center text-xs lg:text-sm uppercase font-semibold border-b border-emerald-600"
+                    className="bg-emerald-700 text-white p-3 lg:p-4 text-center text-base lg:text-base uppercase font-semibold border-b border-emerald-600"
                   >
                     {colName}
                   </th>
@@ -32,7 +32,7 @@ const DataTable = ({ columns, data }) => {
                   return (
                     <td
                       key={colIndex}
-                      className="p-3 lg:p-4 border-b border-gray-700 text-xs lg:text-sm text-center"
+                      className="p-3 lg:p-4 border-b border-gray-700 text-base lg:text-base text-center"
                     >
                       {colName === "Actions" ? row.actions : cellValue}
                     </td>
@@ -64,10 +64,10 @@ const DataTable = ({ columns, data }) => {
 
                   return (
                     <div key={colIndex} className="flex justify-between items-start mb-2 last:mb-0">
-                      <span className="text-sm font-medium text-emerald-400 uppercase tracking-wide min-w-0 flex-shrink-0 mr-3">
+                      <span className="text-base font-medium text-emerald-400 uppercase tracking-wide min-w-0 flex-shrink-0 mr-3">
                         {colName}:
                       </span>
-                      <div className="text-sm text-right flex-1 min-w-0">
+                      <div className="text-base text-right flex-1 min-w-0">
                         {colName === "Actions" ? (
                           <div className="flex justify-end">
                             {row.actions}
@@ -89,3 +89,7 @@ const DataTable = ({ columns, data }) => {
 };
 
 export default DataTable;
+
+
+
+

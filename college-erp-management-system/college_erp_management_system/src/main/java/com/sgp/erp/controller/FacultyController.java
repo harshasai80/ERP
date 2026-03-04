@@ -33,7 +33,7 @@ public class FacultyController {
     private FacultyService facultyService;
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadFacultyData(@RequestParam MultipartFile file) {
+    public ResponseEntity<String> uploadFacultyData(@RequestParam(name = "file") MultipartFile file) {
         try {
             userService.uploadFacultyCSV(file);
             return ResponseEntity.ok("Faculty data uploaded successfully!");
@@ -54,17 +54,18 @@ public class FacultyController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<ResponseStructure<List<Faculty>>> getAllFaculties(@RequestParam String department) {
+    public ResponseEntity<ResponseStructure<List<Faculty>>> getAllFaculties(
+            @RequestParam(name = "department") String department) {
         return facultyService.getAllFaculties(department);
     }
 
     @GetMapping("/email")
-    public ResponseEntity<ResponseStructure<Faculty>> getFacultyByEmail(@RequestParam String email) {
+    public ResponseEntity<ResponseStructure<Faculty>> getFacultyByEmail(@RequestParam(name = "email") String email) {
         return facultyService.getFacultyByEmail(email);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<ResponseStructure<Faculty>> updateFaculty(@RequestParam String email,
+    public ResponseEntity<ResponseStructure<Faculty>> updateFaculty(@RequestParam(name = "email") String email,
             @RequestBody Faculty faculty) {
         return facultyService.updateFaculty(email, faculty);
     }
@@ -75,7 +76,7 @@ public class FacultyController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<ResponseStructure<String>> deleteFaculty(@RequestParam String email) {
+    public ResponseEntity<ResponseStructure<String>> deleteFaculty(@RequestParam(name = "email") String email) {
         userService.deleteUser(email);
         return facultyService.deleteFaculty(email);
     }

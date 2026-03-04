@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function ExplorerProfile() {
-  const [isVisible, setIsVisible] = useState(false);
   const [currentView, setCurrentView] = useState("terminal");
   const [terminalText, setTerminalText] = useState("");
   const [showCursor, setShowCursor] = useState(true);
@@ -102,8 +101,6 @@ _`;
   ];
 
   useEffect(() => {
-    setIsVisible(true);
-
     // Terminal typing effect
     let index = 0;
     const timer = setInterval(() => {
@@ -169,13 +166,13 @@ _`;
 
             {/* Button content */}
             <motion.span
-              className="relative text-lg"
+              className="relative text-base"
               whileHover={{ x: -2 }}
               transition={{ duration: 0.2 }}
             >
               ←
             </motion.span>
-            <span className="relative text-sm md:text-base">Back to Team</span>
+            <span className="relative text-base md:text-base">Back to Team</span>
 
             {/* Button accent */}
             <div className="absolute top-1 right-1 w-1.5 h-1.5 bg-emerald-300/60 rounded-full group-hover:bg-emerald-200 transition-colors duration-300"></div>
@@ -234,7 +231,7 @@ _`;
               transition={{ duration: 0.6, delay: 0.4 }}
             >
               <div className="w-16 h-0.5 bg-gradient-to-r from-transparent to-emerald-400"></div>
-              <span className="text-emerald-400 text-xl md:text-2xl font-light tracking-widest uppercase">
+              <span className="text-emerald-400 text-base md:text-2xl font-light tracking-widest uppercase">
                 Tech Explorer & Innovator
               </span>
               <div className="w-16 h-0.5 bg-gradient-to-l from-transparent to-emerald-400"></div>
@@ -242,7 +239,7 @@ _`;
 
             {/* Profile tagline */}
             <motion.p
-              className="text-gray-300 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed"
+              className="text-gray-300 text-base md:text-base max-w-3xl mx-auto leading-relaxed"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.6 }}
@@ -261,7 +258,7 @@ _`;
             transition={{ duration: 0.8, delay: 0.8 }}
           >
             <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-            <span className="font-mono text-sm">Ready to innovate</span>
+            <span className="font-mono text-base">Ready to innovate</span>
             <div
               className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"
               style={{ animationDelay: "0.5s" }}
@@ -286,11 +283,10 @@ _`;
               <button
                 key={tab.id}
                 onClick={() => setCurrentView(tab.id)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-sm transition-all duration-300 ${
-                  currentView === tab.id
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-base transition-all duration-300 ${currentView === tab.id
                     ? "bg-gradient-to-r from-emerald-600 to-emerald-500 text-white shadow-lg"
                     : "text-gray-400 hover:text-white hover:bg-gray-700/30"
-                }`}
+                  }`}
               >
                 <span>{tab.icon}</span>
                 {tab.label}
@@ -318,13 +314,13 @@ _`;
                     <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
                     <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                   </div>
-                  <span className="text-gray-400 text-sm font-mono ml-4">
+                  <span className="text-gray-400 text-base font-mono ml-4">
                     explorer@innovator:~$
                   </span>
                 </div>
 
                 {/* Terminal Content */}
-                <div className="p-6 font-mono text-sm">
+                <div className="p-6 font-mono text-base">
                   <pre className="text-green-400 whitespace-pre-wrap leading-relaxed">
                     {terminalText}
                     {showCursor && (
@@ -338,10 +334,10 @@ _`;
               <div className="grid md:grid-cols-3 gap-6 mt-8">
                 <div className="bg-gradient-to-br from-gray-800/60 to-gray-700/40 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/30 hover:border-emerald-400/50 transition-all duration-300">
                   <div className="text-3xl mb-3">🎓</div>
-                  <h3 className="text-lg font-bold text-emerald-300 mb-2">
+                  <h3 className="text-base font-bold text-emerald-300 mb-2">
                     Academic Explorer
                   </h3>
-                  <p className="text-gray-300 text-sm">
+                  <p className="text-gray-300 text-base">
                     Currently pursuing BE CSE at MSRIT Bangalore, building on
                     strong foundations from SGP Ballari.
                   </p>
@@ -349,10 +345,10 @@ _`;
 
                 <div className="bg-gradient-to-br from-gray-800/60 to-gray-700/40 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/30 hover:border-emerald-400/50 transition-all duration-300">
                   <div className="text-3xl mb-3">💡</div>
-                  <h3 className="text-lg font-bold text-emerald-300 mb-2">
+                  <h3 className="text-base font-bold text-emerald-300 mb-2">
                     Knowledge Seeker
                   </h3>
-                  <p className="text-gray-300 text-sm">
+                  <p className="text-gray-300 text-base">
                     Passionate about learning new technologies and experimenting
                     with innovative solutions.
                   </p>
@@ -360,10 +356,10 @@ _`;
 
                 <div className="bg-gradient-to-br from-gray-800/60 to-gray-700/40 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/30 hover:border-emerald-400/50 transition-all duration-300">
                   <div className="text-3xl mb-3">⚡</div>
-                  <h3 className="text-lg font-bold text-emerald-300 mb-2">
+                  <h3 className="text-base font-bold text-emerald-300 mb-2">
                     Tech Innovator
                   </h3>
-                  <p className="text-gray-300 text-sm">
+                  <p className="text-gray-300 text-base">
                     Creating impactful web solutions and exploring the
                     boundaries of modern development.
                   </p>
@@ -388,7 +384,7 @@ _`;
                     Innovation Lab
                   </span>
                 </h2>
-                <p className="text-gray-400 text-lg">
+                <p className="text-gray-400 text-base">
                   Where ideas transform into digital reality
                 </p>
               </div>
@@ -406,10 +402,10 @@ _`;
                     <div className="relative z-10">
                       {/* Project badges */}
                       <div className="flex gap-2 mb-4">
-                        <span className="bg-emerald-500/20 text-emerald-300 text-xs font-semibold px-3 py-1 rounded-full border border-emerald-400/30">
+                        <span className="bg-emerald-500/20 text-emerald-300 text-base font-semibold px-3 py-1 rounded-full border border-emerald-400/30">
                           {project.complexity}
                         </span>
-                        <span className="bg-blue-500/20 text-blue-300 text-xs font-semibold px-3 py-1 rounded-full border border-blue-400/30">
+                        <span className="bg-blue-500/20 text-blue-300 text-base font-semibold px-3 py-1 rounded-full border border-blue-400/30">
                           Impact: {project.impact}
                         </span>
                       </div>
@@ -418,7 +414,7 @@ _`;
                         {project.title}
                       </h3>
 
-                      <div className="text-emerald-400 font-mono text-sm mb-4 bg-gray-900/50 px-3 py-2 rounded-lg border border-emerald-500/20">
+                      <div className="text-emerald-400 font-mono text-base mb-4 bg-gray-900/50 px-3 py-2 rounded-lg border border-emerald-500/20">
                         <span className="text-gray-400">https://</span>
                         <a
                           href={
@@ -439,14 +435,14 @@ _`;
 
                       {/* Tech stack with animated bars */}
                       <div className="space-y-2">
-                        <h4 className="text-sm font-semibold text-emerald-300 mb-3">
+                        <h4 className="text-base font-semibold text-emerald-300 mb-3">
                           Technology Stack
                         </h4>
                         <div className="grid grid-cols-2 gap-2">
                           {project.tech.map((tech, techIndex) => (
                             <div
                               key={techIndex}
-                              className="bg-gradient-to-r from-emerald-600/20 to-emerald-500/10 text-emerald-200 text-xs font-medium px-3 py-2 rounded-lg border border-emerald-400/20 hover:border-emerald-400/40 transition-all duration-300"
+                              className="bg-gradient-to-r from-emerald-600/20 to-emerald-500/10 text-emerald-200 text-base font-medium px-3 py-2 rounded-lg border border-emerald-400/20 hover:border-emerald-400/40 transition-all duration-300"
                             >
                               {tech}
                             </div>
@@ -476,7 +472,7 @@ _`;
                     Skill Matrix
                   </span>
                 </h2>
-                <p className="text-gray-400 text-lg">
+                <p className="text-gray-400 text-base">
                   Continuous learning and improvement
                 </p>
               </div>
@@ -489,10 +485,10 @@ _`;
                     className="bg-gradient-to-br from-gray-800/60 to-gray-700/40 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/30"
                   >
                     <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-xl font-bold text-emerald-300">
+                      <h3 className="text-base font-bold text-emerald-300">
                         {skillGroup.category}
                       </h3>
-                      <span className="text-emerald-400 font-mono text-sm">
+                      <span className="text-emerald-400 font-mono text-base">
                         {skillGroup.level}%
                       </span>
                     </div>
@@ -512,7 +508,7 @@ _`;
                       {skillGroup.items.map((skill, skillIndex) => (
                         <span
                           key={skillIndex}
-                          className="bg-gray-700/50 text-gray-300 text-sm px-3 py-1 rounded-lg border border-gray-600/30"
+                          className="bg-gray-700/50 text-gray-300 text-base px-3 py-1 rounded-lg border border-gray-600/30"
                         >
                           {skill}
                         </span>
@@ -540,7 +536,7 @@ _`;
                     Exploration Zones
                   </span>
                 </h2>
-                <p className="text-gray-400 text-lg">
+                <p className="text-gray-400 text-base">
                   Pushing boundaries and discovering new frontiers
                 </p>
               </div>
@@ -555,22 +551,21 @@ _`;
                     <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">
                       {area.icon}
                     </div>
-                    <h3 className="text-lg font-bold text-white mb-2 group-hover:text-emerald-200 transition-colors duration-300">
+                    <h3 className="text-base font-bold text-white mb-2 group-hover:text-emerald-200 transition-colors duration-300">
                       {area.title}
                     </h3>
-                    <p className="text-gray-300 text-sm mb-4 leading-relaxed">
+                    <p className="text-gray-300 text-base mb-4 leading-relaxed">
                       {area.description}
                     </p>
                     <div
-                      className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
-                        area.status === "Active"
+                      className={`inline-block px-3 py-1 rounded-full text-base font-semibold ${area.status === "Active"
                           ? "bg-green-500/20 text-green-300 border border-green-400/30"
                           : area.status === "Ongoing"
-                          ? "bg-blue-500/20 text-blue-300 border border-blue-400/30"
-                          : area.status === "Advanced"
-                          ? "bg-purple-500/20 text-purple-300 border border-purple-400/30"
-                          : "bg-yellow-500/20 text-yellow-300 border border-yellow-400/30"
-                      }`}
+                            ? "bg-blue-500/20 text-blue-300 border border-blue-400/30"
+                            : area.status === "Advanced"
+                              ? "bg-purple-500/20 text-purple-300 border border-purple-400/30"
+                              : "bg-yellow-500/20 text-yellow-300 border border-yellow-400/30"
+                        }`}
                     >
                       {area.status}
                     </div>
@@ -586,11 +581,11 @@ _`;
                       Learning Philosophy
                     </span>
                   </h3>
-                  <p className="text-gray-300 text-lg italic mb-6">
+                  <p className="text-gray-300 text-base italic mb-6">
                     "The capacity to learn is a gift; the ability to learn is a
                     skill; the willingness to learn is a choice."
                   </p>
-                  <div className="flex justify-center items-center gap-6 text-sm text-emerald-400">
+                  <div className="flex justify-center items-center gap-6 text-base text-emerald-400">
                     <span>🚀 Explore</span>
                     <span>→</span>
                     <span>🧠 Learn</span>
@@ -653,3 +648,7 @@ _`;
     </div>
   );
 }
+
+
+
+

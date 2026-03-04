@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 
 export default function Rohan() {
-  const [isVisible, setIsVisible] = useState(false);
   const [activeTab, setActiveTab] = useState("about");
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [currentSkill, setCurrentSkill] = useState(0);
@@ -60,8 +59,6 @@ export default function Rohan() {
   ];
 
   useEffect(() => {
-    setIsVisible(true);
-
     const handleMouseMove = (e) => {
       if (containerRef.current) {
         const rect = containerRef.current.getBoundingClientRect();
@@ -84,7 +81,7 @@ export default function Rohan() {
       setCurrentSkill((prev) => (prev + 1) % skills.length);
     }, 2500);
     return () => clearInterval(interval);
-  }, []);
+  }, [skills.length]);
 
   return (
     <div
@@ -95,9 +92,8 @@ export default function Rohan() {
       <div
         className="fixed w-4 h-4 bg-emerald-400/20 rounded-full pointer-events-none z-50 blur-sm transition-transform duration-200 ease-out"
         style={{
-          transform: `translate(${mousePosition.x - 8}px, ${
-            mousePosition.y - 8
-          }px)`,
+          transform: `translate(${mousePosition.x - 8}px, ${mousePosition.y - 8
+            }px)`,
         }}
       />
 
@@ -113,7 +109,7 @@ export default function Rohan() {
             <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-emerald-400/20 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
 
             <button className="relative flex items-center gap-3 bg-gradient-to-r from-emerald-600/90 to-emerald-500/90 hover:from-emerald-500 hover:to-emerald-400 px-6 py-3 rounded-xl text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-emerald-500/25 transform hover:-translate-y-1 border border-emerald-500/30 backdrop-blur-sm">
-              <span className="text-lg">←</span>
+              <span className="text-base">←</span>
               <span>Back to Team</span>
             </button>
           </motion.div>
@@ -211,12 +207,12 @@ export default function Rohan() {
             </h1>
             <div className="flex items-center justify-center gap-4 mb-4">
               <div className="w-12 h-0.5 bg-gradient-to-r from-transparent to-emerald-400"></div>
-              <span className="text-emerald-400 text-xl font-light tracking-widest uppercase">
+              <span className="text-emerald-400 text-base font-light tracking-widest uppercase">
                 Full Stack Developer
               </span>
               <div className="w-12 h-0.5 bg-gradient-to-l from-transparent to-emerald-400"></div>
             </div>
-            <p className="text-gray-300 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
+            <p className="text-gray-300 text-base md:text-base max-w-3xl mx-auto leading-relaxed">
               Passionate Computer Science Engineering student crafting digital
               experiences with modern web technologies. Currently pursuing BE
               CSE at RVCE Bangalore, bringing creative solutions to life through
@@ -261,11 +257,10 @@ export default function Rohan() {
               <motion.button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`relative px-6 py-3 rounded-xl font-semibold text-sm uppercase tracking-wide transition-all duration-300 ${
-                  activeTab === tab
-                    ? "text-white"
-                    : "text-gray-400 hover:text-white hover:bg-gray-700/30"
-                }`}
+                className={`relative px-6 py-3 rounded-xl font-semibold text-base uppercase tracking-wide transition-all duration-300 ${activeTab === tab
+                  ? "text-white"
+                  : "text-gray-400 hover:text-white hover:bg-gray-700/30"
+                  }`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -302,14 +297,14 @@ export default function Rohan() {
                     </span>
                   </h2>
                   <div className="prose prose-invert max-w-none">
-                    <p className="text-gray-300 text-lg leading-relaxed mb-6">
+                    <p className="text-gray-300 text-base leading-relaxed mb-6">
                       I'm a passionate Computer Science Engineering student with
                       a strong foundation in web development and a keen eye for
                       creating intuitive digital experiences. My journey in tech
                       started during my diploma years, where I discovered the
                       power of code to transform ideas into reality.
                     </p>
-                    <p className="text-gray-300 text-lg leading-relaxed">
+                    <p className="text-gray-300 text-base leading-relaxed">
                       Beyond programming, I'm deeply passionate about art,
                       photography, and music - creative outlets that influence
                       my approach to problem-solving and design. I believe in
@@ -330,9 +325,9 @@ export default function Rohan() {
                         whileHover={{ scale: 1.05 }}
                       >
                         <div className="flex items-center gap-3">
-                          <span className="text-xl">{skill.icon}</span>
+                          <span className="text-base">{skill.icon}</span>
                           <div className="flex-1">
-                            <div className="text-white font-semibold text-sm">
+                            <div className="text-white font-semibold text-base">
                               {skill.name}
                             </div>
                             <div className="w-full h-1.5 bg-gray-700 rounded-full overflow-hidden mt-1">
@@ -388,26 +383,25 @@ export default function Rohan() {
                       >
                         <div className="flex items-start gap-4">
                           <div
-                            className={`w-3 h-3 rounded-full mt-2 flex-shrink-0 ${
-                              education.status === "current"
-                                ? "bg-emerald-400 animate-pulse"
-                                : "bg-emerald-600/60"
-                            }`}
+                            className={`w-3 h-3 rounded-full mt-2 flex-shrink-0 ${education.status === "current"
+                              ? "bg-emerald-400 animate-pulse"
+                              : "bg-emerald-600/60"
+                              }`}
                           />
                           <div>
-                            <h4 className="text-lg font-semibold text-white mb-1">
+                            <h4 className="text-base font-semibold text-white mb-1">
                               {education.title}
                             </h4>
                             <p className="text-emerald-300 font-medium mb-2">
                               {education.institution}
                             </p>
-                            <p className="text-gray-400 text-sm">
+                            <p className="text-gray-400 text-base">
                               {education.period}
                             </p>
                           </div>
 
                           {education.status === "current" && (
-                            <div className="bg-emerald-500/20 text-emerald-300 text-xs font-semibold px-2 py-1 rounded-full border border-emerald-400/30">
+                            <div className="bg-emerald-500/20 text-emerald-300 text-base font-semibold px-2 py-1 rounded-full border border-emerald-400/30">
                               Current
                             </div>
                           )}
@@ -435,7 +429,7 @@ export default function Rohan() {
                       Featured Projects
                     </span>
                   </h2>
-                  <p className="text-gray-400 text-lg">
+                  <p className="text-gray-400 text-base">
                     Crafted with passion and precision
                   </p>
                 </div>
@@ -454,7 +448,7 @@ export default function Rohan() {
                         {/* Project header */}
                         <div className="flex items-center gap-3 mb-4">
                           <span className="text-2xl">{project.icon}</span>
-                          <div className="inline-block bg-emerald-500/20 text-emerald-300 text-xs font-semibold px-3 py-1 rounded-full border border-emerald-400/30">
+                          <div className="inline-block bg-emerald-500/20 text-emerald-300 text-base font-semibold px-3 py-1 rounded-full border border-emerald-400/30">
                             {project.type}
                           </div>
                         </div>
@@ -463,7 +457,7 @@ export default function Rohan() {
                           {project.title}
                         </h3>
 
-                        <div className="text-emerald-400 font-mono text-sm mb-4 bg-gray-900/50 px-3 py-2 rounded-lg border border-emerald-500/20">
+                        <div className="text-emerald-400 font-mono text-base mb-4 bg-gray-900/50 px-3 py-2 rounded-lg border border-emerald-500/20">
                           <a
                             href={
                               project.url.startsWith("http")
@@ -486,7 +480,7 @@ export default function Rohan() {
                           {project.tech.map((tech, techIndex) => (
                             <span
                               key={techIndex}
-                              className="bg-gradient-to-r from-emerald-600/30 to-emerald-500/20 text-emerald-200 text-xs font-medium px-3 py-1 rounded-full border border-emerald-400/30"
+                              className="bg-gradient-to-r from-emerald-600/30 to-emerald-500/20 text-emerald-200 text-base font-medium px-3 py-1 rounded-full border border-emerald-400/30"
                             >
                               {tech}
                             </span>
@@ -518,7 +512,7 @@ export default function Rohan() {
                       Creative Pursuits
                     </span>
                   </h2>
-                  <p className="text-gray-400 text-lg">
+                  <p className="text-gray-400 text-base">
                     Where passion meets creativity
                   </p>
                 </div>
@@ -552,7 +546,7 @@ export default function Rohan() {
                 {/* Quote */}
                 <div className="text-center mt-12">
                   <div className="inline-block bg-gradient-to-r from-gray-800/60 to-gray-700/40 backdrop-blur-xl rounded-2xl px-8 py-6 border border-gray-700/30">
-                    <p className="text-gray-300 text-lg italic">
+                    <p className="text-gray-300 text-base italic">
                       "Creativity is intelligence having fun - and I love having
                       fun with code, colors, and compositions."
                     </p>
@@ -628,3 +622,7 @@ export default function Rohan() {
     </div>
   );
 }
+
+
+
+

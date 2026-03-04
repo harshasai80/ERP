@@ -80,4 +80,18 @@ public class AttendanceService {
         throw new DataNotFoundException("Attendance not found");
     }
 
+    public ResponseEntity<ResponseStructure<List<Attendance>>> getAttendanceByDateAndRegisterNos(LocalDate date,
+            List<String> regNos) {
+        List<Attendance> attendances = attendanceDao.getAttendanceByDateAndRegisterNos(date, regNos);
+        ResponseStructure<List<Attendance>> structure = new ResponseStructure<List<Attendance>>();
+
+        if (!attendances.isEmpty()) {
+            structure.setData(attendances);
+            structure.setMessage("Attendances found");
+            structure.setStatus(HttpStatus.OK.value());
+            return new ResponseEntity<ResponseStructure<List<Attendance>>>(structure, HttpStatus.OK);
+        }
+        throw new DataNotFoundException("Attendance not found");
+    }
+
 }

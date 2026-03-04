@@ -1,0 +1,11 @@
+package com.sgp.erp.repository;
+
+import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import com.sgp.erp.model.WeeklyProgress;
+
+@Repository
+public interface WeeklyProgressRepository extends JpaRepository<WeeklyProgress, Long> {
+    List<WeeklyProgress> findByFacultySubjectIdOrderByWeekNumber(Long facultySubjectId);
+}

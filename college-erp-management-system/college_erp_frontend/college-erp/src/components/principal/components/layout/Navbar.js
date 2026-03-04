@@ -4,48 +4,53 @@ import { useNavigate, Link } from "react-router-dom";
 
 const Navbar = ({ data }) => {
   const navigate = useNavigate();
-  const name = data.name;
+  const name = data?.name || "Principal";
+  const email = data?.email || "";
 
   return (
-    <nav className="bg-gradient-to-r from-emerald-800 to-emerald-600 text-white py-4 px-6 shadow-lg sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto flex justify-between items-center relative">
-        {/* Left: Logo + Title */}
-        <Link to="/" className="flex items-center gap-3">
-          <img
-            src="/logo192.png"
-            alt="SGP Logo"
-            className="h-10 w-10 hover:rotate-12 transition-transform duration-300"
-          />
-          <span className="text-2xl font-bold tracking-wide">SGP ERP</span>
+    <nav className="glass sticky top-0 z-[100] border-b border-emerald-500/10 py-4 px-8">
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+        {/* Left: Logo + Branding */}
+        <Link to="/" className="flex items-center gap-4 group">
+          <div className="relative">
+            <div className="absolute inset-0 bg-emerald-500/20 blur-lg rounded-full animate-pulse" />
+            <img
+              src="/logo192.png"
+              alt="SGP Logo"
+              className="relative h-12 w-12 group-hover:rotate-[360deg] transition-transform duration-700"
+            />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-base font-bold tracking-[0.2em] text-emerald-600 classic-heading">SGP ERP</span>
+            <span className="text-base uppercase tracking-[0.4em] text-gray-400 font-bold">Institutional Admin</span>
+          </div>
         </Link>
 
-        {/* Center: Page title - Absolutely centered */}
-        <div className="absolute left-1/2 transform -translate-x-1/2 text-lg font-semibold tracking-wide text-white hidden md:block">
-          Principal Portal
+        {/* Center: Identity */}
+        <div className="flex flex-col items-center">
+          <h2 className="text-gray-900 font-bold text-base classic-heading">Welcome, {name}</h2>
+          {email && <p className="text-emerald-600 text-base font-bold tracking-widest uppercase opacity-70">{email}</p>}
         </div>
 
-        {/* Right: Welcome, Reset Password, Logout */}
-        <div className="flex items-center gap-4 sm:gap-6">
-          <span className="hidden sm:inline-block font-medium text-white">
-            Welcome, {name || "User"}
-          </span>
+        {/* Right: Actions */}
+        <div className="flex items-center gap-3">
           <button
-            className="bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded-md text-white font-medium text-sm transition"
+            className="px-5 py-2.5 rounded-xl bg-emerald-500/5 hover:bg-emerald-500 text-emerald-700 hover:text-white transition-all duration-300 text-base font-bold uppercase tracking-widest border border-emerald-500/10 shadow-sm active:scale-95"
             onClick={() => navigate("/reset-password", { state: { data } })}
           >
-            Reset Password
-          </button>
-          <button
-            onClick={() => navigate("/")}
-            className="bg-black/60 hover:bg-black text-white px-4 py-2 rounded-md transition"
-          >
-            Logout
+            Reset
           </button>
           <button
             onClick={() => navigate("/faculty-dashboard", { state: { data } })}
-            className="bg-black/60 hover:bg-black text-white px-4 py-2 rounded-md transition"
+            className="px-5 py-2.5 rounded-xl bg-gray-900 hover:bg-black text-white transition-all duration-300 text-base font-bold uppercase tracking-widest shadow-lg active:scale-95"
           >
-            Shift to Faculty
+            Switch
+          </button>
+          <button
+            onClick={() => navigate("/")}
+            className="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white transition-all duration-300 text-base font-bold uppercase tracking-widest shadow-lg active:scale-95 shadow-emerald-500/20"
+          >
+            Logout
           </button>
         </div>
       </div>
@@ -54,3 +59,7 @@ const Navbar = ({ data }) => {
 };
 
 export default Navbar;
+
+
+
+

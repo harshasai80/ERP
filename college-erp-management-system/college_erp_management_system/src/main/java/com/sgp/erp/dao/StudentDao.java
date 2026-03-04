@@ -70,9 +70,9 @@ public class StudentDao {
                 }
                 String registrationNumber = nextRecord[0];
                 String name = nextRecord[1];
-                String department = nextRecord[2];
+                String department = nextRecord[2].toUpperCase();
                 byte sem = Byte.parseByte(nextRecord[3]);
-                Section section = Section.valueOf(nextRecord[4]);
+                Section section = Section.valueOf(nextRecord[4].toUpperCase());
 
                 Student student = new Student();
                 student.setRegistrationNumber(registrationNumber);
@@ -83,8 +83,12 @@ public class StudentDao {
 
                 Optional<Student> existingStudent = findByRegistrationNumber(registrationNumber);
                 if (existingStudent.isPresent()) {
-                    System.out.println("Student with registration number " + registrationNumber + " already exists.");
-                    continue;
+                    Student updateStudent = existingStudent.get();
+                    updateStudent.setName(name);
+                    updateStudent.setDepartment(department);
+                    updateStudent.setSem(sem);
+                    updateStudent.setSection(section);
+                    studentRepository.save(updateStudent);
                 } else {
                     studentRepository.save(student);
                 }
@@ -104,6 +108,9 @@ public class StudentDao {
             updateExistingStudent.setDepartment(student.getDepartment());
             updateExistingStudent.setSem(student.getSem());
             updateExistingStudent.setSection(student.getSection());
+            if (student.getRegistrationNumber() != null && !student.getRegistrationNumber().isEmpty()) {
+                updateExistingStudent.setRegistrationNumber(student.getRegistrationNumber());
+            }
             return studentRepository.save(updateExistingStudent);
         }
         return null;
@@ -129,6 +136,44 @@ public class StudentDao {
 
     public void updateBulkStudents(List<Student> students) {
         students.forEach(t -> studentRepository.updateStudents(t));
+    }
+
+    @Transactional
+    public int updateAllRegistrationNumbers() {
+        List<Student> allStudents = studentRepository.findAll();
+        int count = 0;
+
+        for (Student student : allStudents) {
+            String oldRegNo = student.getRegistrationNumber();
+
+            // Pattern to match registration numbers like "459DME01"
+            // Captures: (prefix)(department)(serial)
+            Pattern pattern = Pattern.compile("^(\\d+)([A-Z]+)(\\d+)$");
+            Matcher matcher = pattern.matcher(oldRegNo);
+
+            if (matcher.find()) {
+                String prefix = matcher.group(1); // e.g., "459"
+                String department = matcher.group(2); // e.g., "DME"
+                String serial = matcher.group(3); // e.g., "01"
+
+                // Create new registration number with "25" inserted
+                String newRegNo = prefix + department + "25" + serial;
+
+                // Only update if the pattern doesn't already contain "25"
+                if (!oldRegNo.contains("25")) {
+                    student.setRegistrationNumber(newRegNo);
+                    studentRepository.save(student);
+                    count++;
+                }
+            }
+        }
+
+        return count;
+    }
+
+    @Transactional
+    public int updateDepartmentForAllStudents(String oldDepartment, String newDepartment) {
+        return studentRepository.updateDepartmentForAll(oldDepartment, newDepartment);
     }
 
 }

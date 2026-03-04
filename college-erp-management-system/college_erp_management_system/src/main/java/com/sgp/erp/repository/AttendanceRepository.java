@@ -24,6 +24,9 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
     Optional<Attendance> findByStudentAndAttendanceDate(Student student, LocalDate date);
 
+    @Query("SELECT a FROM Attendance a WHERE a.attendanceDate = :date AND a.student.registrationNumber IN :regNos")
+    List<Attendance> findAttendanceByDateAndRegistrationNumbers(LocalDate date, List<String> regNos);
+
     @Query("SELECT a FROM Attendance a WHERE a.student.registrationNumber = ?1")
     List<Attendance> findAttendanceByRegistrationNumber(String registrationNumber);
 }

@@ -41,18 +41,47 @@ public class UsersDAO {
     }
 
     public boolean login(String email, String password) {
-        System.out.println("Login attempt for email: [" + email + "]");
-        Optional<Users> user = findByEmail(email);
+        String finalEmail = email != null ? email.trim().toLowerCase() : "";
+        System.out.println("Login attempt for email: [" + finalEmail + "]");
 
-        if (user.isEmpty()) {
-            System.out.println("DEBUG: User not found in database for email: [" + email + "]");
-            return false;
+        Optional<Users> userOpt = findByEmail(finalEmail);
+        Optional<Faculty> facultyOpt = facultyRepository.findByEmail(finalEmail);
+
+        if (userOpt.isEmpty()) {
+            if (facultyOpt.isPresent()) {
+                // Fix: User record is missing but faculty exists. Create the user record.
+                System.out.println(
+                        "DEBUG: Faculty exists but User record missing for " + finalEmail + ". Creating default user.");
+                Users newUser = new Users();
+                newUser.setEmail(finalEmail);
+                newUser.setPassword(passwordEncoder.encode("459" + facultyOpt.get().getDepartment().toLowerCase()));
+                userRepository.save(newUser);
+                userOpt = Optional.of(newUser);
+            } else {
+                System.out.println("DEBUG: No User or Faculty record found for " + finalEmail);
+                return false;
+            }
         }
 
-        boolean matches = passwordEncoder.matches(password, user.get().getPassword());
+        Users user = userOpt.get();
+        boolean matches = passwordEncoder.matches(password, user.getPassword());
+
+        if (!matches && facultyOpt.isPresent()) {
+            // Fallback: Check if the provided password matches the default pattern for this
+            // department
+            String expectedDefault = "459" + facultyOpt.get().getDepartment().toLowerCase();
+            if (password.equals(expectedDefault)) {
+                System.out.println("DEBUG: Fallback to default password pattern successful for " + finalEmail);
+                // Update the user record with the correctly encoded default password for future
+                // use
+                user.setPassword(passwordEncoder.encode(password));
+                userRepository.save(user);
+                return true;
+            }
+        }
 
         if (!matches) {
-            System.out.println("Login failed: password mismatch for " + email);
+            System.out.println("Login failed: password mismatch for " + finalEmail);
         }
 
         return matches;

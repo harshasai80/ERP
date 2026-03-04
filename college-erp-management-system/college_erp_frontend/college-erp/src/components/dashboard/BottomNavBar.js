@@ -4,25 +4,28 @@ export default function BottomNavBar({ activeTab, setActiveTab }) {
   const tabs = ["Dashboard", "Attendance", "Results"];
 
   return (
-    <div className="bg-gray-900 border-t border-gray-800 py-3 md:py-4 flex justify-center gap-6 md:gap-12 text-sm md:text-base font-semibold text-white">
+    <div className="bg-academic border-t-2 border-gold py-6 flex justify-center gap-8 text-base font-bold uppercase tracking-[0.2em] text-white shadow-2xl z-[50]">
       {tabs.map((tab) => {
         const isActive = activeTab === tab;
         return (
           <motion.button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-4 md:px-6 py-2 md:py-3 rounded-lg relative overflow-hidden transition-all duration-300 ${
-              isActive
-                ? "bg-emerald-600 text-white shadow-md"
-                : "bg-gray-800 text-gray-300 hover:bg-emerald-700 hover:text-white"
-            }`}
+            className={`px-10 py-3 rounded-sm relative transition-all duration-500 ${isActive
+                ? "bg-gold text-academic shadow-xl"
+                : "bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white"
+              }`}
             whileTap={{ scale: 0.95 }}
             whileHover={{ scale: isActive ? 1.02 : 1.05 }}
           >
-            {tab}
+            <span className="relative z-10">{tab}</span>
           </motion.button>
         );
       })}
     </div>
   );
 }
+
+
+
+

@@ -8,39 +8,41 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-gradient-to-r from-gray-900 to-gray-800 py-3">
-      <div className="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between text-sm text-gray-400 space-y-2 md:space-y-0">
-        
+    <footer className="bg-academic border-t-2 border-gold py-10">
+      <div className="container max-w-[1500px] mx-auto px-10 flex flex-col md:flex-row items-center justify-between text-base font-black uppercase tracking-[0.4em] text-faded-ink space-y-8 md:space-y-0">
+
         {/* College Info */}
-        <span className="text-emerald-300 font-semibold text-base text-center md:text-left">
-          Sanjay Gandhi Polytechnic Ballari
-        </span>
-        {/* Copyright */}
-        <span className="text-xs text-gray-500 text-center md:text-right">
-            © 2025 Sanjay Gandhi Polytechnic
+        <span className="text-white classic-heading text-base tracking-widest text-center md:text-left leading-tight">
+          Sanjay Gandhi Polytechnic <br />
+          <span className="text-gold">Administrative Registry</span>
         </span>
 
-        {/* Links + Copyright */}
-        <div className="flex flex-col md:flex-row items-center md:space-x-6 space-y-2 md:space-y-0">
-          {/* Links */}
-          <div className="flex space-x-4">
-            {[
-              { name: "Contact", path: "/contact-details" },
-              { name: "About", path: "/about" },
-              { name: "Team", path: "/team" },
-            ].map((item, idx) => (
-              <button
-                key={idx}
-                onClick={() => handleNavigation(item.path)}
-                className="hover:text-white transition"
-              >
-                {item.name}
-              </button>
-            ))}
-          </div>
-
+        {/* Links */}
+        <div className="flex items-center space-x-12">
+          {[
+            { name: "Registry Contact", path: "/contact-details" },
+            { name: "Institutional Profile", path: "/about" },
+          ].map((item, idx) => (
+            <button
+              key={idx}
+              onClick={() => handleNavigation(item.path)}
+              className="text-white hover:text-gold transition-colors duration-300 border-b border-transparent hover:border-gold pb-1"
+            >
+              {item.name}
+            </button>
+          ))}
         </div>
+
+        {/* Copyright */}
+        <span className="text-faded-ink opacity-40 text-center md:text-right text-base">
+          © MMXXV SANJAY GANDHI POLYTECHNIC • REGISTRY OFFICE <br />
+          Institutional Governance System v9.0
+        </span>
       </div>
     </footer>
   );
 }
+
+
+
+

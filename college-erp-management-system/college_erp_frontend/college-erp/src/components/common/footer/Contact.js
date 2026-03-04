@@ -94,14 +94,14 @@ export default function Contact() {
 
             {/* Enhanced text content */}
             <div className="space-y-1">
-              <h1 className="text-xl md:text-2xl font-bold tracking-tight">
+              <h1 className="text-base md:text-2xl font-bold tracking-tight">
                 <span className="bg-gradient-to-r from-white via-emerald-100 to-emerald-200 bg-clip-text text-transparent">
                   Sanjay Gandhi Polytechnic
                 </span>
               </h1>
               <div className="flex items-center gap-2">
                 <div className="w-1 h-1 bg-emerald-400 rounded-full animate-pulse"></div>
-                <p className="text-emerald-200/90 text-xs md:text-sm font-medium tracking-wide">
+                <p className="text-emerald-200/90 text-base md:text-base font-medium tracking-wide">
                   Get in Touch with Us
                 </p>
                 <div className="w-8 h-0.5 bg-gradient-to-r from-emerald-400/60 to-transparent rounded-full"></div>
@@ -126,12 +126,12 @@ export default function Contact() {
 
               {/* Button content */}
               <motion.span
-                className="relative text-lg"
+                className="relative text-base"
                 whileHover={{ x: -2 }}
                 transition={{ duration: 0.2 }}>
                 ←
               </motion.span>
-              <span className="relative text-sm md:text-base">
+              <span className="relative text-base md:text-base">
                 Back to Home
               </span>
 
@@ -179,7 +179,7 @@ export default function Contact() {
             Contact Us
           </motion.h1>
           <motion.p
-            className="text-xl text-gray-300 leading-relaxed"
+            className="text-base text-gray-300 leading-relaxed"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}>
@@ -206,7 +206,7 @@ export default function Contact() {
                   className={`p-3 rounded-lg bg-gradient-to-r from-gray-700 to-gray-600 group-hover:from-emerald-600 group-hover:to-emerald-500 transition-all duration-300`}>
                   <info.icon className={`w-6 h-6 ${info.color}`} />
                 </div>
-                <h3 className="text-xl font-semibold text-white">
+                <h3 className="text-base font-semibold text-white">
                   {info.title}
                 </h3>
               </div>
@@ -253,7 +253,7 @@ export default function Contact() {
             </p>
             <div className="flex items-center gap-2 text-emerald-400">
               <ClockIcon className="w-5 h-5" />
-              <span className="text-sm">
+              <span className="text-base">
                 Campus visits available Monday - Saturday, 9 AM - 5 PM
               </span>
             </div>
@@ -274,13 +274,13 @@ export default function Contact() {
               all your questions.
             </p>
             <div className="flex flex-wrap gap-2">
-              <span className="bg-purple-500/20 text-purple-300 px-3 py-1 rounded-full text-sm">
+              <span className="bg-purple-500/20 text-purple-300 px-3 py-1 rounded-full text-base">
                 Admissions
               </span>
-              <span className="bg-purple-500/20 text-purple-300 px-3 py-1 rounded-full text-sm">
+              <span className="bg-purple-500/20 text-purple-300 px-3 py-1 rounded-full text-base">
                 Course Info
               </span>
-              <span className="bg-purple-500/20 text-purple-300 px-3 py-1 rounded-full text-sm">
+              <span className="bg-purple-500/20 text-purple-300 px-3 py-1 rounded-full text-base">
                 General Queries
               </span>
             </div>
@@ -292,3 +292,7 @@ export default function Contact() {
     </div>
   );
 }
+
+
+
+

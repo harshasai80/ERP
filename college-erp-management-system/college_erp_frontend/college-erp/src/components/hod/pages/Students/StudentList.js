@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import Api from "../../../../Api";
 import AddStudentsTab from "../../components/tabs/AddStudentsTab";
 import DragDropCSVUpload from "../../../DragDropFileUpload";
@@ -78,10 +78,10 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
             <span className="text-2xl text-gray-400">📋</span>
           </div>
         </div>
-        <h3 className="text-lg font-semibold text-gray-300 mb-1">
+        <h3 className="text-base font-semibold text-gray-300 mb-1">
           No Records Found
         </h3>
-        <p className="text-gray-400 text-sm">
+        <p className="text-gray-400 text-base">
           No attendance data available for the selected date(s).
         </p>
       </div>
@@ -112,17 +112,16 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                       <div
                         key={sNum}
                         className="flex justify-between items-center py-2 px-3 rounded-lg bg-gray-700/30">
-                        <span className="text-gray-300 font-medium text-sm">
+                        <span className="text-gray-300 font-medium text-base">
                           {sessions[sNum - 1]}
                         </span>
                         <span
-                          className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                            status === "present"
-                              ? "text-green-300 bg-green-900/50 border border-green-700/50"
-                              : status === "absent"
+                          className={`px-3 py-1 rounded-full text-base font-semibold ${status === "present"
+                            ? "text-green-300 bg-green-900/50 border border-green-700/50"
+                            : status === "absent"
                               ? "text-red-300 bg-red-900/50 border border-red-700/50"
                               : "text-gray-400 bg-gray-700/50 border border-gray-600/50"
-                          }`}>
+                            }`}>
                           {status
                             ? status.charAt(0).toUpperCase() + status.slice(1)
                             : "N/A"}
@@ -138,7 +137,7 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
 
         {/* Desktop table */}
         <div className="hidden md:block overflow-x-auto rounded-xl border border-gray-600/30">
-          <table className="min-w-full text-sm bg-gray-800/30 text-white rounded-xl">
+          <table className="min-w-full text-base bg-gray-800/30 text-white rounded-xl">
             <thead className="bg-emerald-600/20 text-white">
               <tr>
                 <th className="px-4 py-3 text-left sticky left-0 bg-emerald-600/20 z-10 min-w-[120px]">
@@ -168,21 +167,19 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                       return (
                         <td
                           key={sNum}
-                          className={`px-3 py-3 text-center font-medium whitespace-nowrap ${
-                            status === "present"
-                              ? "text-green-400"
-                              : status === "absent"
+                          className={`px-3 py-3 text-center font-medium whitespace-nowrap ${status === "present"
+                            ? "text-green-400"
+                            : status === "absent"
                               ? "text-red-400"
                               : "text-gray-400"
-                          }`}>
+                            }`}>
                           <span
-                            className={`inline-block w-full py-1 px-2 rounded ${
-                              status === "present"
-                                ? "bg-green-900/30"
-                                : status === "absent"
+                            className={`inline-block w-full py-1 px-2 rounded ${status === "present"
+                              ? "bg-green-900/30"
+                              : status === "absent"
                                 ? "bg-red-900/30"
                                 : "bg-gray-700/30"
-                            }`}>
+                              }`}>
                             {status
                               ? status.charAt(0).toUpperCase() + status.slice(1)
                               : "-"}
@@ -216,31 +213,29 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
           return (
             <div
               key={sNum}
-              className={`rounded-xl border overflow-hidden shadow-lg ${
-                status === "present"
-                  ? "bg-green-900/10 border-green-700/30"
-                  : status === "absent"
+              className={`rounded-xl border overflow-hidden shadow-lg ${status === "present"
+                ? "bg-green-900/10 border-green-700/30"
+                : status === "absent"
                   ? "bg-red-900/10 border-red-700/30"
                   : "bg-gray-800/30 border-gray-600/30"
-              }`}>
+                }`}>
               <div className="p-4">
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="text-gray-300 text-sm font-medium">Session</p>
+                    <p className="text-gray-300 text-base font-medium">Session</p>
                     <p className="text-white font-semibold text-base">
                       {getSessionTime(sNum)}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-gray-300 text-sm font-medium">Status</p>
+                    <p className="text-gray-300 text-base font-medium">Status</p>
                     <span
-                      className={`inline-block px-4 py-2 rounded-full text-sm font-bold mt-1 ${
-                        status === "present"
-                          ? "text-green-300 bg-green-900/50 border border-green-700/50"
-                          : status === "absent"
+                      className={`inline-block px-4 py-2 rounded-full text-base font-bold mt-1 ${status === "present"
+                        ? "text-green-300 bg-green-900/50 border border-green-700/50"
+                        : status === "absent"
                           ? "text-red-300 bg-red-900/50 border border-red-700/50"
                           : "text-gray-400 bg-gray-700/50 border border-gray-600/50"
-                      }`}>
+                        }`}>
                       {status
                         ? status.charAt(0).toUpperCase() + status.slice(1)
                         : "-"}
@@ -255,7 +250,7 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
 
       {/* Desktop horizontal table */}
       <div className="hidden md:block overflow-x-auto rounded-xl border border-gray-600/30">
-        <table className="min-w-full text-sm bg-gray-800/30 text-white rounded-xl">
+        <table className="min-w-full text-base bg-gray-800/30 text-white rounded-xl">
           <thead className="bg-emerald-600/20 text-white">
             <tr>
               <th className="px-4 py-3 text-left sticky left-0 bg-emerald-600/20 z-10 min-w-[120px]">
@@ -280,21 +275,19 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                 return (
                   <td
                     key={sNum}
-                    className={`px-3 py-3 text-center font-medium whitespace-nowrap ${
-                      status === "present"
-                        ? "text-green-400"
-                        : status === "absent"
+                    className={`px-3 py-3 text-center font-medium whitespace-nowrap ${status === "present"
+                      ? "text-green-400"
+                      : status === "absent"
                         ? "text-red-400"
                         : "text-gray-400"
-                    }`}>
+                      }`}>
                     <span
-                      className={`inline-block w-full py-1 px-2 rounded ${
-                        status === "present"
-                          ? "bg-green-900/30"
-                          : status === "absent"
+                      className={`inline-block w-full py-1 px-2 rounded ${status === "present"
+                        ? "bg-green-900/30"
+                        : status === "absent"
                           ? "bg-red-900/30"
                           : "bg-gray-700/30"
-                      }`}>
+                        }`}>
                       {status
                         ? status.charAt(0).toUpperCase() + status.slice(1)
                         : "-"}
@@ -322,14 +315,7 @@ const InlineAttendance = ({ registerNo }) => {
   const [loading, setLoading] = useState(false);
   const [hasLoadedToday, setHasLoadedToday] = useState(false);
 
-  useEffect(() => {
-    if (registerNo && !hasLoadedToday) {
-      handleSearch(true);
-      setHasLoadedToday(true);
-    }
-  }, [registerNo]);
-
-  const handleSearch = async (isAutoLoad = false) => {
+  const handleSearch = useCallback(async (isAutoLoad = false) => {
     if (!registerNo) {
       if (!isAutoLoad) alert("Student data not found!");
       return;
@@ -405,7 +391,14 @@ const InlineAttendance = ({ registerNo }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [registerNo, mode, date, dateRange]);
+
+  useEffect(() => {
+    if (registerNo && !hasLoadedToday) {
+      handleSearch(true);
+      setHasLoadedToday(true);
+    }
+  }, [registerNo, handleSearch, hasLoadedToday]);
 
   return (
     <div className="bg-gray-900/70 rounded-xl border border-gray-700 p-4 sm:p-6">
@@ -413,16 +406,16 @@ const InlineAttendance = ({ registerNo }) => {
       <div className="mb-4 text-center">
         {mode === "single" ? (
           <>
-            <h3 className="text-lg font-semibold text-emerald-300">
+            <h3 className="text-base font-semibold text-emerald-300">
               Attendance for {formatPrettyDate(date)}
             </h3>
-            <p className="text-sm text-gray-400">
+            <p className="text-base text-gray-400">
               Showing today's attendance. Use controls below to view other
               dates.
             </p>
           </>
         ) : (
-          <h3 className="text-lg font-semibold text-emerald-300">
+          <h3 className="text-base font-semibold text-emerald-300">
             Attendance for {formatPrettyDate(dateRange.start)} to{" "}
             {formatPrettyDate(dateRange.end)}
           </h3>
@@ -464,11 +457,10 @@ const InlineAttendance = ({ registerNo }) => {
                   setMode(key);
                   setAttendanceData([]);
                 }}
-                className={`px-3 py-2 rounded-lg text-sm border ${
-                  mode === key
-                    ? "bg-emerald-600/20 border-emerald-500 text-emerald-300"
-                    : "bg-gray-700/50 border-gray-600 text-gray-300 hover:bg-gray-600/50"
-                }`}>
+                className={`px-3 py-2 rounded-lg text-base border ${mode === key
+                  ? "bg-emerald-600/20 border-emerald-500 text-emerald-300"
+                  : "bg-gray-700/50 border-gray-600 text-gray-300 hover:bg-gray-600/50"
+                  }`}>
                 {label}
               </button>
             ))}
@@ -476,7 +468,7 @@ const InlineAttendance = ({ registerNo }) => {
 
           {mode === "single" ? (
             <div className="flex items-center gap-2">
-              <label className="text-sm text-gray-300">Date</label>
+              <label className="text-base text-gray-300">Date</label>
               <input
                 type="date"
                 value={toYMD(date)}
@@ -487,7 +479,7 @@ const InlineAttendance = ({ registerNo }) => {
           ) : (
             <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-2">
-                <label className="text-sm text-gray-300">Start</label>
+                <label className="text-base text-gray-300">Start</label>
                 <input
                   type="date"
                   value={toYMD(dateRange.start)}
@@ -510,7 +502,7 @@ const InlineAttendance = ({ registerNo }) => {
                 />
               </div>
               <div className="flex items-center gap-2">
-                <label className="text-sm text-gray-300">End</label>
+                <label className="text-base text-gray-300">End</label>
                 <input
                   type="date"
                   value={toYMD(dateRange.end)}
@@ -532,18 +524,17 @@ const InlineAttendance = ({ registerNo }) => {
                   className="bg-gray-800 text-white border border-gray-600 rounded-lg px-3 py-2"
                 />
               </div>
-              <p className="text-xs text-gray-400">Maximum range: 7 days</p>
+              <p className="text-base text-gray-400">Maximum range: 7 days</p>
             </div>
           )}
 
           <button
             onClick={() => handleSearch(false)}
             disabled={loading}
-            className={`px-4 py-2 rounded-lg font-medium border ${
-              loading
-                ? "bg-gray-700 text-gray-300 cursor-not-allowed border-gray-600"
-                : "bg-emerald-600 text-white hover:bg-emerald-700 border-emerald-500"
-            }`}>
+            className={`px-4 py-2 rounded-lg font-medium border ${loading
+              ? "bg-gray-700 text-gray-300 cursor-not-allowed border-gray-600"
+              : "bg-emerald-600 text-white hover:bg-emerald-700 border-emerald-500"
+              }`}>
             {loading ? "Searching..." : "Search Records"}
           </button>
         </div>
@@ -576,6 +567,28 @@ const StudentList = ({ department }) => {
 
   // row expansion
   const [expandedStudentId, setExpandedStudentId] = useState(null);
+
+  // Fetch all students in department on mount
+  useEffect(() => {
+    if (department) {
+      const fetchAllDepartmentStudents = async () => {
+        setLoading(true);
+        try {
+          const response = await Api.get("/student/department", {
+            params: { department },
+          });
+          const data = response.data?.data || [];
+          setStudents(data);
+          setEditedStudents(data.map((s) => ({ ...s })));
+        } catch (error) {
+          console.error("Failed to fetch department students", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchAllDepartmentStudents();
+    }
+  }, [department]);
 
   const columns = [
     "Registration Number",
@@ -746,7 +759,7 @@ const StudentList = ({ department }) => {
             key={text}
             onClick={() => setCurrentPage(page)}
             disabled={disabled}
-            className="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm">
+            className="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-base">
             {text}
           </button>
         ))}
@@ -755,11 +768,10 @@ const StudentList = ({ department }) => {
           <button
             key={num}
             onClick={() => setCurrentPage(num)}
-            className={`px-3 py-1 rounded text-sm ${
-              currentPage === num
-                ? "bg-emerald-600 text-white"
-                : "bg-gray-700 text-white hover:bg-gray-600"
-            }`}>
+            className={`px-3 py-1 rounded text-base ${currentPage === num
+              ? "bg-emerald-600 text-white"
+              : "bg-gray-700 text-white hover:bg-gray-600"
+              }`}>
             {num}
           </button>
         ))}
@@ -772,7 +784,7 @@ const StudentList = ({ department }) => {
             key={text}
             onClick={() => setCurrentPage(page)}
             disabled={disabled}
-            className="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm">
+            className="px-3 py-1 bg-gray-700 text-white rounded hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-base">
             {text}
           </button>
         ))}
@@ -791,11 +803,11 @@ const StudentList = ({ department }) => {
             <h3 className="text-white font-semibold text-base truncate">
               {student.name}
             </h3>
-            <p className="text-emerald-300 text-sm font-medium">
+            <p className="text-emerald-300 text-base font-medium">
               {student.registrationNumber}
             </p>
           </div>
-          <div className="text-right text-xs text-gray-300">
+          <div className="text-right text-base text-gray-300">
             <p>{student.department.toUpperCase()}</p>
             <p>
               Sem {student.sem}, Sec {student.section}
@@ -808,17 +820,17 @@ const StudentList = ({ department }) => {
       <div className="p-4">
         <div className="flex flex-wrap gap-2">
           <button
-            className="flex-1 min-w-[80px] px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm font-medium"
+            className="flex-1 min-w-[80px] px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-base font-medium"
             onClick={() => handleEdit(student)}>
             Edit
           </button>
           <button
-            className="flex-1 min-w-[80px] px-3 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 text-sm font-medium"
+            className="flex-1 min-w-[80px] px-3 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 text-base font-medium"
             onClick={() => handleDelete(student)}>
             Delete
           </button>
           <button
-            className="flex-1 min-w-[120px] px-3 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 text-sm font-medium"
+            className="flex-1 min-w-[120px] px-3 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 text-base font-medium"
             onClick={() => toggleExpand(student.id)}>
             {expandedStudentId === student.id
               ? "Hide Attendance"
@@ -850,7 +862,7 @@ const StudentList = ({ department }) => {
       {/* Bulk Edit Form */}
       <div className="p-4 space-y-3">
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">
+          <label className="block text-base font-medium text-gray-300 mb-1">
             Registration Number
           </label>
           <input
@@ -862,7 +874,7 @@ const StudentList = ({ department }) => {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">
+          <label className="block text-base font-medium text-gray-300 mb-1">
             Name
           </label>
           <input
@@ -874,7 +886,7 @@ const StudentList = ({ department }) => {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">
+          <label className="block text-base font-medium text-gray-300 mb-1">
             Department
           </label>
           <input
@@ -887,7 +899,7 @@ const StudentList = ({ department }) => {
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
+            <label className="block text-base font-medium text-gray-300 mb-1">
               Semester
             </label>
             <input
@@ -900,7 +912,7 @@ const StudentList = ({ department }) => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
+            <label className="block text-base font-medium text-gray-300 mb-1">
               Section
             </label>
             <input
@@ -930,14 +942,14 @@ const StudentList = ({ department }) => {
               </h1>
               <div className="flex gap-2">
                 <button
-                  className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 text-sm sm:text-base"
+                  className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 text-base sm:text-base"
                   onClick={() => setShowOptions(true)}>
                   Add New Student
                 </button>
                 {students.length > 0 && (
                   <button
                     onClick={() => setBulkEditMode(!bulkEditMode)}
-                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm sm:text-base">
+                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-base sm:text-base">
                     {bulkEditMode ? "Cancel Bulk Edit" : "Bulk Edit"}
                   </button>
                 )}
@@ -947,19 +959,19 @@ const StudentList = ({ department }) => {
             {/* Bulk Edit Controls */}
             {bulkEditMode && (
               <div className="mb-6 p-4 sm:p-5 bg-gradient-to-br from-blue-800/20 to-blue-900/20 rounded-xl border border-blue-600/30 shadow-lg">
-                <h3 className="text-lg font-semibold text-blue-300 mb-4">
+                <h3 className="text-base font-semibold text-blue-300 mb-4">
                   Bulk Edit Controls
                 </h3>
 
                 {/* Minimalistic Bulk Semester Change */}
                 <div className="flex items-center gap-3 mb-4 p-3 bg-gray-800/40 rounded-lg border border-gray-600/40">
-                  <span className="text-sm text-gray-300">
+                  <span className="text-base text-gray-300">
                     Change all to semester:
                   </span>
                   <select
                     value={bulkSemester}
                     onChange={(e) => setBulkSemester(e.target.value)}
-                    className="px-2 py-1 bg-gray-700 text-white border border-gray-600 rounded text-sm focus:border-emerald-500 focus:outline-none min-w-[100px]">
+                    className="px-2 py-1 bg-gray-700 text-white border border-gray-600 rounded text-base focus:border-emerald-500 focus:outline-none min-w-[100px]">
                     <option value="">Select</option>
                     {[1, 2, 3, 4, 5, 6].map((sem) => (
                       <option key={sem} value={sem}>
@@ -969,7 +981,7 @@ const StudentList = ({ department }) => {
                   </select>
                   <button
                     onClick={handleBulkSemesterChange}
-                    className="px-3 py-1 bg-emerald-600 text-white rounded hover:bg-emerald-700 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-3 py-1 bg-emerald-600 text-white rounded hover:bg-emerald-700 text-base disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={!bulkSemester}>
                     Apply ({editedStudents.length})
                   </button>
@@ -997,11 +1009,11 @@ const StudentList = ({ department }) => {
             {/* Options: add / csv */}
             {showOptions && (
               <div className="mb-6 p-4 sm:p-5 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl flex flex-col items-center gap-3 w-full sm:w-96 mx-auto shadow-lg">
-                <p className="text-base sm:text-lg font-semibold text-center">
+                <p className="text-base sm:text-base font-semibold text-center">
                   Choose an option:
                 </p>
                 <button
-                  className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 w-full text-sm sm:text-base"
+                  className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 w-full text-base sm:text-base"
                   onClick={() => {
                     setShowAddStudent(true);
                     setShowOptions(false);
@@ -1017,17 +1029,17 @@ const StudentList = ({ department }) => {
                   {csvFile && (
                     <>
                       <div className="mt-2 p-2 bg-gray-700 border border-gray-600 rounded text-white flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
-                        <span className="text-sm break-all">
+                        <span className="text-base break-all">
                           {csvFile.name}
                         </span>
                         <button
-                          className="text-red-500 hover:text-red-700 text-lg sm:ml-2"
+                          className="text-red-500 hover:text-red-700 text-base sm:ml-2"
                           onClick={() => setCsvFile(null)}>
                           ×
                         </button>
                       </div>
                       <button
-                        className="mt-2 px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 w-full text-sm sm:text-base"
+                        className="mt-2 px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 w-full text-base sm:text-base"
                         onClick={handleUpload}
                         disabled={uploading}>
                         {uploading ? "Uploading..." : "Upload File"}
@@ -1036,7 +1048,7 @@ const StudentList = ({ department }) => {
                   )}
                 </div>
                 <button
-                  className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 w-full text-sm sm:text-base"
+                  className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 w-full text-base sm:text-base"
                   onClick={() => {
                     const l = document.createElement("a");
                     l.href = "/csv files/studentcsv.csv";
@@ -1046,7 +1058,7 @@ const StudentList = ({ department }) => {
                   Download Sample CSV
                 </button>
                 <button
-                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 w-full text-sm sm:text-base"
+                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 w-full text-base sm:text-base"
                   onClick={() => setShowOptions(false)}>
                   Cancel
                 </button>
@@ -1069,7 +1081,7 @@ const StudentList = ({ department }) => {
                   ],
                 ].map(([label, key, options]) => (
                   <div key={key}>
-                    <label className="block text-sm font-medium mb-2">
+                    <label className="block text-base font-medium mb-2">
                       {label}
                     </label>
                     <select
@@ -1091,7 +1103,7 @@ const StudentList = ({ department }) => {
                   </div>
                 ))}
                 <div>
-                  <label className="block text-sm font-medium mb-2">
+                  <label className="block text-base font-medium mb-2">
                     Search Students
                   </label>
                   <input
@@ -1115,7 +1127,7 @@ const StudentList = ({ department }) => {
 
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-4 pt-4 border-t border-gray-700 gap-4">
                 <div className="flex flex-wrap gap-2">
-                  <span className="text-sm text-gray-300">Sort by:</span>
+                  <span className="text-base text-gray-300">Sort by:</span>
                   {[
                     ["name", "Name"],
                     ["registrationNumber", "Reg No"],
@@ -1123,11 +1135,10 @@ const StudentList = ({ department }) => {
                     <button
                       key={field}
                       onClick={() => handleSort(field)}
-                      className={`text-xs px-2 py-1 rounded ${
-                        sortBy === field
-                          ? "bg-emerald-600 text-white"
-                          : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                      }`}>
+                      className={`text-base px-2 py-1 rounded ${sortBy === field
+                        ? "bg-emerald-600 text-white"
+                        : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                        }`}>
                       {label}
                       {sortBy === field && (
                         <span className="ml-1">
@@ -1137,7 +1148,7 @@ const StudentList = ({ department }) => {
                     </button>
                   ))}
                 </div>
-                <div className="text-sm text-gray-300">
+                <div className="text-base text-gray-300">
                   Showing {paginatedStudents.length} of{" "}
                   {filteredAndSortedStudents.length} students
                   {searchTerm && ` (filtered from ${students.length} total)`}
@@ -1175,7 +1186,7 @@ const StudentList = ({ department }) => {
                         {columns.map((col, idx) => (
                           <th
                             key={idx}
-                            className="px-4 py-3 text-left text-sm font-semibold text-gray-200 bg-gray-700">
+                            className="px-4 py-3 text-left text-base font-semibold text-gray-200 bg-gray-700">
                             {col}
                           </th>
                         ))}
@@ -1274,23 +1285,23 @@ const StudentList = ({ department }) => {
                               </td>
                               <td className="px-4 py-2">
                                 {bulkEditMode ? (
-                                  <span className="text-gray-400 text-xs">
+                                  <span className="text-gray-400 text-base">
                                     Editing
                                   </span>
                                 ) : (
                                   <div className="flex gap-1 sm:gap-2 justify-center flex-wrap">
                                     <button
-                                      className="text-xs sm:text-sm px-2 py-1 bg-blue-600 rounded hover:bg-blue-700"
+                                      className="text-base sm:text-base px-2 py-1 bg-blue-600 rounded hover:bg-blue-700"
                                       onClick={() => handleEdit(s)}>
                                       Edit
                                     </button>
                                     <button
-                                      className="text-xs sm:text-sm px-2 py-1 bg-red-600 rounded hover:bg-red-700"
+                                      className="text-base sm:text-base px-2 py-1 bg-red-600 rounded hover:bg-red-700"
                                       onClick={() => handleDelete(s)}>
                                       Delete
                                     </button>
                                     <button
-                                      className="text-xs sm:text-sm px-2 py-1 bg-yellow-600 rounded hover:bg-yellow-700"
+                                      className="text-base sm:text-base px-2 py-1 bg-yellow-600 rounded hover:bg-yellow-700"
                                       onClick={() => toggleExpand(s.id)}>
                                       {expandedStudentId === s.id
                                         ? "Hide Attendance"
@@ -1324,7 +1335,7 @@ const StudentList = ({ department }) => {
 
             {students.length === 0 && !loading && (
               <div className="text-center py-12">
-                <div className="text-gray-400 text-lg mb-2">
+                <div className="text-gray-400 text-base mb-2">
                   No students loaded
                 </div>
                 <div className="text-gray-500">
@@ -1349,3 +1360,7 @@ const StudentList = ({ department }) => {
 };
 
 export default StudentList;
+
+
+
+

@@ -30,23 +30,27 @@ public class SubjectController {
     }
 
     @DeleteMapping("/{subjectId}")
-    public ResponseEntity<ResponseStructure<String>> deleteSubject(@PathVariable Integer subjectId) {
+    public ResponseEntity<ResponseStructure<String>> deleteSubject(
+            @PathVariable(name = "subjectId") Integer subjectId) {
         return subjectService.deleteSubject(subjectId);
     }
 
     @GetMapping("/department/{department}/semester/{semester}")
-    public ResponseEntity<ResponseStructure<List<Subject>>> findByDepartmentAndSemester(@PathVariable String department,
-            @PathVariable Byte semester) {
+    public ResponseEntity<ResponseStructure<List<Subject>>> findByDepartmentAndSemester(
+            @PathVariable(name = "department") String department,
+            @PathVariable(name = "semester") Byte semester) {
         return subjectService.findByDepartmentAndSemester(department, semester);
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<ResponseStructure<String>> uploadSubjectsCSV(@RequestParam MultipartFile file) {
+    public ResponseEntity<ResponseStructure<String>> uploadSubjectsCSV(
+            @RequestParam(name = "file") MultipartFile file) {
         return subjectService.uploadSubjectsCSV(file);
     }
 
     @GetMapping("/all")
-    public ResponseEntity<ResponseStructure<List<FacultySubject>>> findByFacultyId(@RequestParam Long facultyId) {
+    public ResponseEntity<ResponseStructure<List<FacultySubject>>> findByFacultyId(
+            @RequestParam(name = "facultyId") Long facultyId) {
         return facultySubjectService.findByFacultyId(facultyId);
     }
 }

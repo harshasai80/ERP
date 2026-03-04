@@ -22,7 +22,9 @@ public class PasswordResetController {
     private PasswordEncoder passwordEncoder;
 
     @PostMapping("/reset-password")
-    public ResponseEntity<ResponseStructure<String>> resetPassword(@RequestParam String email, @RequestParam String newPassword, @RequestParam String oldPassword) {
+    public ResponseEntity<ResponseStructure<String>> resetPassword(@RequestParam(name = "email") String email,
+            @RequestParam(name = "newPassword") String newPassword,
+            @RequestParam(name = "oldPassword") String oldPassword) {
         Optional<Users> userOptional = userRepository.findByEmail(email);
         ResponseStructure<String> structure = new ResponseStructure<>();
 
@@ -35,13 +37,13 @@ public class PasswordResetController {
 
         Users user = userOptional.get();
 
-        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {    
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
             structure.setData(null);
             structure.setMessage("Invalid old password");
-            structure.setStatus(HttpStatus.BAD_REQUEST.value());            
+            structure.setStatus(HttpStatus.BAD_REQUEST.value());
             return new ResponseEntity<>(structure, HttpStatus.BAD_REQUEST);
         }
-        
+
         user.setPassword(passwordEncoder.encode(newPassword)); // Encrypt password
         user.setResetToken(null); // Clear reset token
         userRepository.save(user);

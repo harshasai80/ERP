@@ -40,95 +40,128 @@ const AddStudentsTab = ({ onClose }) => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 p-4 text-white">
-      <div className="bg-gray-900 shadow-xl rounded-2xl border border-gray-700 w-full max-w-md p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-emerald-400">Add Student</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-red-500 text-xl font-bold">×</button>
+    <div className="flex items-center justify-center min-h-screen bg-mesh p-4 text-gray-900 font-sans">
+      <div className="lux-card glass-gold w-full max-w-md p-10 shadow-2xl relative overflow-hidden">
+        {/* Decorative Element */}
+        <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl -z-10" />
+
+        <div className="flex justify-between items-center mb-10">
+          <div className="space-y-1">
+            <h4 className="text-base font-bold text-emerald-600 uppercase tracking-[0.4em]">Manual Record Creation</h4>
+            <h2 className="text-3xl font-bold classic-heading bg-gradient-to-r from-emerald-600 to-emerald-800 bg-clip-text text-transparent uppercase">
+              Add <span className="font-light italic text-gray-400">Student</span>
+            </h2>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 text-gray-400 hover:text-red-500 transition-colors bg-white rounded-full shadow-sm border border-gray-50 active:scale-95"
+          >
+            <span className="text-2xl leading-none">×</span>
+          </button>
         </div>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-gray-300 font-medium">Name</label>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-1.5">
+            <label className="text-base font-bold text-gray-400 uppercase tracking-widest ml-1">Full Name</label>
             <input
               type="text"
               name="name"
               value={student.name}
               onChange={handleChange}
+              placeholder="Enter student's full name"
               required
-              className="w-full p-2 bg-gray-800 border border-gray-600 rounded mt-1 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-white"
+              className="w-full px-5 py-3.5 bg-white border border-gray-100 rounded-2xl focus:border-emerald-500/30 focus:ring-4 focus:ring-emerald-500/5 focus:outline-none transition-all text-base font-medium shadow-sm"
             />
           </div>
-          <div>
-            <label className="block text-gray-300 font-medium">Register Number</label>
+
+          <div className="space-y-1.5">
+            <label className="text-base font-bold text-gray-400 uppercase tracking-widest ml-1">Register Number</label>
             <input
               type="text"
               name="registrationNumber"
               value={student.registrationNumber}
               onChange={handleChange}
+              placeholder="Ex: 22DC001"
               required
-              className="w-full p-2 bg-gray-800 border border-gray-600 rounded mt-1 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-white"
+              className="w-full px-5 py-3.5 bg-white border border-gray-100 rounded-2xl focus:border-emerald-500/30 focus:ring-4 focus:ring-emerald-500/5 focus:outline-none transition-all text-base font-medium shadow-sm"
             />
           </div>
-          <div>
-            <label className="block text-gray-300 font-medium">Section</label>
-            <select
-              name="section"
-              value={student.section}
-              onChange={handleChange}
-              required
-              className="w-full p-2 bg-gray-800 border border-gray-600 rounded mt-1 text-white"
-            >
-              <option value="">Select Section</option>
-              <option value="A">A</option>
-              <option value="B">B</option>
-              <option value="C">C</option>
-              <option value="D">D</option>
-            </select>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <label className="text-base font-bold text-gray-400 uppercase tracking-widest ml-1">Section</label>
+              <select
+                name="section"
+                value={student.section}
+                onChange={handleChange}
+                required
+                className="w-full px-5 py-3.5 bg-white border border-gray-100 rounded-2xl focus:border-emerald-500/30 focus:ring-4 focus:ring-emerald-500/5 focus:outline-none transition-all text-base font-bold uppercase tracking-widest shadow-sm cursor-pointer appearance-none"
+              >
+                <option value="">Select</option>
+                {["A", "B", "C", "D"].map(sec => (
+                  <option key={sec} value={sec}>{sec}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-base font-bold text-gray-400 uppercase tracking-widest ml-1">Semester</label>
+              <select
+                name="sem"
+                value={student.sem}
+                onChange={handleChange}
+                required
+                className="w-full px-5 py-3.5 bg-white border border-gray-100 rounded-2xl focus:border-emerald-500/30 focus:ring-4 focus:ring-emerald-500/5 focus:outline-none transition-all text-base font-bold uppercase tracking-widest shadow-sm cursor-pointer appearance-none"
+              >
+                <option value="">Select</option>
+                {[...Array(6).keys()].map((num) => (
+                  <option key={num + 1} value={num + 1}>
+                    Sem {num + 1}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-          <div>
-            <label className="block text-gray-300 font-medium">Department</label>
+
+          <div className="space-y-1.5">
+            <label className="text-base font-bold text-gray-400 uppercase tracking-widest ml-1">Department</label>
             <select
               name="department"
               value={student.department}
               onChange={handleChange}
               required
-              className="w-full p-2 bg-gray-800 border border-gray-600 rounded mt-1 text-white"
+              className="w-full px-5 py-3.5 bg-white border border-gray-100 rounded-2xl focus:border-emerald-500/30 focus:ring-4 focus:ring-emerald-500/5 focus:outline-none transition-all text-base font-bold uppercase tracking-widest shadow-sm cursor-pointer appearance-none"
             >
-              <option value="">Select Department</option>
+              <option value="">Assign Department</option>
               <option value="DCS">Computer Science</option>
               <option value="DCE">Civil Engineering</option>
-              <option value="DEEE">Electrical and Electronics Engineering</option>
+              <option value="DEEE">Electrical Engineering</option>
               <option value="DME">Mechanical Engineering</option>
               <option value="DMT">Metallurgy</option>
             </select>
           </div>
-          <div>
-            <label className="block text-gray-300 font-medium">Semester</label>
-            <select
-              name="sem"
-              value={student.sem}
-              onChange={handleChange}
-              required
-              className="w-full p-2 bg-gray-800 border border-gray-600 rounded mt-1 text-white"
-            >
-              <option value="">Select Semester</option>
-              {[...Array(6).keys()].map((num) => (
-                <option key={num + 1} value={num + 1}>
-                  {num + 1}
-                </option>
-              ))}
-            </select>
-          </div>
+
           <button
             type="submit"
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white p-2 rounded mt-4 transition"
+            className="w-full bg-gray-900 hover:bg-black text-white py-4 rounded-2xl mt-6 transition-all duration-300 shadow-xl shadow-gray-900/10 active:scale-95 text-base font-bold uppercase tracking-[0.2em] group relative overflow-hidden"
           >
-            Add Student
+            <span className="relative z-10">Authorize Enrollment</span>
+            <div className="absolute inset-x-0 bottom-0 h-1 bg-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity" />
           </button>
         </form>
+
+        <div className="mt-10 pt-8 border-t border-emerald-500/10 text-center">
+          <p className="text-base font-bold text-gray-400 uppercase tracking-[0.3em]">
+            Protected by SGP ERP Institutional Security
+          </p>
+        </div>
       </div>
     </div>
   );
 };
 
 export default AddStudentsTab;
+
+
+
+

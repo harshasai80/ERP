@@ -43,8 +43,8 @@ const AddStudentsTab = ({ onClose }) => {
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 p-4 text-white">
       <div className="bg-gray-900 shadow-xl rounded-2xl border border-gray-700 w-full max-w-md p-6">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-emerald-400">Add Student</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-red-500 text-xl font-bold">×</button>
+          <h2 className="text-base font-bold text-emerald-400">Add Student</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-red-500 text-base font-bold">×</button>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -132,3 +132,7 @@ const AddStudentsTab = ({ onClose }) => {
 };
 
 export default AddStudentsTab;
+
+
+
+

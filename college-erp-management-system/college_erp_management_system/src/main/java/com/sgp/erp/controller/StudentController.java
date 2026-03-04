@@ -30,7 +30,8 @@ public class StudentController {
     private StudentService studentService;
 
     @PostMapping("/login")
-    public ResponseEntity<ResponseStructure<Student>> studentLogin(@RequestParam String registrationNumber) {
+    public ResponseEntity<ResponseStructure<Student>> studentLogin(
+            @RequestParam(name = "registrationNumber") String registrationNumber) {
         System.out.println("Got it! Registration Number: " + registrationNumber);
         return studentService.findByRegistrationNumber(registrationNumber);
     }
@@ -43,23 +44,24 @@ public class StudentController {
 
     @GetMapping("/all")
     public ResponseEntity<ResponseStructure<List<Student>>> findAllStudentsByDepartmentAndSemesterAndSection(
-            @RequestParam String department,
-            @RequestParam Byte semester,
-            @RequestParam Section section,
-            @RequestParam(required = false) String startRegNo,
-            @RequestParam(required = false) String endRegNo) {
+            @RequestParam(name = "department") String department,
+            @RequestParam(name = "semester") Byte semester,
+            @RequestParam(name = "section") Section section,
+            @RequestParam(name = "startRegNo", required = false) String startRegNo,
+            @RequestParam(name = "endRegNo", required = false) String endRegNo) {
 
         return studentService.findAllStudentsByDepartmentAndSemesterAndSection(
                 department, semester, section, startRegNo, endRegNo);
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<ResponseStructure<String>> uploadStudents(@RequestParam MultipartFile file) {
+    public ResponseEntity<ResponseStructure<String>> uploadStudents(@RequestParam(name = "file") MultipartFile file) {
         return studentService.uploadStudent(file);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<ResponseStructure<Student>> updateStudent(@RequestParam String registrationNumber,
+    public ResponseEntity<ResponseStructure<Student>> updateStudent(
+            @RequestParam(name = "registrationNumber") String registrationNumber,
             @RequestBody Student student) {
         return studentService.updateStudent(registrationNumber, student);
     }
@@ -70,7 +72,8 @@ public class StudentController {
     }
 
     @GetMapping("/department")
-    public ResponseEntity<ResponseStructure<List<Student>>> findByDepartment(@RequestParam String department) {
+    public ResponseEntity<ResponseStructure<List<Student>>> findByDepartment(
+            @RequestParam(name = "department") String department) {
         return studentService.findByDepartment(department);
     }
 
@@ -80,8 +83,21 @@ public class StudentController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<ResponseStructure<String>> deleteStudent(@RequestParam String registrationNumber) {
+    public ResponseEntity<ResponseStructure<String>> deleteStudent(
+            @RequestParam(name = "registrationNumber") String registrationNumber) {
         return studentService.deleteStudent(registrationNumber);
+    }
+
+    @PostMapping("/update-registration-numbers")
+    public ResponseEntity<ResponseStructure<String>> updateAllRegistrationNumbers() {
+        return studentService.updateAllRegistrationNumbers();
+    }
+
+    @PostMapping("/migrate-department")
+    public ResponseEntity<ResponseStructure<String>> migrateDepartment(
+            @RequestParam(name = "oldDepartment") String oldDepartment,
+            @RequestParam(name = "newDepartment") String newDepartment) {
+        return studentService.migrateDepartment(oldDepartment, newDepartment);
     }
 
 }

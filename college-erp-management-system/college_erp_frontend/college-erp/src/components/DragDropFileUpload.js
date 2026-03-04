@@ -2,11 +2,8 @@ import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 
 const DragDropCSVUpload = ({ onChange }) => {
-  const [files, setFiles] = useState([]);
-
   const onDrop = useCallback(
     (acceptedFiles) => {
-      setFiles(acceptedFiles);
       if (onChange) {
         onChange(acceptedFiles[0]);
       }
@@ -21,7 +18,7 @@ const DragDropCSVUpload = ({ onChange }) => {
   });
 
   return (
-    <div className="p-4 bg-gray-800 rounded-lg shadow border border-gray-700 text-white text-sm">
+    <div className="p-4 bg-gray-800 rounded-lg shadow border border-gray-700 text-white text-base">
       <div
         {...getRootProps()}
         className="border-2 border-dashed border-emerald-500 p-8 cursor-pointer rounded-lg transition-all hover:bg-gray-700"
@@ -42,3 +39,7 @@ const DragDropCSVUpload = ({ onChange }) => {
 };
 
 export default DragDropCSVUpload;
+
+
+
+

@@ -7,7 +7,6 @@ import Footer from "./Footer";
 
 export default function Team() {
   const [isVisible, setIsVisible] = useState(false);
-  const [hoveredCard, setHoveredCard] = useState(null);
   const navigate = useNavigate();
 
   const contributors = [
@@ -86,14 +85,14 @@ export default function Team() {
 
             {/* Enhanced text content */}
             <div className="space-y-1">
-              <h1 className="text-xl md:text-2xl font-bold tracking-tight">
+              <h1 className="text-base md:text-2xl font-bold tracking-tight">
                 <span className="bg-gradient-to-r from-white via-emerald-100 to-emerald-200 bg-clip-text text-transparent">
                   Sanjay Gandhi Polytechnic
                 </span>
               </h1>
               <div className="flex items-center gap-2">
                 <div className="w-1 h-1 bg-emerald-400 rounded-full animate-pulse"></div>
-                <p className="text-emerald-200/90 text-xs md:text-sm font-medium tracking-wide">
+                <p className="text-emerald-200/90 text-base md:text-base font-medium tracking-wide">
                   Get in Touch with Us
                 </p>
                 <div className="w-8 h-0.5 bg-gradient-to-r from-emerald-400/60 to-transparent rounded-full"></div>
@@ -120,13 +119,13 @@ export default function Team() {
 
               {/* Button content */}
               <motion.span
-                className="relative text-lg"
+                className="relative text-base"
                 whileHover={{ x: -2 }}
                 transition={{ duration: 0.2 }}
               >
                 ←
               </motion.span>
-              <span className="relative text-sm md:text-base">
+              <span className="relative text-base md:text-base">
                 Back to Home
               </span>
 
@@ -186,14 +185,13 @@ export default function Team() {
       <div className="relative z-10 px-6 py-16">
         {/* Hero Section */}
         <div
-          className={`text-center mb-20 transition-all duration-1000 ${
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-          }`}
+          className={`text-center mb-20 transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+            }`}
         >
           <div className="inline-block mb-6">
             <div className="flex items-center justify-center space-x-4 mb-4">
               <div className="w-12 h-0.5 bg-gradient-to-r from-transparent to-emerald-400"></div>
-              <span className="text-emerald-400 text-lg font-light tracking-widest uppercase">
+              <span className="text-emerald-400 text-base font-light tracking-widest uppercase">
                 About
               </span>
               <div className="w-12 h-0.5 bg-gradient-to-l from-transparent to-emerald-400"></div>
@@ -211,7 +209,7 @@ export default function Team() {
           </h1>
 
           <div className="max-w-4xl mx-auto">
-            <p className="text-xl md:text-2xl text-gray-300 leading-relaxed mb-8">
+            <p className="text-base md:text-2xl text-gray-300 leading-relaxed mb-8">
               <span className="inline-block animate-bounce-slow text-3xl mr-3">
                 🚀
               </span>
@@ -233,18 +231,17 @@ export default function Team() {
         {/* Team Section */}
         <div className="max-w-7xl mx-auto">
           <div
-            className={`text-center mb-16 transition-all duration-1000 delay-300 ${
-              isVisible
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-10"
-            }`}
+            className={`text-center mb-16 transition-all duration-1000 delay-300 ${isVisible
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 translate-y-10"
+              }`}
           >
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
               <span className="bg-gradient-to-r from-emerald-300 via-emerald-400 to-emerald-300 bg-clip-text text-transparent">
                 Meet the Dream Team
               </span>
             </h2>
-            <p className="text-gray-400 text-lg">
+            <p className="text-gray-400 text-base">
               The architects of innovation
             </p>
           </div>
@@ -254,23 +251,19 @@ export default function Team() {
             {contributors.map((contributor, index) => (
               <div
                 key={index}
-                className={`group relative transition-all duration-700 ${
-                  isVisible
-                    ? "opacity-100 translate-y-0"
-                    : "opacity-0 translate-y-20"
-                } ${contributor.route ? "cursor-pointer" : ""}`}
+                className={`group relative transition-all duration-700 ${isVisible
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-20"
+                  } ${contributor.route ? "cursor-pointer" : ""}`}
                 style={{ transitionDelay: getRandomDelay(index) }}
-                onMouseEnter={() => setHoveredCard(index)}
-                onMouseLeave={() => setHoveredCard(null)}
                 onClick={() => handleCardClick(contributor)}
               >
                 {/* Card */}
                 <div
-                  className={`relative bg-gradient-to-br from-gray-800/40 to-gray-900/60 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/30 hover:border-emerald-400/50 transition-all duration-500 group-hover:transform group-hover:scale-105 group-hover:shadow-2xl group-hover:shadow-emerald-400/10 ${
-                    contributor.route
-                      ? "hover:border-emerald-300/70 hover:shadow-emerald-300/20"
-                      : ""
-                  }`}
+                  className={`relative bg-gradient-to-br from-gray-800/40 to-gray-900/60 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/30 hover:border-emerald-400/50 transition-all duration-500 group-hover:transform group-hover:scale-105 group-hover:shadow-2xl group-hover:shadow-emerald-400/10 ${contributor.route
+                    ? "hover:border-emerald-300/70 hover:shadow-emerald-300/20"
+                    : ""
+                    }`}
                 >
                   {/* Hover glow effect */}
                   <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -279,7 +272,7 @@ export default function Team() {
                   {contributor.route && (
                     <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       <div className="w-6 h-6 bg-emerald-400/20 rounded-full flex items-center justify-center border border-emerald-400/40">
-                        <span className="text-emerald-300 text-xs">👆</span>
+                        <span className="text-emerald-300 text-base">👆</span>
                       </div>
                     </div>
                   )}
@@ -302,9 +295,8 @@ export default function Team() {
                   {/* Content */}
                   <div className="text-center relative z-10">
                     <h3
-                      className={`text-lg font-semibold text-white mb-2 group-hover:text-emerald-200 transition-colors duration-300 ${
-                        contributor.route ? "group-hover:text-emerald-100" : ""
-                      }`}
+                      className={`text-base font-semibold text-white mb-2 group-hover:text-emerald-200 transition-colors duration-300 ${contributor.route ? "group-hover:text-emerald-100" : ""
+                        }`}
                     >
                       {contributor.name}
                       {contributor.route && (
@@ -313,7 +305,7 @@ export default function Team() {
                         </span>
                       )}
                     </h3>
-                    <p className="text-emerald-400/80 text-sm font-medium mb-3">
+                    <p className="text-emerald-400/80 text-base font-medium mb-3">
                       {contributor.role}
                     </p>
 
@@ -330,14 +322,13 @@ export default function Team() {
           </div>
 
           <div
-            className={`text-center mt-20 transition-all duration-1000 delay-1000 ${
-              isVisible
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-10"
-            }`}
+            className={`text-center mt-20 transition-all duration-1000 delay-1000 ${isVisible
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 translate-y-10"
+              }`}
           >
             <div className="inline-block bg-gradient-to-r from-gray-800/50 to-gray-700/30 backdrop-blur-xl rounded-2xl px-8 py-6 border border-gray-700/30">
-              <p className="text-gray-300 text-lg italic mb-4">
+              <p className="text-gray-300 text-base italic mb-4">
                 "Transforming education through collaborative innovation"
               </p>
               <div className="flex justify-center items-center space-x-3">
@@ -465,3 +456,7 @@ export default function Team() {
     </div>
   );
 }
+
+
+
+

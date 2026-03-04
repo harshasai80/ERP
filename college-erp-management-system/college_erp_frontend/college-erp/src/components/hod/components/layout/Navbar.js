@@ -9,182 +9,143 @@ const Navbar = ({ data }) => {
   const name = data?.name || "User";
   const role = data?.role || "HOD";
   const [isOpen, setIsOpen] = useState(false);
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [isNotFaculty] = useState(
     data?.role.toUpperCase() === "HOD" ||
-      data?.role.toUpperCase() === "PRINCIPAL"
+    data?.role.toUpperCase() === "PRINCIPAL"
   );
 
   const handleNavigation = (path, state = null) => {
     navigate(path, state ? { state } : {});
     setIsOpen(false);
-    setUserMenuOpen(false);
   };
 
   return (
-    <nav className="bg-gradient-to-r from-emerald-700 to-emerald-900 text-white shadow-xl sticky top-0 z-50 border-b border-emerald-600/30">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2 sm:py-3">
+    <nav className="relative z-[100] glass border-b-2 border-gold py-4 px-6 sm:px-10">
+      <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between">
-          {/* Left: Logo + Branding */}
-          <Link to="/" className="flex items-center gap-3 group">
-            <motion.img
-              src="/logo192.png"
-              alt="SGP Logo"
-              className="h-10 w-10 sm:h-12 sm:w-12"
-              whileHover={{ scale: 1.1, rotate: 5 }}
-              transition={{ duration: 0.3 }}
-            />
-            <div className="flex flex-col">
-              <span className="text-lg sm:text-2xl font-bold tracking-wide leading-tight">
-                Sanjay Gandhi Polytechnic ERP
-              </span>
-              <span className="text-xs sm:text-sm text-emerald-100 font-medium">
-                HOD Portal
-              </span>
+          {/* Left: Academic Branding */}
+          <Link to="/" className="flex items-center gap-5 group">
+            <div className="relative">
+              <div className="absolute inset-x-0 bottom-0 h-1 bg-gold/20 blur-sm rounded-full" />
+              <motion.img
+                src="/logo192.png"
+                alt="SGP Logo"
+                className="relative h-12 w-12 group-hover:rotate-[360deg] transition-transform duration-1000"
+                whileHover={{ scale: 1.1 }}
+              />
+            </div>
+            <div>
+              <h1 className="text-base sm:text-2xl font-bold tracking-[0.2em] text-academic classic-heading uppercase leading-tight">
+                SGP <span className="text-gold">Registry</span>
+              </h1>
+              <p className="text-base uppercase font-bold tracking-[0.4em] text-faded-ink">
+                Administrative Directorate
+              </p>
             </div>
           </Link>
 
           {/* Right: Desktop Actions */}
-          <div className="hidden lg:flex items-center gap-4">
-            {/* User Info Card */}
-            <div className="bg-emerald-800/50 backdrop-blur-sm rounded-lg px-4 py-2 border border-emerald-600/30">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center">
-                  <User size={16} />
+          <div className="hidden lg:flex items-center gap-8">
+            {/* User Identity Card */}
+            <div className="flex items-center gap-5 border-r border-gray-100 pr-8">
+              <div className="text-right">
+                <p className="text-base font-bold text-academic classic-heading tracking-tight">
+                  Prof. {name}
+                </p>
+                <div className="flex items-center justify-end gap-2 mt-0.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
+                  <span className="text-base font-black text-academic uppercase tracking-[0.2em]">
+                    {role}
+                  </span>
                 </div>
-                <div className="text-right">
-                  <p className="text-sm font-semibold truncate max-w-[120px]">
-                    {name}
-                  </p>
-                  <p className="text-xs text-emerald-100">{role}</p>
-                </div>
+              </div>
+              <div className="w-10 h-10 bg-academic flex items-center justify-center text-white font-bold text-base shadow-lg">
+                {name.charAt(0)}
               </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="flex items-center gap-2">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded-lg text-white text-sm font-medium transition-all shadow-lg flex items-center gap-2"
-                onClick={() => handleNavigation("/reset-password", { data })}
-              >
-                <Key size={16} />
-                <span className="hidden xl:inline">Reset Password</span>
-                <span className="xl:hidden">Reset</span>
-              </motion.button>
+            <div className="flex items-center gap-4">
+              <button
+                className="px-6 py-2.5 text-academic text-base font-bold uppercase tracking-widest border border-academic hover:bg-academic/5 transition-all active:scale-95"
+                onClick={() => handleNavigation("/reset-password", { data })}>
+                Security Reset
+              </button>
 
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              <button
                 onClick={() =>
                   handleNavigation("/faculty-dashboard", {
                     data: data,
                     isNotFaculty: isNotFaculty,
                   })
                 }
-                className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg text-white text-sm font-medium transition-all shadow-lg flex items-center gap-2"
-              >
-                <RefreshCw size={16} />
-                <span className="hidden xl:inline">Switch to Faculty</span>
-                <span className="xl:hidden">Faculty</span>
-              </motion.button>
+                className="btn-primary py-2.5 px-6 text-base">
+                Faculty Role
+              </button>
 
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => handleNavigation("/")}
-                className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-white text-sm font-medium transition-all shadow-lg flex items-center gap-2"
-              >
-                <LogOut size={16} />
-                <span className="hidden xl:inline">Logout</span>
-              </motion.button>
+              <button
+                className="px-6 py-2.5 bg-burgundy text-white text-base font-bold uppercase tracking-widest hover:bg-burgundy/90 transition-all active:scale-95 shadow-lg shadow-burgundy/20"
+                onClick={() => handleNavigation("/")}>
+                Terminate Session
+              </button>
             </div>
           </div>
 
-          {/* Mobile/Tablet User Menu Button */}
+          {/* Mobile/Tablet Menu Button */}
           <div className="lg:hidden flex items-center gap-3">
-            {/* Mobile User Avatar */}
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center">
-                <User size={16} />
-              </div>
-              <div className="hidden sm:block">
-                <p className="text-sm font-semibold truncate max-w-[100px]">
-                  {name}
-                </p>
-                <p className="text-xs text-emerald-100">{role}</p>
-              </div>
-            </div>
-
-            {/* Hamburger Menu */}
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              className="p-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 transition-colors"
+            <button
               onClick={() => setIsOpen(!isOpen)}
+              className="text-academic p-2"
             >
-              <motion.div
-                animate={{ rotate: isOpen ? 180 : 0 }}
-                transition={{ duration: 0.2 }}
-              >
-                {isOpen ? <X size={24} /> : <Menu size={24} />}
-              </motion.div>
-            </motion.button>
+              {isOpen ? <X size={28} /> : <Menu size={28} />}
+            </button>
           </div>
         </div>
 
-        {/* Mobile Dropdown Menu */}
+        {/* Mobile Identity Drawer */}
         <AnimatePresence>
           {isOpen && (
             <motion.div
-              initial={{ opacity: 0, height: 0, y: -20 }}
-              animate={{ opacity: 1, height: "auto", y: 0 }}
-              exit={{ opacity: 0, height: 0, y: -20 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="lg:hidden mt-4 bg-emerald-800/90 backdrop-blur-sm rounded-xl shadow-2xl border border-emerald-600/30 overflow-hidden"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="lg:hidden mt-6 overflow-hidden border-t border-gray-100"
             >
-              <div className="p-4 space-y-3">
-                {/* Mobile User Info */}
-                <div className="sm:hidden text-center pb-3 border-b border-emerald-600/30">
-                  <p className="text-sm font-semibold">{name}</p>
-                  <p className="text-xs text-emerald-100">{role}</p>
+              <div className="py-8 space-y-6">
+                <div className="flex items-center gap-5 p-4 bg-gray-50 rounded-sm">
+                  <div className="w-12 h-12 bg-academic text-white flex items-center justify-center text-base font-bold">
+                    {name.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="text-base font-bold text-academic classic-heading">Prof. {name}</p>
+                    <p className="text-base font-black text-gold uppercase tracking-widest">{role}</p>
+                  </div>
                 </div>
 
-                {/* Mobile Action Buttons */}
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full bg-yellow-500 hover:bg-yellow-600 px-4 py-3 rounded-lg text-white text-sm font-medium transition-all shadow-lg flex items-center gap-3"
-                  onClick={() => handleNavigation("/reset-password", { data })}
-                >
-                  <Key size={18} />
-                  <span>Reset Password</span>
-                </motion.button>
+                <div className="grid grid-cols-1 gap-4">
+                  <button
+                    className="w-full px-6 py-4 text-academic text-base font-extrabold uppercase tracking-widest border border-academic text-center"
+                    onClick={() => handleNavigation("/reset-password", { data })}>
+                    Security Reset
+                  </button>
 
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() =>
-                    handleNavigation("/faculty-dashboard", {
-                      data: data,
-                      isNotFaculty: isNotFaculty,
-                    })
-                  }
-                  className="w-full bg-purple-600 hover:bg-purple-700 px-4 py-3 rounded-lg text-white text-sm font-medium transition-all shadow-lg flex items-center gap-3"
-                >
-                  <RefreshCw size={18} />
-                  <span>Switch to Faculty</span>
-                </motion.button>
+                  <button
+                    onClick={() =>
+                      handleNavigation("/faculty-dashboard", {
+                        data: data,
+                        isNotFaculty: isNotFaculty,
+                      })
+                    }
+                    className="btn-primary w-full py-4 text-base text-center">
+                    Switch to Faculty
+                  </button>
 
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => handleNavigation("/")}
-                  className="w-full bg-red-600 hover:bg-red-700 px-4 py-3 rounded-lg text-white text-sm font-medium transition-all shadow-lg flex items-center gap-3"
-                >
-                  <LogOut size={18} />
-                  <span>Logout</span>
-                </motion.button>
+                  <button
+                    className="w-full px-6 py-4 bg-burgundy text-white text-base font-extrabold uppercase tracking-widest text-center"
+                    onClick={() => handleNavigation("/")}>
+                    Terminate Session
+                  </button>
+                </div>
               </div>
             </motion.div>
           )}
@@ -195,3 +156,7 @@ const Navbar = ({ data }) => {
 };
 
 export default Navbar;
+
+
+
+

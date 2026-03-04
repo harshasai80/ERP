@@ -34,12 +34,33 @@ public class IAMarksService {
             String registrationNumber, String subjectName) {
         List<IAMarks> iaMarksList = iaMarksDao.getByRegistrationNumberAndSubject(registrationNumber, subjectName);
         if (iaMarksList.isEmpty()) {
-            throw new DataNotFoundException("No IA Marks found for registration number: " + registrationNumber + " and subject: " + subjectName);
+            throw new DataNotFoundException("No IA Marks found for registration number: " + registrationNumber
+                    + " and subject: " + subjectName);
         }
         ResponseStructure<List<IAMarks>> response = new ResponseStructure<>();
         response.setData(iaMarksList);
         response.setMessage("IA Marks found successfully");
         response.setStatus(HttpStatus.OK.value());
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    public ResponseEntity<ResponseStructure<IAMarks>> addIAMarks(IAMarks iaMarks) {
+        IAMarks saved = iaMarksDao.saveIAMarks(iaMarks);
+        ResponseStructure<IAMarks> response = new ResponseStructure<>();
+        response.setData(saved);
+        response.setMessage("IA Marks saved successfully");
+        response.setStatus(HttpStatus.CREATED.value());
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    public ResponseEntity<ResponseStructure<String>> bulkAddIAMarks(List<IAMarks> iaMarksList) {
+        for (IAMarks marks : iaMarksList) {
+            iaMarksDao.saveIAMarks(marks);
+        }
+        ResponseStructure<String> response = new ResponseStructure<>();
+        response.setData("Bulk IA Marks saved successfully");
+        response.setMessage("Processed " + iaMarksList.size() + " records");
+        response.setStatus(HttpStatus.CREATED.value());
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 }

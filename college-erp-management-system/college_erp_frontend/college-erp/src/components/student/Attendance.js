@@ -32,8 +32,23 @@ const getSessionTime = (session) => {
 };
 
 // Combined Attendance Table Component
-const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
+const AttendanceTable = ({ attendanceData, mode, selectedDate, department, semester, summaryData, grandTotalStats }) => {
   const [formattedData, setFormattedData] = useState({});
+  const [subjectsMap, setSubjectsMap] = useState({});
+
+  useEffect(() => {
+    if (department && semester) {
+      Api.get(`/subjects/department/${department}/semester/${semester}`)
+        .then(res => {
+          const map = {};
+          res.data?.data?.forEach(s => {
+            map[s.subjectId] = s.subjectName;
+          });
+          setSubjectsMap(map);
+        })
+        .catch(err => console.error("Error fetching subjects map:", err));
+    }
+  }, [department, semester]);
 
   useEffect(() => {
     if (mode === "range") {
@@ -42,13 +57,28 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
         if (!transformedData[attendanceDate]) {
           transformedData[attendanceDate] = {};
         }
-        sessions.forEach(({ session, status }) => {
+        const sessionsArray = Array.isArray(sessions) ? sessions : (typeof sessions === 'string' ? JSON.parse(sessions) : []);
+        sessionsArray.forEach(({ session, status }) => {
           transformedData[attendanceDate][session] = status;
         });
       });
       setFormattedData(transformedData);
     }
   }, [attendanceData, mode]);
+
+  const calculateSummary = () => {
+    const summaryMap = {};
+    let grandAttended = 0;
+    let grandTotal = 0;
+
+    // We assume attendanceData in this component is the filtered/searched data
+    // But if we want a cumulative summary, we should use allAttendanceData from the parent
+    // However, the screenshot shows it at the top, likely overall.
+    // To match the screenshot, I'll use the data provided to this component.
+
+    // Actually, I'll define this component to take 'summaryData' as a prop instead
+    // Or just use the attendanceData if it's the full set.
+  };
 
   const sessions = [
     "9-10 AM",
@@ -75,10 +105,10 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
             <span className="text-3xl text-gray-400">📋</span>
           </div>
         </div>
-        <h3 className="text-xl font-semibold text-gray-300 mb-2">
+        <h3 className="text-base font-semibold text-gray-300 mb-2">
           No Records Found
         </h3>
-        <p className="text-gray-400 text-sm max-w-md mx-auto">
+        <p className="text-gray-400 text-base max-w-md mx-auto">
           {mode === "range"
             ? 'Select a date range and click "Search Records" to view your attendance data'
             : 'Select a date and click "Search Records" to view your attendance data'}
@@ -95,9 +125,9 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
       <div className="mt-8">
         <div className="flex items-center mb-6 pb-4 border-b border-gray-600/50">
           <div className="bg-blue-600/20 p-2 rounded-lg mr-3">
-            <span className="text-lg">📊</span>
+            <span className="text-base">📊</span>
           </div>
-          <h3 className="text-lg font-semibold text-blue-300">
+          <h3 className="text-base font-semibold text-blue-300">
             Attendance Records ({sortedDates.length} days)
           </h3>
         </div>
@@ -124,17 +154,16 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                         key={sessionNum}
                         className="flex justify-between items-center py-2 px-3 rounded-lg bg-gray-700/30"
                       >
-                        <span className="text-gray-300 font-medium text-sm">
+                        <span className="text-gray-300 font-medium text-base">
                           {sessions[sessionNum - 1]}
                         </span>
                         <span
-                          className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                            status === "present"
-                              ? "text-green-300 bg-green-900/50 border border-green-700/50"
-                              : status === "absent"
+                          className={`px-3 py-1 rounded-full text-base font-semibold ${status === "present"
+                            ? "text-green-300 bg-green-900/50 border border-green-700/50"
+                            : status === "absent"
                               ? "text-red-300 bg-red-900/50 border border-red-700/50"
                               : "text-gray-400 bg-gray-700/50 border border-gray-600/50"
-                          }`}
+                            }`}
                         >
                           {status
                             ? status.charAt(0).toUpperCase() + status.slice(1)
@@ -151,7 +180,7 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
 
         {/* Desktop Table View for Range */}
         <div className="hidden md:block overflow-x-auto rounded-xl border border-gray-600/30">
-          <table className="min-w-full text-sm bg-gray-800/30 text-white rounded-xl">
+          <table className="min-w-full text-base bg-gray-800/30 text-white rounded-xl">
             <thead className="bg-emerald-600/20 text-white">
               <tr>
                 <th className="px-4 py-3 text-left sticky left-0 bg-emerald-600/20 z-10 min-w-[120px]">
@@ -183,22 +212,20 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
                       return (
                         <td
                           key={sessionNum}
-                          className={`px-3 py-3 text-center font-medium whitespace-nowrap ${
-                            status === "present"
-                              ? "text-green-400"
-                              : status === "absent"
+                          className={`px-3 py-3 text-center font-medium whitespace-nowrap ${status === "present"
+                            ? "text-green-400"
+                            : status === "absent"
                               ? "text-red-400"
                               : "text-gray-400"
-                          }`}
+                            }`}
                         >
                           <span
-                            className={`inline-block w-full py-1 px-2 rounded ${
-                              status === "present"
-                                ? "bg-green-900/30"
-                                : status === "absent"
+                            className={`inline-block w-full py-1 px-2 rounded ${status === "present"
+                              ? "bg-green-900/30"
+                              : status === "absent"
                                 ? "bg-red-900/30"
                                 : "bg-gray-700/30"
-                            }`}
+                              }`}
                           >
                             {status
                               ? status.charAt(0).toUpperCase() + status.slice(1)
@@ -220,24 +247,91 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
   // Single Mode - Show single date in horizontal table format
   const allSessions = [1, 2, 3, 4, 5, 6, 7, 8];
   const sessionStatusMap = {};
+  const sessionSubjectMap = {};
 
   // Create a map of session statuses from the attendance data
-  // attendanceData is an array of objects like [{session: 1, status: "present"}, ...]
   if (Array.isArray(attendanceData)) {
     attendanceData.forEach((record) => {
       sessionStatusMap[record.session] = record.status;
+      sessionSubjectMap[record.session] = record.subjectId;
     });
   }
 
+  // Summary logic (aggregated from full data if available, or current data)
+  const summaryRecords = mode === "range" ? attendanceData : []; // Range mode shows aggregate in some views
+
   return (
-    <div className="mt-8">
-      <div className="flex items-center mb-6 pb-4 border-b border-gray-600/50">
-        <div className="bg-blue-600/20 p-2 rounded-lg mr-3">
-          <span className="text-lg">📊</span>
+    <div className="mt-8 space-y-12">
+      {/* Semester Attendance Summary - MATCHING SCREENSHOT */}
+      <div className="space-y-6">
+        <div className="flex items-center space-x-3">
+          <div className="bg-emerald-500/10 p-2 rounded-lg">
+            <span className="text-base">📊</span>
+          </div>
+          <h3 className="text-base font-semibold text-emerald-300 classic-heading uppercase tracking-widest">
+            Semester Attendance Summary
+          </h3>
         </div>
-        <h3 className="text-lg font-semibold text-blue-300">
-          Daily Session Records
-        </h3>
+
+        <div className="overflow-hidden rounded-2xl border border-gray-600/30 shadow-2xl">
+          <table className="min-w-full text-base font-black text-gray-500 uppercase tracking-widest">
+            <thead className="bg-[#5c6d8a]/20 text-slate-600">
+              <tr>
+                <th className="px-6 py-5 text-left border-r border-gray-600/10">Subject Name</th>
+                <th className="px-6 py-5 text-center border-r border-gray-600/10">Attended</th>
+                <th className="px-6 py-5 text-center border-r border-gray-600/10">Individual Class Attendance Count</th>
+                <th className="px-6 py-5 text-center border-r border-gray-600/10">Total Held</th>
+                <th className="px-6 py-5 text-center">Percentage</th>
+              </tr>
+            </thead>
+            <tbody className="bg-gray-800/20">
+              {Object.keys(subjectsMap).length > 0 ? (
+                Object.entries(subjectsMap).map(([sId, sName], idx) => {
+                  const stats = summaryData[sId] || { attended: 0, total: 0 };
+                  const percentage = stats.total > 0 ? ((stats.attended / stats.total) * 100).toFixed(1) : "0.0";
+
+                  return (
+                    <tr key={idx} className="border-t border-gray-600/10 hover:bg-gray-600/5 transition-colors">
+                      <td className="px-6 py-5 border-r border-gray-600/10 text-slate-800 font-black">{sName}</td>
+                      <td className="px-6 py-5 text-center border-r border-gray-600/10 text-emerald-600 font-black">{stats.attended}</td>
+                      <td className="px-6 py-5 text-center border-r border-gray-600/10 text-blue-600 font-black">{stats.attended}</td>
+                      <td className="px-6 py-5 text-center border-r border-gray-600/10 text-emerald-600 font-black">{stats.total}</td>
+                      <td className="px-6 py-5 text-center">
+                        <span className="bg-emerald-500/10 text-emerald-600 px-3 py-1 rounded-full border border-emerald-500/20 font-black">{percentage}%</span>
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr className="border-t border-gray-600/20">
+                  <td colSpan="5" className="px-6 py-10 text-center italic text-gray-500">Loading academic analytics...</td>
+                </tr>
+              )}
+            </tbody>
+            <tfoot className="bg-emerald-600/10 text-emerald-800">
+              <tr className="border-t-2 border-emerald-500/20">
+                <td className="px-6 py-5 border-r border-gray-600/10 font-black">Total Aggregate</td>
+                <td className="px-6 py-5 text-center border-r border-gray-600/10 font-black">{grandTotalStats.attended}</td>
+                <td className="px-6 py-5 text-center border-r border-gray-600/10 font-black">{grandTotalStats.attended}</td>
+                <td className="px-6 py-5 text-center border-r border-gray-600/10 font-black">{grandTotalStats.total}</td>
+                <td className="px-6 py-5 text-center text-base font-black tracking-tighter">
+                  {grandTotalStats.total > 0 ? ((grandTotalStats.attended / grandTotalStats.total) * 100).toFixed(2) : "0.00"}%
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+
+      <div className="pt-8 border-t border-gray-600/30">
+        <div className="flex items-center mb-6 pb-4">
+          <div className="bg-blue-600/20 p-2 rounded-lg mr-3">
+            <span className="text-base">📅</span>
+          </div>
+          <h3 className="text-base font-semibold text-blue-300 classic-heading uppercase tracking-widest">
+            Daily Attendance Details
+          </h3>
+        </div>
       </div>
 
       {/* Mobile Card View for Single */}
@@ -247,32 +341,30 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
           return (
             <div
               key={sessionNum}
-              className={`rounded-xl border overflow-hidden shadow-lg ${
-                status === "present"
-                  ? "bg-green-900/10 border-green-700/30"
-                  : status === "absent"
+              className={`rounded-xl border overflow-hidden shadow-lg ${status === "present"
+                ? "bg-green-900/10 border-green-700/30"
+                : status === "absent"
                   ? "bg-red-900/10 border-red-700/30"
                   : "bg-gray-800/30 border-gray-600/30"
-              }`}
+                }`}
             >
               <div className="p-4">
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="text-gray-300 text-sm font-medium">Session</p>
+                    <p className="text-gray-300 text-base font-medium">Session</p>
                     <p className="text-white font-semibold text-base">
                       {getSessionTime(sessionNum)}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-gray-300 text-sm font-medium">Status</p>
+                    <p className="text-gray-300 text-base font-medium">Status</p>
                     <span
-                      className={`inline-block px-4 py-2 rounded-full text-sm font-bold mt-1 ${
-                        status === "present"
-                          ? "text-green-300 bg-green-900/50 border border-green-700/50"
-                          : status === "absent"
+                      className={`inline-block px-4 py-2 rounded-full text-base font-bold mt-1 ${status === "present"
+                        ? "text-green-300 bg-green-900/50 border border-green-700/50"
+                        : status === "absent"
                           ? "text-red-300 bg-red-900/50 border border-red-700/50"
                           : "text-gray-400 bg-gray-700/50 border border-gray-600/50"
-                      }`}
+                        }`}
                     >
                       {status
                         ? status.charAt(0).toUpperCase() + status.slice(1)
@@ -286,18 +378,26 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
         })}
       </div>
 
-      {/* Desktop Table View for Single - Horizontal like Range */}
-      <div className="hidden md:block overflow-x-auto rounded-xl border border-gray-600/30">
-        <table className="min-w-full text-sm bg-gray-800/30 text-white rounded-xl">
-          <thead className="bg-emerald-600/20 text-white">
-            <tr>
-              <th className="px-4 py-3 text-left sticky left-0 bg-emerald-600/20 z-10 min-w-[120px]">
-                Date
+      {/* Desktop Table View for Single - Horizontal matching screenshot */}
+      <div className="bg-emerald-600/10 px-6 py-4 rounded-t-xl border border-gray-600/20 border-b-0">
+        <h4 className="text-emerald-800 font-black uppercase tracking-widest text-base flex items-center justify-between">
+          <span>{selectedDate
+            ? formatDate(format(selectedDate, "yyyy-MM-dd"))
+            : formatDate(format(new Date(), "yyyy-MM-dd"))}</span>
+          <span className="text-base text-emerald-600/50">Daily Attendance Ledger</span>
+        </h4>
+      </div>
+      <div className="hidden md:block overflow-x-auto rounded-b-xl border border-gray-600/20">
+        <table className="min-w-full text-base bg-white text-gray-800 border-collapse">
+          <thead>
+            <tr className="bg-gray-100 text-gray-500">
+              <th className="px-4 py-4 text-left font-black text-base uppercase tracking-widest sticky left-0 bg-gray-100 z-10 border-r border-gray-600/10 min-w-[140px]">
+                Time Slots
               </th>
               {sessions.map((session, index) => (
                 <th
                   key={index}
-                  className="px-3 py-3 text-center whitespace-nowrap min-w-[80px]"
+                  className="px-4 py-4 text-center font-black text-base uppercase tracking-widest whitespace-nowrap border-r border-gray-600/10 last:border-r-0"
                 >
                   {session}
                 </th>
@@ -305,37 +405,43 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate }) => {
             </tr>
           </thead>
           <tbody>
-            <tr className="bg-gray-800/20 border-t border-gray-600/30 hover:bg-gray-600/20 transition-colors">
-              <td className="px-4 py-3 text-emerald-300 font-semibold sticky left-0 bg-inherit backdrop-blur-sm z-10 whitespace-nowrap">
-                {selectedDate
-                  ? formatDate(format(selectedDate, "yyyy-MM-dd"))
-                  : formatDate(format(new Date(), "yyyy-MM-dd"))}
+            <tr className="bg-white border-t border-gray-600/10">
+              <td className="px-4 py-4 text-gray-400 font-bold text-base uppercase tracking-widest sticky left-0 bg-white z-10 border-r border-gray-600/10">
+                Subject
+              </td>
+              {allSessions.map((sessionNum) => {
+                const subjectId = sessionSubjectMap[sessionNum];
+                const subjectName = subjectId ? subjectsMap[subjectId] : null;
+                return (
+                  <td
+                    key={sessionNum}
+                    className="px-4 py-4 text-center text-base font-black text-slate-700 whitespace-nowrap border-r border-gray-600/10 last:border-r-0"
+                  >
+                    {subjectName || "-"}
+                  </td>
+                );
+              })}
+            </tr>
+            <tr className="bg-white border-t border-gray-600/10">
+              <td className="px-4 py-4 text-gray-400 font-bold text-base uppercase tracking-widest sticky left-0 bg-white z-10 border-r border-gray-600/10">
+                Status
               </td>
               {allSessions.map((sessionNum) => {
                 const status = sessionStatusMap[sessionNum] || null;
                 return (
                   <td
                     key={sessionNum}
-                    className={`px-3 py-3 text-center font-medium whitespace-nowrap ${
-                      status === "present"
-                        ? "text-green-400"
-                        : status === "absent"
-                        ? "text-red-400"
-                        : "text-gray-400"
-                    }`}
+                    className={`px-4 py-4 text-center whitespace-nowrap border-r border-gray-600/10 last:border-r-0`}
                   >
                     <span
-                      className={`inline-block w-full py-1 px-2 rounded ${
-                        status === "present"
-                          ? "bg-green-900/30"
-                          : status === "absent"
-                          ? "bg-red-900/30"
-                          : "bg-gray-700/30"
-                      }`}
+                      className={`inline-block w-full py-1.5 px-3 rounded text-base font-black uppercase tracking-widest ${status === "present"
+                        ? "bg-green-500/10 text-green-600 border border-green-500/20"
+                        : status === "absent"
+                          ? "bg-red-500/10 text-red-600 border border-red-500/20"
+                          : "bg-gray-100 text-gray-400"
+                        }`}
                     >
-                      {status
-                        ? status.charAt(0).toUpperCase() + status.slice(1)
-                        : "-"}
+                      {status || "-"}
                     </span>
                   </td>
                 );
@@ -357,19 +463,24 @@ const Attendance = () => {
     end: new Date(),
   });
   const [attendanceData, setAttendanceData] = useState([]);
+  const [summaryData, setSummaryData] = useState({});
+  const [grandTotalStats, setGrandTotalStats] = useState({ attended: 0, total: 0 });
   const [loading, setLoading] = useState(false);
   const location = useLocation();
 
-  const registerNo =
-    location.state?.student?.data?.registrationNumber ||
-    location.state?.student?.registrationNumber ||
-    JSON.parse(localStorage.getItem("student"))?.registrationNumber;
+  const studentData =
+    location.state?.student?.data ||
+    location.state?.student ||
+    JSON.parse(localStorage.getItem("student"));
+
+  const registerNo = studentData?.registrationNumber;
+  const department = studentData?.department;
+  const semester = studentData?.sem;
 
   const handleDateChange = (date) => setDate(date);
   const handleStartDateChange = (date) => {
     setDateRange((prev) => {
       const newRange = { ...prev, start: date };
-      // If end date is more than 15 days from start, adjust it
       const diffTime = Math.abs(newRange.end - date);
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       if (diffDays > 15) {
@@ -384,7 +495,6 @@ const Attendance = () => {
   const handleEndDateChange = (date) => {
     setDateRange((prev) => {
       const newRange = { ...prev, end: date };
-      // If end date is more than 15 days from start, adjust start
       const diffTime = Math.abs(date - newRange.start);
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       if (diffDays > 15) {
@@ -402,14 +512,11 @@ const Attendance = () => {
       return;
     }
 
-    // Validate date range for range mode
     if (mode === "range") {
       const diffTime = Math.abs(dateRange.end - dateRange.start);
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       if (diffDays > 15) {
-        alert(
-          "Date range cannot exceed 15 days. Please select a shorter range."
-        );
+        alert("Date range cannot exceed 15 days.");
         return;
       }
     }
@@ -433,7 +540,6 @@ const Attendance = () => {
             sessions: JSON.parse(sessions),
           })
         );
-
         setAttendanceData(fetchedAttendanceData);
       } else {
         const response = await Api.get(`/students/${registerNo}/date`, {
@@ -442,131 +548,137 @@ const Attendance = () => {
         });
 
         const data = response.data;
-        // Make sure we're getting the sessions data correctly
         const sessionData = data.data[0]?.sessions;
         const parsedSessions = sessionData ? JSON.parse(sessionData) : [];
-
         setAttendanceData(parsedSessions);
       }
     } catch (error) {
-      if (error.response) {
-        if (error.response.status === 401)
-          alert("Unauthorized: Invalid credentials.");
-        else if (error.response.status === 404)
-          alert("Attendance not found. Enter a valid date.");
-        else
-          alert(`Error ${error.response.status}: ${error.response.statusText}`);
-      } else {
-        alert("Network error or server not responding.");
-      }
-      console.error(
-        "Error fetching attendance:",
-        error.response?.data || error.message
-      );
+      console.error("Error fetching attendance:", error);
     } finally {
       setLoading(false);
     }
   };
 
+  useEffect(() => {
+    const fetchFullSummary = async () => {
+      if (!registerNo) return;
+      try {
+        const response = await Api.get("/students/all-attendance", {
+          params: { registerNo }
+        });
+        const allData = response.data?.data || [];
+
+        const summary = {};
+        let gAtt = 0;
+        let gTot = 0;
+
+        allData.forEach(day => {
+          try {
+            const sessions = JSON.parse(day.sessions || "[]");
+            sessions.forEach(s => {
+              const sId = s.subjectId;
+              if (!sId) return;
+              if (!summary[sId]) summary[sId] = { attended: 0, total: 0 };
+              summary[sId].total += 1;
+              gTot += 1;
+              if (s.status === "present") {
+                summary[sId].attended += 1;
+                gAtt += 1;
+              }
+            });
+          } catch (e) { }
+        });
+
+        setSummaryData(summary);
+        setGrandTotalStats({ attended: gAtt, total: gTot });
+      } catch (err) {
+        console.error("Failed to fetch full summary", err);
+      }
+    };
+    fetchFullSummary();
+  }, [registerNo]);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white">
-      {/* Header Section */}
-      <div className="sticky top-0 z-10 bg-gradient-to-r from-gray-900/95 via-black/95 to-gray-900/95 backdrop-blur-sm border-b border-gray-800">
-        <div className="px-4 py-4 sm:px-6 sm:py-6">
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-center"
-          >
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 via-emerald-300 to-emerald-500">
-              Attendance Dashboard
-            </h1>
-            <p className="text-gray-400 text-sm sm:text-base mt-2">
-              Track your attendance records
-            </p>
-          </motion.div>
-        </div>
+    <div className="min-h-screen bg-transparent text-gray-900">
+      {/* Dynamic Header Section */}
+      <div className="mb-12 text-center">
+        <h2 className="text-base font-bold text-emerald-600 uppercase tracking-[0.4em] mb-4">
+          Academic Accountability
+        </h2>
+        <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-emerald-600 to-emerald-800 bg-clip-text text-transparent classic-heading">
+          Attendance <span className="font-light italic text-gray-400">Ledger</span>
+        </h1>
+        <div className="w-24 h-1 bg-emerald-500 mx-auto mt-6 rounded-full opacity-20" />
       </div>
 
-      <div className="px-4 py-6 sm:px-6 lg:px-8">
-        {/* Both Single and Range Mode - Single Unified Container */}
+      <div className="px-4 py-2 sm:px-6 lg:px-8">
         <motion.div
           className="w-full max-w-5xl mx-auto"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
+          transition={{ duration: 0.8 }}
         >
-          <div className="bg-gradient-to-br from-gray-800/90 to-gray-700/90 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-600/30 overflow-hidden">
-            {/* Header Section */}
-            <div className="p-6 sm:p-8 border-b border-gray-600/30 bg-gradient-to-r from-gray-800/50 to-gray-700/50">
-              <div className="flex items-center justify-center mb-6">
-                <div className="bg-emerald-600/20 p-3 rounded-full mr-4">
-                  <span className="text-2xl">📅</span>
-                </div>
-                <h2 className="text-xl sm:text-2xl font-bold text-emerald-300">
-                  Attendance Lookup
-                </h2>
-              </div>
-
-              {/* Mode Selection Tabs */}
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-8">
+          <div className="lux-card glass-gold overflow-hidden">
+            {/* Lookup Controls */}
+            <div className="p-8 sm:p-12 border-b border-emerald-500/10">
+              <div className="flex flex-col sm:flex-row gap-4 mb-10">
                 {[
-                  { key: "single", icon: "📍", label: "Single Date" },
-                  { key: "range", icon: "📆", label: "Date Range" },
+                  { key: "single", icon: "📍", label: "Daily View" },
+                  { key: "range", icon: "📆", label: "Periodic View" },
                 ].map(({ key, icon, label }) => (
-                  <motion.button
+                  <button
                     key={key}
-                    className={`flex-1 px-6 py-4 rounded-xl font-medium text-base transition-all duration-300 border-2 ${
-                      mode === key
-                        ? "bg-emerald-600/20 border-emerald-500 text-emerald-300 shadow-lg shadow-emerald-500/20"
-                        : "bg-gray-700/50 border-gray-600 text-gray-300 hover:bg-gray-600/50 hover:border-gray-500"
-                    }`}
+                    className={`flex-1 px-8 py-5 rounded-2xl font-bold text-base uppercase tracking-widest transition-all duration-500 border-2 active:scale-95 ${mode === key
+                      ? "bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-500/20"
+                      : "bg-white border-gray-100 text-gray-500 hover:border-emerald-500/30 hover:text-emerald-600 shadow-sm"
+                      }`}
                     onClick={() => {
                       setMode(key);
                       setAttendanceData([]);
                     }}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
                   >
-                    <div className="flex items-center justify-center space-x-2">
-                      <span className="text-xl">{icon}</span>
+                    <div className="flex items-center justify-center space-x-3">
+                      <span className="text-base">{icon}</span>
                       <span>{label}</span>
                     </div>
-                  </motion.button>
+                  </button>
                 ))}
               </div>
 
-              {/* Date Selection */}
-              <div className="mb-8">
+              {/* Date Filters */}
+              <div className="mb-10 p-8 bg-emerald-500/5 rounded-[2rem] border border-emerald-500/10">
                 {mode === "single" ? (
-                  <div className="max-w-sm mx-auto space-y-2">
-                    <label className="text-sm font-medium text-gray-300 block text-center">
-                      Select Date
+                  <div className="max-w-md mx-auto space-y-4">
+                    <label className="text-base font-bold text-gray-400 block text-center uppercase tracking-widest">
+                      Select Specific Academic Date
                     </label>
-                    <DatePicker
-                      selected={date}
-                      onChange={handleDateChange}
-                      className="w-full"
-                    />
+                    <div className="bg-white p-3 rounded-2xl shadow-sm border border-gray-100">
+                      <DatePicker
+                        selected={date}
+                        onChange={handleDateChange}
+                        className="w-full"
+                      />
+                    </div>
                   </div>
                 ) : (
-                  <>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-300 block text-center">
-                          Start Date
-                        </label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto">
+                    <div className="space-y-4">
+                      <label className="text-base font-bold text-gray-400 block text-center uppercase tracking-widest">
+                        Commencement Date
+                      </label>
+                      <div className="bg-white p-3 rounded-2xl shadow-sm border border-gray-100 uppercase">
                         <DatePicker
                           selected={dateRange.start}
                           onChange={handleStartDateChange}
                           className="w-full"
                         />
                       </div>
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-300 block text-center">
-                          End Date
-                        </label>
+                    </div>
+                    <div className="space-y-4">
+                      <label className="text-base font-bold text-gray-400 block text-center uppercase tracking-widest">
+                        Conclusion Date
+                      </label>
+                      <div className="bg-white p-3 rounded-2xl shadow-sm border border-gray-100 uppercase">
                         <DatePicker
                           selected={dateRange.end}
                           onChange={handleEndDateChange}
@@ -574,55 +686,50 @@ const Attendance = () => {
                         />
                       </div>
                     </div>
-                    <div className="text-center">
-                      <p className="text-xs text-gray-400 mt-2">
-                        Maximum range: 15 days
-                      </p>
-                    </div>
-                  </>
+                  </div>
                 )}
               </div>
 
-              {/* Search Button */}
+              {/* Action */}
               <div className="flex justify-center">
-                <motion.button
-                  className={`px-10 py-4 rounded-xl font-semibold text-base flex items-center justify-center space-x-3 shadow-lg transition-all duration-300 min-w-[200px] ${
-                    loading
-                      ? "bg-gray-600 cursor-not-allowed"
-                      : "bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 shadow-emerald-500/30"
-                  } border border-emerald-400/30`}
+                <button
+                  className={`px-12 py-5 rounded-2xl font-bold text-base uppercase tracking-[0.2em] flex items-center justify-center space-x-4 transition-all duration-500 active:scale-95 ${loading
+                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                    : "bg-gray-900 hover:bg-black text-white shadow-xl"
+                    }`}
                   onClick={handleSearch}
                   disabled={loading}
-                  whileHover={!loading ? { scale: 1.05 } : {}}
-                  whileTap={!loading ? { scale: 0.95 } : {}}
                 >
                   {loading ? (
                     <>
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                      <span>Searching...</span>
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/20 border-t-white"></div>
+                      <span>Consulting Archives...</span>
                     </>
                   ) : (
                     <>
-                      <span className="text-xl">🔍</span>
-                      <span>Search Records</span>
+                      <span>🔍 Inquiry Register</span>
                     </>
                   )}
-                </motion.button>
+                </button>
               </div>
             </div>
 
-            {/* Results Section */}
-            <div className="p-6 sm:p-8">
+            {/* Content Results */}
+            <div className="p-8 sm:p-12">
               <motion.div
-                key={attendanceData.length}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
+                key={attendanceData.length + Object.keys(summaryData).length}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6 }}
               >
                 <AttendanceTable
                   attendanceData={attendanceData}
                   mode={mode}
                   selectedDate={date}
+                  department={department}
+                  semester={semester}
+                  summaryData={summaryData}
+                  grandTotalStats={grandTotalStats}
                 />
               </motion.div>
             </div>
@@ -634,3 +741,7 @@ const Attendance = () => {
 };
 
 export default Attendance;
+
+
+
+
