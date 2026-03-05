@@ -49,7 +49,7 @@ public class EmailService {
         // Prepare MimeMessage
         MimeMessage mailMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mailMessage, true);
-        helper.setFrom("rohansamuel0806@gmail.com"); // replace with your sender email
+        helper.setFrom(fromEmail); // use the configured sender email
         helper.setTo(email);
         helper.setSubject(subject);
         helper.setText(message, true); // HTML enabled

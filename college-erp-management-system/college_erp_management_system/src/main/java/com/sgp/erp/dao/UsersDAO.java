@@ -89,9 +89,14 @@ public class UsersDAO {
 
     @Transactional
     public Faculty addUser(Faculty faculty) {
+        String email = faculty.getEmail();
+        if (userRepository.findByEmail(email).isPresent() || facultyRepository.findByEmail(email).isPresent()) {
+            throw new com.sgp.erp.exception.UserDoesExistException("A user with this email already exists.");
+        }
+
         try {
             Users users = new Users();
-            users.setEmail(faculty.getEmail());
+            users.setEmail(email);
 
             String department = faculty.getDepartment();
             if (department == null || department.trim().isEmpty()) {

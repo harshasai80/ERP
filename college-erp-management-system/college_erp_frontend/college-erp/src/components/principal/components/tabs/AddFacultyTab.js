@@ -42,7 +42,8 @@ const AddFacultyTab = ({ onClose }) => {
       onClose();
     } catch (error) {
       console.error("Error adding faculty:", error);
-      alert("Something went wrong while submitting the form.");
+      const errorMessage = error.response?.data?.message || "Something went wrong while submitting the form.";
+      alert(errorMessage);
     }
   };
 

@@ -12,9 +12,4 @@ public class UserDoesExistException extends RuntimeException {
     public UserDoesExistException(String message) {
         super(message);
     }
-
-    @Override
-    public String getMessage() {
-        return "Faculty already exist...";
-    }
 }
