@@ -29,4 +29,7 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
     @Query("SELECT a FROM Attendance a WHERE a.student.registrationNumber = ?1")
     List<Attendance> findAttendanceByRegistrationNumber(String registrationNumber);
+
+    @Query("SELECT a FROM Attendance a WHERE a.student.department = ?1 AND a.student.sem = ?2 AND a.student.section = ?3")
+    List<Attendance> findAttendanceByClass(String department, Byte semester, com.sgp.erp.model.enums.Section section);
 }

@@ -2,7 +2,7 @@
 import React from "react";
 import { useNavigate, Link } from "react-router-dom";
 
-const Navbar = ({ data }) => {
+const Navbar = ({ data, onProfileClick }) => {
   const navigate = useNavigate();
   const name = data?.name || "Principal";
   const email = data?.email || "";
@@ -27,7 +27,10 @@ const Navbar = ({ data }) => {
         </Link>
 
         {/* Center: Identity */}
-        <div className="flex flex-col items-center">
+        <div 
+          className="flex flex-col items-center cursor-pointer hover:bg-gray-50 p-2 rounded-xl transition-all"
+          onClick={onProfileClick}
+        >
           <h2 className="text-gray-900 font-bold text-base classic-heading">Welcome, {name}</h2>
           {email && <p className="text-emerald-600 text-base font-bold tracking-widest uppercase opacity-70">{email}</p>}
         </div>

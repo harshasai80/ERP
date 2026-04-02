@@ -30,7 +30,7 @@ export default function LoginNavbar() {
         <button
           onClick={() => navigate("/")}
           className="px-8 py-3 bg-academic text-white text-base font-bold uppercase tracking-widest hover:bg-academic/90 transition-all active:scale-95 shadow-lg shadow-academic/10">
-          Institutional Home
+          Logout
         </button>
       </div>
     </nav>

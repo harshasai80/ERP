@@ -31,6 +31,8 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
             "s.registrationNumber = :#{#student.registrationNumber}, " +
             "s.department = :#{#student.department}, " +
             "s.sem = :#{#student.sem}, " +
+            "s.parentPhone = :#{#student.parentPhone}, " +
+            "s.parentEmail = :#{#student.parentEmail}, " +
             "s.section = :#{#student.section} WHERE s.id = :#{#student.id}")
     void updateStudents(@Param("student") Student student);
 

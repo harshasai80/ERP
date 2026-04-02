@@ -3,9 +3,10 @@ import { FaBars, FaTimes } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import BottomNavbar from "./BottomNavBar";
+import Marquee from "../common/Marquee";
+import UnifiedPerformance from "../student/UnifiedPerformance";
 import Attendance from "../student/Attendance";
 import IAMarks from "../student/IAMarks";
-import Marquee from "../common/Marquee";
 
 export default function StudentDashboard() {
   const [activeTab, setActiveTab] = useState("Dashboard");
@@ -62,7 +63,7 @@ export default function StudentDashboard() {
               onClick={() => navigate("/")}
               className="px-8 py-3.5 bg-burgundy text-white text-base font-black uppercase tracking-widest hover:bg-burgundy/90 transition-all active:scale-95 shadow-xl shadow-burgundy/20"
             >
-              Terminate Session
+              Logout
             </button>
           </div>
 
@@ -170,7 +171,7 @@ export default function StudentDashboard() {
         )}
 
         {activeTab === "Attendance" && <Attendance student={student} />}
-        {activeTab === "Results" && <IAMarks student={student} />}
+        {activeTab === "Results" && <UnifiedPerformance student={student} />}
       </main>
 
       {/* Bottom Academic Navigator */}

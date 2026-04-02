@@ -28,7 +28,8 @@ public class StudentService {
     private ResponseStructure<Student> structure;
 
     public ResponseEntity<ResponseStructure<Student>> findByRegistrationNumber(String registrationNumber) {
-        Optional<Student> student = studentDao.findByRegistrationNumber(registrationNumber);
+        String regNo = registrationNumber != null ? registrationNumber.toUpperCase().trim() : "";
+        Optional<Student> student = studentDao.findByRegistrationNumber(regNo);
         structure = new ResponseStructure<Student>();
         if (student.isPresent()) {
             structure.setData(student.get());
@@ -69,14 +70,10 @@ public class StudentService {
                     .collect(Collectors.toList());
         }
 
-        if (!students.isEmpty()) {
-            structure.setData(students);
-            structure.setMessage("Students found");
-            structure.setStatus(HttpStatus.OK.value());
-            return new ResponseEntity<>(structure, HttpStatus.OK);
-        }
-
-        throw new StudentNotFoundException();
+        structure.setData(students);
+        structure.setMessage(students.isEmpty() ? "No students found" : "Students found");
+        structure.setStatus(HttpStatus.OK.value());
+        return new ResponseEntity<>(structure, HttpStatus.OK);
     }
 
     public ResponseEntity<ResponseStructure<String>> uploadStudent(MultipartFile file) {
@@ -106,25 +103,20 @@ public class StudentService {
     public ResponseEntity<ResponseStructure<List<Student>>> findByDepartment(String department) {
         ResponseStructure<List<Student>> structure = new ResponseStructure<List<Student>>();
         Optional<List<Student>> students = studentDao.findByDepartment(department);
-        if (students.isPresent()) {
-            structure.setData(students.get());
-            structure.setMessage("Students found");
-            structure.setStatus(HttpStatus.OK.value());
-            return new ResponseEntity<ResponseStructure<List<Student>>>(structure, HttpStatus.OK);
-        }
-        throw new StudentNotFoundException();
+        List<Student> docs = students.orElse(List.of());
+        structure.setData(docs);
+        structure.setMessage(docs.isEmpty() ? "No students found" : "Students found");
+        structure.setStatus(HttpStatus.OK.value());
+        return new ResponseEntity<ResponseStructure<List<Student>>>(structure, HttpStatus.OK);
     }
 
     public ResponseEntity<ResponseStructure<List<Student>>> getAllStudents() {
         ResponseStructure<List<Student>> structure = new ResponseStructure<List<Student>>();
         List<Student> students = studentDao.getAllStudents();
-        if (!students.isEmpty()) {
-            structure.setData(students);
-            structure.setMessage("Students found");
-            structure.setStatus(HttpStatus.OK.value());
-            return new ResponseEntity<ResponseStructure<List<Student>>>(structure, HttpStatus.OK);
-        }
-        throw new StudentNotFoundException();
+        structure.setData(students);
+        structure.setMessage(students.isEmpty() ? "No students found" : "Students found");
+        structure.setStatus(HttpStatus.OK.value());
+        return new ResponseEntity<ResponseStructure<List<Student>>>(structure, HttpStatus.OK);
     }
 
     @Transactional

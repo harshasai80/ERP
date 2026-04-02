@@ -204,11 +204,11 @@ const ViewStudentsTab = ({ faculty }) => {
                 className="w-full p-2 border border-emerald-500 rounded bg-gray-600 text-white text-base sm:text-base focus:ring-2 focus:ring-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <option value="">Select Department</option>
-                <option value="dcs">DCS</option>
-                <option value="deee">DEEE</option>
-                <option value="dme">DME</option>
-                <option value="dce">DCE</option>
-                <option value="dmt">DMT</option>
+                <option value="DCS">DCS</option>
+                <option value="DEEE">DEEE</option>
+                <option value="DME">DME</option>
+                <option value="DCE">DCE</option>
+                <option value="DMT">DMT</option>
               </select>
             </div>
 

@@ -1,13 +1,15 @@
 import { useState } from "react";
 import Api from "../../../../Api";
 
-const AddStudentsTab = ({ onClose }) => {
+const AddStudentsTab = ({ department, onClose }) => {
   const [student, setStudent] = useState({
     name: "",
     registrationNumber: "",
     section: "",
-    department: "",
+    department: department || "",
     sem: 0,
+    parentPhone: "",
+    parentEmail: "",
   });
 
   const handleChange = (e) => {
@@ -92,7 +94,8 @@ const AddStudentsTab = ({ onClose }) => {
               value={student.department}
               onChange={handleChange}
               required
-              className="w-full p-2 bg-gray-800 border border-gray-600 rounded mt-1 text-white"
+              disabled={!!department}
+              className="w-full p-2 bg-gray-800 border border-gray-600 rounded mt-1 text-white disabled:opacity-70 disabled:cursor-not-allowed"
             >
               <option value="">Select Department</option>
               <option value="DCS">Computer Science</option>
@@ -118,6 +121,29 @@ const AddStudentsTab = ({ onClose }) => {
                 </option>
               ))}
             </select>
+          </div>
+          <div>
+            <label className="block text-gray-300 font-medium">Parent Mobile Number</label>
+            <input
+              type="text"
+              name="parentPhone"
+              value={student.parentPhone}
+              onChange={handleChange}
+              placeholder="Ex: +919012345678"
+              required
+              className="w-full p-2 bg-gray-800 border border-gray-600 rounded mt-1 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-white"
+            />
+          </div>
+          <div>
+            <label className="block text-gray-300 font-medium">Parent Email</label>
+            <input
+              type="email"
+              name="parentEmail"
+              value={student.parentEmail}
+              onChange={handleChange}
+              placeholder="Ex: parent@example.com"
+              className="w-full p-2 bg-gray-800 border border-gray-600 rounded mt-1 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-white"
+            />
           </div>
           <button
             type="submit"

@@ -73,4 +73,11 @@ public class SubjectDao {
         }
     }
 
+    public List<Subject> findByDepartment(String department) {
+        return subjectRepository.findByDepartment(department);
+    }
+
+    public void deleteByDepartment(String department) {
+        subjectRepository.deleteByDepartment(department);
+    }
 }

@@ -1,6 +1,7 @@
 package com.sgp.erp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,5 +40,36 @@ public class IAMarksController {
     @PostMapping("/add-bulk")
     public ResponseEntity<ResponseStructure<String>> bulkAddIAMarks(@RequestBody List<IAMarks> iaMarksList) {
         return iaMarksService.bulkAddIAMarks(iaMarksList);
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<ResponseStructure<List<IAMarks>>> getByFilter(
+            @RequestParam(name = "department") String department,
+            @RequestParam(name = "semester") byte semester,
+            @RequestParam(name = "section") String section,
+            @RequestParam(name = "subjectId") Integer subjectId) {
+        return iaMarksService.getByFilter(department, semester, section, subjectId);
+    }
+    @GetMapping("/class")
+    public ResponseEntity<ResponseStructure<List<IAMarks>>> getByClass(
+            @RequestParam(name = "department") String department,
+            @RequestParam(name = "semester") byte semester,
+            @RequestParam(name = "section") String section) {
+        return iaMarksService.getByClass(department, semester, section);
+    }
+
+    @PostMapping("/notify")
+    public ResponseEntity<ResponseStructure<String>> notifyStudents(
+            @RequestParam(name = "department") String department,
+            @RequestParam(name = "semester") byte semester,
+            @RequestParam(name = "section") String section,
+            @RequestParam(name = "subjectId") Integer subjectId,
+            @RequestParam(name = "iaType") String iaType) {
+        iaMarksService.notifyStudents(department, semester, section, subjectId, iaType);
+        ResponseStructure<String> response = new ResponseStructure<>();
+        response.setData("Notification process started for " + iaType);
+        response.setMessage("Emails are being sent in the background");
+        response.setStatus(HttpStatus.ACCEPTED.value());
+        return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 }

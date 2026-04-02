@@ -455,7 +455,7 @@ const AttendanceTable = ({ attendanceData, mode, selectedDate, department, semes
 };
 
 // Main Attendance Component
-const Attendance = () => {
+const Attendance = ({ student: initialStudent }) => {
   const [mode, setMode] = useState("single");
   const [date, setDate] = useState(new Date());
   const [dateRange, setDateRange] = useState({
@@ -469,6 +469,7 @@ const Attendance = () => {
   const location = useLocation();
 
   const studentData =
+    initialStudent ||
     location.state?.student?.data ||
     location.state?.student ||
     JSON.parse(localStorage.getItem("student"));

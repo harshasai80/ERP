@@ -38,8 +38,14 @@ public class Student {
 	@Column(nullable = false)
 	private String department;
 
-	@Column(nullable = false, name = "sem", columnDefinition = "TINYINT")
+	@Column(name = "sem", columnDefinition = "TINYINT")
 	private byte sem;
+
+	@Column(name = "parent_email")
+	private String parentEmail;
+
+	@Column(name = "parent_phone")
+	private String parentPhone;
 
 	@OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonIgnore

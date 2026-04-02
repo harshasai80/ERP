@@ -3,14 +3,16 @@ import { useLocation } from "react-router-dom";
 import Dashboard from "../principal/pages/Dashboard";
 import FacultyList from "../principal/pages/Faculty/FacultyList";
 import StudentList from "../principal/pages/Students/StudentList";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "../principal/components/layout/Navbar";
 import Marquee from "../common/Marquee";
 import Footer from "../common/footer/Footer";
 import IAMarksTab from "../faculty/IAMarksTab";
+import Profile from "../common/Profile";
 
 const PrincipalDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [showProfile, setShowProfile] = useState(false);
   const [selectedDept, setSelectedDept] = useState("ALL");
   const location = useLocation();
 
@@ -36,7 +38,7 @@ const PrincipalDashboard = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-mesh text-academic overflow-hidden font-sans">
-      <Navbar data={data} />
+      <Navbar data={data} onProfileClick={() => setShowProfile(true)} />
       <Marquee />
 
       {/* Modern Navigation Tabs */}
@@ -81,6 +83,34 @@ const PrincipalDashboard = () => {
           {renderContent()}
         </motion.div>
       </main>
+
+      <AnimatePresence>
+        {showProfile && (
+          <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-academic/60 backdrop-blur-xl" 
+              onClick={() => setShowProfile(false)} 
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }} 
+              animate={{ opacity: 1, scale: 1, y: 0 }} 
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative bg-white rounded-sm shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto p-12 border border-gold/20"
+            >
+              <button 
+                onClick={() => setShowProfile(false)} 
+                className="absolute top-8 right-8 text-academic text-2xl font-black hover:text-gold transition-colors z-50"
+              >
+                ✕
+              </button>
+              <Profile user={data} />
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       <Footer />
     </div>

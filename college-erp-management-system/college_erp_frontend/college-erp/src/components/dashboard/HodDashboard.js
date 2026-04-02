@@ -3,14 +3,18 @@ import { useLocation } from "react-router-dom";
 import Dashboard from "../hod/pages/Dashboard";
 import FacultyList from "../hod/pages/Faculty/FacultyList";
 import StudentList from "../hod/pages/Students/StudentList";
+import SubjectList from "../hod/pages/Subjects/SubjectList";
 import IAMarksTab from "../faculty/IAMarksTab";
-import { motion } from "framer-motion";
+import HODAnalytics from "../hod/pages/HODAnalytics";
+import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "../hod/components/layout/Navbar";
 import Marquee from "../common/Marquee";
 import Footer from "../common/footer/Footer";
+import Profile from "../common/Profile";
 
 const HodDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [showProfile, setShowProfile] = useState(false);
   const location = useLocation();
 
   const data = location.state?.data;
@@ -21,8 +25,12 @@ const HodDashboard = () => {
         return <FacultyList department={data.department} />;
       case "students":
         return <StudentList department={data.department} />;
+      case "subjects":
+        return <SubjectList department={data.department} />;
       case "ia-marks":
         return <IAMarksTab faculty={{ ...data }} isHOD={true} />;
+      case "analytics":
+        return <HODAnalytics department={data.department} />;
       default:
         return <Dashboard department={data.department} onTabChange={setActiveTab} />;
     }
@@ -30,14 +38,14 @@ const HodDashboard = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-mesh text-academic overflow-hidden font-sans">
-      <Navbar data={data} />
+      <Navbar data={data} onProfileClick={() => setShowProfile(true)} />
       <Marquee />
 
       {/* Modern Navigation Tabs */}
       <div className="sticky top-[85px] z-[40] bg-white/80 backdrop-blur-md border-b-2 border-gold pb-px">
         <div className="max-w-[1400px] mx-auto px-10 py-6">
           <div className="flex justify-center sm:justify-start items-center gap-4 bg-gray-50 p-2.5 rounded-lg w-fit border border-gray-200 shadow-inner">
-            {["dashboard", "faculty", "students", "ia-marks"].map((tab) => (
+            {["dashboard", "faculty", "students", "subjects", "ia-marks", "analytics"].map((tab) => (
               <button
                 key={tab}
                 className={`relative px-10 py-3.5 rounded-md text-base font-black uppercase tracking-[0.2em] transition-all duration-300
@@ -70,6 +78,34 @@ const HodDashboard = () => {
           {renderContent()}
         </motion.div>
       </main>
+
+      <AnimatePresence>
+        {showProfile && (
+          <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-academic/60 backdrop-blur-xl" 
+              onClick={() => setShowProfile(false)} 
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }} 
+              animate={{ opacity: 1, scale: 1, y: 0 }} 
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative bg-white rounded-sm shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto p-12 border border-gold/20"
+            >
+              <button 
+                onClick={() => setShowProfile(false)} 
+                className="absolute top-8 right-8 text-academic text-2xl font-black hover:text-gold transition-colors z-50"
+              >
+                ✕
+              </button>
+              <Profile user={data} />
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       <Footer />
     </div>

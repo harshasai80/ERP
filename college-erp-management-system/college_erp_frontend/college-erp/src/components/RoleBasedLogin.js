@@ -38,7 +38,7 @@ export default function RoleBasedLogin() {
         navigate("/faculty-dashboard", { state: { data } });
       else if (role === "PRINCIPAL")
         navigate("/principal-dashboard", { state: { data } });
-      else if (role === "ADMIN") navigate("/admin", { state: { data } });
+      else if (role === "ADMIN") navigate("/admin-dashboard", { state: { data } });
       else alert("Invalid credentials");
     } catch (err) {
       setError("Invalid credentials");

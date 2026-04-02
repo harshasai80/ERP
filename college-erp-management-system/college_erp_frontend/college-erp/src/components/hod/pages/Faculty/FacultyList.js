@@ -150,6 +150,21 @@ const FacultyList = ({ department }) => {
       alert("Failed to delete faculty.");
     }
   };
+  const handleDeleteAllSubjects = async () => {
+    if (!window.confirm(`Are you sure you want to delete ALL subjects for ${department.toUpperCase()}? This action cannot be undone.`)) {
+      return;
+    }
+    try {
+      const response = await Api.delete(`/subjects/delete/all?department=${department}`);
+      if (response.status === 200) {
+        alert("All subjects deleted successfully!");
+        setShowSubjectUpload(false);
+      }
+    } catch (error) {
+      console.error("Failed to delete subjects:", error);
+      alert("Failed to delete subjects. It might be because subjects are assigned to faculty or marks exist.");
+    }
+  };
 
   const columns = [
     { name: "Name", center: true },
@@ -196,7 +211,7 @@ const FacultyList = ({ department }) => {
   return (
     <div className="p-3 sm:p-6 max-w-6xl mx-auto text-white">
       {showAddFaculty ? (
-        <AddFacultyTab onClose={() => setShowAddFaculty(false)} />
+        <AddFacultyTab department={department} onClose={() => setShowAddFaculty(false)} />
       ) : showAddSubject ? (
         <AddSubjectTab onClose={() => setShowAddSubject(false)} />
       ) : (
@@ -316,10 +331,16 @@ const FacultyList = ({ department }) => {
                 </button>
               )}
               <button
-                className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 w-full text-base sm:text-base"
+                className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 w-full text-base sm:text-base font-semibold"
                 onClick={DownloadSubjectCSV}
               >
                 Download Sample CSV
+              </button>
+              <button
+                className="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 w-full text-base sm:text-base font-bold shadow-lg"
+                onClick={handleDeleteAllSubjects}
+              >
+                Delete All Subjects
               </button>
               <button
                 className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 w-full text-base sm:text-base"

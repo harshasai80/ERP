@@ -3,14 +3,17 @@ import AttendanceTab from "../faculty/AttendanceTab";
 import IAMarksTab from "../faculty/IAMarksTab";
 import ViewStudentsTab from "../faculty/ViewStudentsTab";
 import AssigningSubjects from "../faculty/AssigningSubjects";
+import MarksAnalytics from "../faculty/MarksAnalytics";
 
 import { useLocation, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Marquee from "../common/Marquee";
 import Footer from "../common/footer/Footer";
+import Profile from "../common/Profile";
 
 const FacultyDashboard = () => {
   const [activeTab, setActiveTab] = useState("assigning-subjects");
+  const [showProfile, setShowProfile] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -23,7 +26,7 @@ const FacultyDashboard = () => {
   const tabs = [
     { id: "attendance", label: "Attendance", icon: "📋" },
     { id: "assessment", label: "Internal Assessment", icon: "📝" },
-
+    { id: "analytics", label: "Performance Analytics", icon: "📊" },
     { id: "view-students", label: "View Students", icon: "👥" },
     { id: "assigning-subjects", label: "Subject Management", icon: "🔗" },
   ];
@@ -58,7 +61,10 @@ const FacultyDashboard = () => {
           </div>
 
           {/* Center: Identity */}
-          <div className="flex flex-col items-center border-x border-gray-100 px-12">
+          <div 
+            className="flex flex-col items-center border-x border-gray-100 px-12 cursor-pointer hover:bg-gray-50/50 transition-all rounded-sm"
+            onClick={() => setShowProfile(true)}
+          >
             <h2 className="text-2xl font-black text-academic classic-heading tracking-tight italic">Prof. {facultyName}</h2>
             <div className="flex items-center gap-2.5 mt-1.5">
               <span className="w-2 h-2 rounded-full bg-gold animate-pulse" />
@@ -90,7 +96,7 @@ const FacultyDashboard = () => {
             <button
               className="px-6 py-3 bg-burgundy text-white text-base font-bold uppercase tracking-widest hover:bg-burgundy/90 transition-all active:scale-95 shadow-lg shadow-burgundy/20"
               onClick={() => navigate("/")}>
-              Terminate Session
+              Logout
             </button>
           </div>
         </div>
@@ -137,11 +143,40 @@ const FacultyDashboard = () => {
           key={activeTab}>
           {activeTab === "attendance" && <AttendanceTab faculty={data} />}
           {activeTab === "assessment" && <IAMarksTab faculty={data} />}
+          {activeTab === "analytics" && <MarksAnalytics faculty={data} />}
 
           {activeTab === "view-students" && <ViewStudentsTab faculty={data} />}
           {activeTab === "assigning-subjects" && <AssigningSubjects faculty={data} />}
         </motion.div>
       </main>
+
+      <AnimatePresence>
+        {showProfile && (
+          <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-academic/60 backdrop-blur-xl" 
+              onClick={() => setShowProfile(false)} 
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }} 
+              animate={{ opacity: 1, scale: 1, y: 0 }} 
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative bg-white rounded-sm shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto p-12 border border-gold/20"
+            >
+              <button 
+                onClick={() => setShowProfile(false)} 
+                className="absolute top-8 right-8 text-academic text-2xl font-black hover:text-gold transition-colors z-50"
+              >
+                ✕
+              </button>
+              <Profile user={data} />
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       <Footer />
     </div>

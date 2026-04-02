@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import Api from "../../../../Api";
 
-const AddFacultyTab = ({ onClose }) => {
+const AddFacultyTab = ({ department, onClose }) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    department: "",
+    department: department || "",
     role: "",
   });
 
@@ -79,8 +79,9 @@ const AddFacultyTab = ({ onClose }) => {
             name="department"
             value={formData.department}
             onChange={handleChange}
-            className="w-full p-2 bg-gray-800 text-white border border-gray-700 rounded"
+            className="w-full p-2 bg-gray-800 text-white border border-gray-700 rounded disabled:opacity-70 disabled:cursor-not-allowed"
             required
+            disabled={!!department}
           >
             <option value="">Select Department</option>
             <option value="DCS">Computer Science</option>

@@ -5,7 +5,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import com.sgp.erp.model.WeeklyProgress;
 
+import org.springframework.transaction.annotation.Transactional;
+import com.sgp.erp.model.FacultySubject;
+
 @Repository
 public interface WeeklyProgressRepository extends JpaRepository<WeeklyProgress, Long> {
     List<WeeklyProgress> findByFacultySubjectIdOrderByWeekNumber(Long facultySubjectId);
+
+    @Transactional
+    void deleteByFacultySubject(FacultySubject facultySubject);
 }

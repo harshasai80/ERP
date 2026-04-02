@@ -40,25 +40,28 @@ public class UsersDAO {
         return userRepository.findByResetToken(token);
     }
 
-    public boolean login(String email, String password) {
-        String finalEmail = email != null ? email.trim().toLowerCase() : "";
-        System.out.println("Login attempt for email: [" + finalEmail + "]");
+    public boolean login(String identifier, String password) {
+        String finalId = identifier != null ? identifier.trim().toLowerCase() : "";
+        System.out.println("Login attempt for identifier: [" + finalId + "]");
 
-        Optional<Users> userOpt = findByEmail(finalEmail);
-        Optional<Faculty> facultyOpt = facultyRepository.findByEmail(finalEmail);
+        // Find user by email OR registration number
+        Optional<Users> userOpt = findByEmail(finalId);
+        if (userOpt.isEmpty()) {
+            userOpt = userRepository.findByRegistrationNumber(identifier);
+        }
+
+        Optional<Faculty> facultyOpt = facultyRepository.findByEmail(finalId);
 
         if (userOpt.isEmpty()) {
             if (facultyOpt.isPresent()) {
                 // Fix: User record is missing but faculty exists. Create the user record.
-                System.out.println(
-                        "DEBUG: Faculty exists but User record missing for " + finalEmail + ". Creating default user.");
                 Users newUser = new Users();
-                newUser.setEmail(finalEmail);
+                newUser.setEmail(finalId);
+                newUser.setRole(facultyOpt.get().getRole());
                 newUser.setPassword(passwordEncoder.encode("459" + facultyOpt.get().getDepartment().toLowerCase()));
                 userRepository.save(newUser);
                 userOpt = Optional.of(newUser);
             } else {
-                System.out.println("DEBUG: No User or Faculty record found for " + finalEmail);
                 return false;
             }
         }
@@ -67,21 +70,12 @@ public class UsersDAO {
         boolean matches = passwordEncoder.matches(password, user.getPassword());
 
         if (!matches && facultyOpt.isPresent()) {
-            // Fallback: Check if the provided password matches the default pattern for this
-            // department
             String expectedDefault = "459" + facultyOpt.get().getDepartment().toLowerCase();
             if (password.equals(expectedDefault)) {
-                System.out.println("DEBUG: Fallback to default password pattern successful for " + finalEmail);
-                // Update the user record with the correctly encoded default password for future
-                // use
                 user.setPassword(passwordEncoder.encode(password));
                 userRepository.save(user);
                 return true;
             }
-        }
-
-        if (!matches) {
-            System.out.println("Login failed: password mismatch for " + finalEmail);
         }
 
         return matches;
@@ -97,6 +91,7 @@ public class UsersDAO {
         try {
             Users users = new Users();
             users.setEmail(email);
+            users.setRole(faculty.getRole());
 
             String department = faculty.getDepartment();
             if (department == null || department.trim().isEmpty()) {
@@ -105,8 +100,6 @@ public class UsersDAO {
             }
 
             users.setPassword(passwordEncoder.encode("459" + department.toLowerCase()));
-            // users.setResetToken(UUID.randomUUID().toString());
-
             userRepository.save(users);
 
             facultyRepository.save(faculty);

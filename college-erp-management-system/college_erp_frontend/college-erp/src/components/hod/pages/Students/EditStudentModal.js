@@ -8,6 +8,8 @@ const EditStudentModal = ({ show, student, onClose, onUpdate }) => {
   const [department, setDepartment] = useState("");
   const [sem, setSemester] = useState("");
   const [section, setSection] = useState("");
+  const [parentEmail, setParentEmail] = useState("");
+  const [parentPhone, setParentPhone] = useState("");
   const [errors, setErrors] = useState({});
 
   const sectionOptions = useMemo(() => {
@@ -24,6 +26,8 @@ const EditStudentModal = ({ show, student, onClose, onUpdate }) => {
       setDepartment(student.department.toUpperCase() || "");
       setSemester(student?.sem ? student.sem?.toString() : "");
       setSection(student.section || "");
+      setParentEmail(student.parentEmail || "");
+      setParentPhone(student.parentPhone || "");
       setErrors({});
     }
   }, [student]);
@@ -37,6 +41,7 @@ const EditStudentModal = ({ show, student, onClose, onUpdate }) => {
     if (!sem.trim() || isNaN(sem) || +sem < 1 || +sem > 8)
       newErrors.sem = "Semester must be a number between 1 and 8.";
     if (!section.trim()) newErrors.section = "Section is required.";
+    if (!parentPhone.trim()) newErrors.parentPhone = "Parent phone is required.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -57,6 +62,8 @@ const EditStudentModal = ({ show, student, onClose, onUpdate }) => {
           department,
           sem: parseInt(sem, 10),
           section,
+          parentPhone,
+          parentEmail
         }
       );
 
@@ -208,6 +215,35 @@ const EditStudentModal = ({ show, student, onClose, onUpdate }) => {
             {errors.section && (
               <p className="text-base text-red-500 mt-1">{errors.section}</p>
             )}
+          </div>
+
+          {/* Parent Phone */}
+          <div>
+            <label className="block text-base text-emerald-200 mb-1">Parent Mobile Number</label>
+            <input
+              type="text"
+              className={`w-full px-3 py-2 rounded-md bg-gray-700 text-white focus:ring-2 ${
+                errors.parentPhone
+                  ? "border border-red-500 focus:ring-red-500"
+                  : "focus:ring-emerald-500"
+              }`}
+              value={parentPhone}
+              onChange={(e) => setParentPhone(e.target.value)}
+            />
+            {errors.parentPhone && (
+              <p className="text-base text-red-500 mt-1">{errors.parentPhone}</p>
+            )}
+          </div>
+
+          {/* Parent Email */}
+          <div>
+            <label className="block text-base text-emerald-200 mb-1">Parent Email</label>
+            <input
+              type="email"
+              className="w-full px-3 py-2 rounded-md bg-gray-700 text-white focus:ring-2 focus:ring-emerald-500"
+              value={parentEmail}
+              onChange={(e) => setParentEmail(e.target.value)}
+            />
           </div>
         </div>
 

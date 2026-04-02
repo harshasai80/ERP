@@ -8,6 +8,7 @@ import RoleBasedLogin from "./components/RoleBasedLogin";
 import HodDashboard from "./components/dashboard/HodDashboard";
 import FacultyDashboard from "./components/dashboard/FacultyDashboard";
 import PrincipalDashboard from "./components/dashboard/PrincipalDashboard";
+import AdminDashboard from "./components/dashboard/AdminDashboard";
 import ResetPassword from "./components/ResetPassword";
 import ResetSuccess from "./components/ResetSuccess";
 import About from "./components/common/footer/About";
@@ -29,6 +30,7 @@ const App = () => {
           <Route path="/hod-dashboard" element={<HodDashboard />} />
           <Route path="/faculty-dashboard" element={<FacultyDashboard />} />
           <Route path="/principal-dashboard" element={<PrincipalDashboard />} />
+          <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/reset-success" element={<ResetSuccess />} />
           <Route path="/about" element={<About />} />

@@ -4,7 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { Menu, X, User, LogOut, Key, RefreshCw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const Navbar = ({ data }) => {
+const Navbar = ({ data, onProfileClick }) => {
   const navigate = useNavigate();
   const name = data?.name || "User";
   const role = data?.role || "HOD";
@@ -47,7 +47,10 @@ const Navbar = ({ data }) => {
           {/* Right: Desktop Actions */}
           <div className="hidden lg:flex items-center gap-8">
             {/* User Identity Card */}
-            <div className="flex items-center gap-5 border-r border-gray-100 pr-8">
+            <div 
+              className="flex items-center gap-5 border-r border-gray-100 pr-8 cursor-pointer hover:bg-gray-50/50 transition-all rounded-sm"
+              onClick={onProfileClick}
+            >
               <div className="text-right">
                 <p className="text-base font-bold text-academic classic-heading tracking-tight">
                   Prof. {name}
@@ -86,7 +89,7 @@ const Navbar = ({ data }) => {
               <button
                 className="px-6 py-2.5 bg-burgundy text-white text-base font-bold uppercase tracking-widest hover:bg-burgundy/90 transition-all active:scale-95 shadow-lg shadow-burgundy/20"
                 onClick={() => handleNavigation("/")}>
-                Terminate Session
+                Logout
               </button>
             </div>
           </div>
@@ -143,7 +146,7 @@ const Navbar = ({ data }) => {
                   <button
                     className="w-full px-6 py-4 bg-burgundy text-white text-base font-extrabold uppercase tracking-widest text-center"
                     onClick={() => handleNavigation("/")}>
-                    Terminate Session
+                    Logout
                   </button>
                 </div>
               </div>

@@ -14,8 +14,8 @@ const Dashboard = ({ department, onTabChange }) => {
     const fetchStats = async () => {
       try {
         const [studentsRes, facultyRes] = await Promise.all([
-          Api.get("/student/all", { params: { department } }),
-          Api.get("/faculty/all", { params: { department } }),
+          Api.get("/student/department", { params: { department } }).catch(() => ({ data: { data: [] } })),
+          Api.get("/faculty/all", { params: { department } }).catch(() => ({ data: { data: [] } })),
         ]);
 
         const students = studentsRes.data.data || [];
@@ -137,16 +137,16 @@ const Dashboard = ({ department, onTabChange }) => {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-8">
           {Object.entries(stats.semesterData).map(([sem, count]) => {
-            const height = stats.totalStudents > 0 ? (count / stats.totalStudents) * 200 : 0;
+            const height = stats.totalStudents > 0 ? (count / stats.totalStudents) * 100 : 0;
             return (
               <div key={sem} className="flex flex-col items-center group">
                 <div className="relative w-full h-40 flex items-end justify-center mb-4 bg-gray-50/50 rounded-t-lg text-white">
                   <motion.div
                     initial={{ height: 0 }}
-                    animate={{ height: `${Math.max(10, height)}%` }}
+                    animate={{ height: `${Math.max(5, height)}%` }}
                     className="w-full bg-academic group-hover:bg-gold transition-colors duration-500 rounded-t-sm shadow-lg relative"
                   >
-                    <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-academic text-white text-base py-1 px-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity font-black">
+                    <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-academic text-white text-xs py-1.5 px-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity font-black shadow-xl z-20">
                       {count}
                     </div>
                   </motion.div>

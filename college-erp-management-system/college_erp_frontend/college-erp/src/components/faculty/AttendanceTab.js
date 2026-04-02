@@ -4,8 +4,8 @@ import Api from "../../Api";
 import HourDropdown from "./HourDropDown";
 
 function AttendanceTab({ faculty }) {
-  const isHOD = faculty?.role?.toUpperCase() === "HOD";
-  const facultyDept = faculty?.department || "";
+  const isHOD = faculty?.role?.toUpperCase() === "HOD" || faculty?.role?.toUpperCase() === "PRINCIPAL" || faculty?.role?.toUpperCase() === "ADMIN";
+  const facultyDept = faculty?.department?.toUpperCase() || "";
 
   const [department, setDepartment] = useState(isHOD ? (facultyDept === "ALL" ? "DCS" : facultyDept) : (facultyDept || "DCS"));
   const [semester, setSemester] = useState("");
@@ -25,66 +25,87 @@ function AttendanceTab({ faculty }) {
 
   const fetchSubjects = useCallback(async () => {
     try {
-      const isHOD = faculty?.role?.toUpperCase() === "HOD";
-      if (isHOD) {
-        if (department && semester) {
+      const isHOD = faculty?.role?.toUpperCase() === "HOD" || faculty?.role?.toUpperCase() === "PRINCIPAL" || faculty?.role?.toUpperCase() === "ADMIN";
+      
+      // If we have department and semester, we can fetch the full subject list for that selection
+      if (department && semester) {
+        let allSubjectsData = [];
+        try {
+          // Fetch main department subjects
           const mainResp = await Api.get(`/subjects/department/${department}/semester/${semester}`);
-          const fetchedData = mainResp.data?.data || [];
-
-          let allSubjectsData = [...fetchedData];
+          allSubjectsData = mainResp.data?.data || [];
 
           // Also fetch COMMON subjects for that semester if current dept isn't COMMON
-          if (department !== "COMMON") {
+          if (department?.toUpperCase() !== "COMMON") {
             try {
               const commonResp = await Api.get(`/subjects/department/COMMON/semester/${semester}`);
               const commonData = commonResp.data?.data || [];
-              // Avoid duplicates if a common subject is already in the main list
               commonData.forEach(s => {
                 if (!allSubjectsData.some(existing => existing.subjectId === s.subjectId)) {
                   allSubjectsData.push(s);
                 }
               });
             } catch (e) {
-              console.log("No COMMON subjects found for HOD fetch");
+              console.log("No COMMON subjects found");
             }
           }
+        } catch (error) {
+          console.error("Error fetching departmental subjects:", error);
+        }
 
-          console.log("HOD Subjects combined:", allSubjectsData);
+        // Format these as subjects matching the application structure
+        const subjectsFormatted = allSubjectsData.map(s => ({
+          id: s.subjectId,
+          subject: s,
+          section: section || "A",
+          subjectType: "THEORY",
+          batches: []
+        }));
 
-          const subjectsFormatted = allSubjectsData.map(s => ({
-            id: s.subjectId,
-            subject: s,
-            section: section || "A",
-            subjectType: "THEORY",
-            batches: []
-          }));
-          setSubjects(subjectsFormatted);
+        // For Faculty, we also want to fetch their SPECIFIC assignments if they exist
+        // to possibly override or add to the list with correct section/type info
+        if (!isHOD && faculty?.id) {
+          try {
+            const facultyResp = await Api.get(`/subjects/all?facultyId=${faculty.id}`);
+            const assignedData = facultyResp.data?.data || [];
+            
+            // Filter assigned data by current sem/dept
+            const filteredAssignments = assignedData.filter(item => {
+              const sub = item.subject || item;
+              if (!sub) return false;
+              const semMatch = semester ? String(sub.semester) === String(semester) : true;
+              const deptMatch = department ? (sub.department?.toUpperCase() === department.toUpperCase() || sub.department?.toUpperCase() === "COMMON") : true;
+              return semMatch && deptMatch;
+            });
+
+            // Merge assigned subjects into the list, or just use assigned if preferred.
+            // For now, let's merge them so they see EVERYTHING in the dept, but their assignments are included.
+            const merged = [...subjectsFormatted];
+            filteredAssignments.forEach(assignment => {
+              // If an assignment exists for a subject already in the list, replace it with the assignment (which has section/type info)
+              const existingIdx = merged.findIndex(m => m.subject.subjectId === (assignment.subject?.subjectId || assignment.subjectId));
+              if (existingIdx !== -1) {
+                // If it's the same subject, prefer the assignment record as it has section info
+                // However, we want to allow multiple sections, so maybe don't replace if sections differ
+                if (merged[existingIdx].section === assignment.section) {
+                   merged[existingIdx] = assignment;
+                } else {
+                   merged.push(assignment);
+                }
+              } else {
+                merged.push(assignment);
+              }
+            });
+            setSubjects(merged);
+          } catch (e) {
+            console.error("Error fetching faculty assignments:", e);
+            setSubjects(subjectsFormatted);
+          }
         } else {
-          setSubjects([]);
+          setSubjects(subjectsFormatted);
         }
       } else {
-        if (!faculty?.id) {
-          console.warn("Faculty ID missing, skipping subject fetch");
-          return;
-        }
-        const response = await Api.get(`/subjects/all?facultyId=${faculty.id}`);
-        const fetchedData = response.data?.data || [];
-        console.log("Faculty Subjects fetched:", fetchedData);
-
-        // For faculty, if no filters are chosen, show all. If filters chosen, show matching.
-        let result = fetchedData;
-        if (semester || department) {
-          result = fetchedData.filter((subject) => {
-            const subjectSem = subject.subject?.semester;
-            const isMatch = semester ? String(subjectSem) === String(semester) : true;
-
-            const subjectDept = subject.subject?.department;
-            const deptMatch = department ? (subjectDept === department || subjectDept?.toUpperCase() === "COMMON") : true;
-
-            return isMatch && deptMatch;
-          });
-        }
-        setSubjects(result);
+        setSubjects([]);
       }
     } catch (error) {
       console.error("Error fetching subjects:", error);
@@ -159,7 +180,8 @@ function AttendanceTab({ faculty }) {
             setSection(selected.section);
           }
           if (!department && selected.subject?.department) {
-            setDepartment(selected.subject.department === "COMMON" ? (faculty?.department || "DCS") : selected.subject.department);
+            const subDept = selected.subject.department?.toUpperCase();
+            setDepartment(subDept === "COMMON" ? (faculty?.department?.toUpperCase() || "DCS") : subDept);
           }
         }
 
@@ -412,15 +434,20 @@ function AttendanceTab({ faculty }) {
               onChange={(e) => setSubjectId(e.target.value)}
               className="w-full p-2 sm:p-2.5 border border-emerald-500 rounded bg-gray-700 text-white text-base sm:text-base focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
               <option value="">Select Subject</option>
-              {subjects.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.subject.subjectName} ({s.subject.subjectCode}) - Sec{" "}
-                  {s.section}{" "}
-                  {s.subjectType === "LAB" && s.batches.length > 0
-                    ? `- Batches ${s.batches.length}`
-                    : ""}
-                </option>
-              ))}
+              {subjects.map((s) => {
+                const sub = s.subject || s;
+                const name = sub?.subjectName || "Unknown Subject";
+                const code = sub?.subjectCode || "N/A";
+                const sec = s.section || "N/A";
+                return (
+                  <option key={s.id || sub?.subjectId} value={s.id || sub?.subjectId}>
+                    {name} ({code}) - Sec {sec}
+                    {s.subjectType === "LAB" && s.batches?.length > 0
+                      ? ` - Batches ${s.batches.length}`
+                      : ""}
+                  </option>
+                );
+              })}
             </select>
           </div>
 

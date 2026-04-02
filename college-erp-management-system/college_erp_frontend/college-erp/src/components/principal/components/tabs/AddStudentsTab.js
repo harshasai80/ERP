@@ -8,6 +8,8 @@ const AddStudentsTab = ({ onClose }) => {
     section: "",
     department: "",
     sem: 0,
+    parentPhone: "",
+    parentEmail: "",
   });
 
   const handleChange = (e) => {
@@ -139,6 +141,31 @@ const AddStudentsTab = ({ onClose }) => {
               <option value="DME">Mechanical Engineering</option>
               <option value="DMT">Metallurgy</option>
             </select>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-base font-bold text-gray-400 uppercase tracking-widest ml-1">Parent Mobile Number</label>
+            <input
+              type="text"
+              name="parentPhone"
+              value={student.parentPhone}
+              onChange={handleChange}
+              placeholder="Ex: +919012345678"
+              required
+              className="w-full px-5 py-3.5 bg-white border border-gray-100 rounded-2xl focus:border-emerald-500/30 focus:ring-4 focus:ring-emerald-500/5 focus:outline-none transition-all text-base font-medium shadow-sm"
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-base font-bold text-gray-400 uppercase tracking-widest ml-1">Parent Email</label>
+            <input
+              type="email"
+              name="parentEmail"
+              value={student.parentEmail}
+              onChange={handleChange}
+              placeholder="Ex: parent@example.com"
+              className="w-full px-5 py-3.5 bg-white border border-gray-100 rounded-2xl focus:border-emerald-500/30 focus:ring-4 focus:ring-emerald-500/5 focus:outline-none transition-all text-base font-medium shadow-sm"
+            />
           </div>
 
           <button

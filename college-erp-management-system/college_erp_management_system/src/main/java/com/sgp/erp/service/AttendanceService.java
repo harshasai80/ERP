@@ -52,6 +52,15 @@ public class AttendanceService {
         throw new DataNotFoundException("Attendance not found");
     }
 
+    @Autowired
+    private NotificationService notificationService;
+
+    @Autowired
+    private com.sgp.erp.repository.StudentRepository studentRepository;
+
+    @Autowired
+    private LoggerService loggerService;
+
     public ResponseEntity<ResponseStructure<List<Attendance>>> addAttendanceRecords(
             List<Map<String, Object>> attendanceData) {
 
@@ -59,6 +68,38 @@ public class AttendanceService {
         ResponseStructure<List<Attendance>> structure = new ResponseStructure<List<Attendance>>();
 
         if (!savedAttendances.isEmpty()) {
+
+            System.out.println("Attendance Saved - Count: " + savedAttendances.size());
+            loggerService.log("FACULTY", "ATTENDANCE_SAVED", "Saved " + savedAttendances.size() + " attendance records");
+
+            // Process asynchronous notifications for absenteeism
+            for (Map<String, Object> entry : attendanceData) {
+                try {
+                    String registerNo = entry.get("registrationNumber").toString();
+                    LocalDate date = LocalDate.parse(entry.get("date").toString());
+                    Integer subjectId = entry.get("subjectId") != null ? Integer.parseInt(entry.get("subjectId").toString()) : null;
+
+                    @SuppressWarnings("unchecked")
+                    List<Map<String, Object>> sessions = (List<Map<String, Object>>) entry.get("sessions");
+
+                    for (Map<String, Object> session : sessions) {
+                        if ("Absent".equalsIgnoreCase(String.valueOf(session.get("status")))) {
+                            System.out.println("Absent Status Detected for: " + registerNo);
+                            java.util.Optional<com.sgp.erp.model.Student> studentOpt = studentRepository.findByRegistrationNumber(registerNo);
+                            if (studentOpt.isPresent()) {
+                                System.out.println("Triggering SMS Service for student: " + studentOpt.get().getName());
+                                notificationService.sendAbsentSms(studentOpt.get(), date, subjectId);
+                            } else {
+                                System.err.println("Student record NOT FOUND for regNo: " + registerNo + ". Cannot send notification.");
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    System.err.println("Notification trigger failed: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+
             structure.setData(savedAttendances);
             structure.setMessage("Attendances saved successfully");
             structure.setStatus(HttpStatus.CREATED.value());
@@ -92,6 +133,19 @@ public class AttendanceService {
             return new ResponseEntity<ResponseStructure<List<Attendance>>>(structure, HttpStatus.OK);
         }
         throw new DataNotFoundException("Attendance not found");
+    }
+
+    public ResponseEntity<ResponseStructure<List<Attendance>>> getAttendanceByClass(String dept, Byte sem, String section) {
+        List<Attendance> attendances = attendanceDao.getAttendanceByClass(dept, sem, com.sgp.erp.model.enums.Section.valueOf(section));
+        ResponseStructure<List<Attendance>> structure = new ResponseStructure<List<Attendance>>();
+
+        if (!attendances.isEmpty()) {
+            structure.setData(attendances);
+            structure.setMessage("Attendances found for class");
+            structure.setStatus(HttpStatus.OK.value());
+            return new ResponseEntity<ResponseStructure<List<Attendance>>>(structure, HttpStatus.OK);
+        }
+        throw new DataNotFoundException("No attendance records found for this class");
     }
 
 }

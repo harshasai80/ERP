@@ -18,9 +18,14 @@ public class Users {
     private String email;
 
     @Column
-    private String password; // Initially null, set after password reset
+    private String password;
 
     @Column
-    private String resetToken; // Token for password reset
+    private String registrationNumber; // For students
 
+    @jakarta.persistence.Enumerated(jakarta.persistence.EnumType.STRING)
+    private com.sgp.erp.model.enums.Roles role;
+
+    @Column
+    private String resetToken;
 }

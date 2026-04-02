@@ -56,4 +56,29 @@ public class EmailService {
 
         mailSender.send(mailMessage);
     }
+
+    public void sendIAUpdateEmail(String email, String studentName, String subjectName, String iaType, String marks)
+            throws MessagingException {
+        String subject = "IA Marks Published - " + subjectName;
+        String message = """
+                <div style='font-family:Arial,sans-serif;line-height:1.6;'>
+                    <h2>IA Marks Notification 📝</h2>
+                    <p>Dear Parent/Student,</p>
+                    <p>Internal Assessment marks for <b>%s</b> have been published for <b>%s</b>.</p>
+                    <p><b>Assessment:</b> %s</p>
+                    <p><b>Marks Obtained:</b> %s</p>
+                    <p>Log in to the portal to view detailed performance analytics.</p>
+                    <hr/>
+                    <p style='font-size:12px;color:gray;'>This is an automated performance update from SGP ERP.</p>
+                </div>
+                """.formatted(studentName, subjectName, iaType, marks);
+
+        MimeMessage mailMessage = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mailMessage, true);
+        helper.setFrom(fromEmail);
+        helper.setTo(email);
+        helper.setSubject(subject);
+        helper.setText(message, true);
+        mailSender.send(mailMessage);
+    }
 }

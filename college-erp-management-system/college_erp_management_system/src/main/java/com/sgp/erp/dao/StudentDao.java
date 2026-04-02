@@ -20,6 +20,7 @@ import com.sgp.erp.model.enums.Section;
 import com.sgp.erp.repository.StudentRepository;
 
 import jakarta.transaction.Transactional;
+import com.sgp.erp.exception.DataNotSavedException;
 
 @Repository
 public class StudentDao {
@@ -61,43 +62,58 @@ public class StudentDao {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(studentsFile.getInputStream()));
                 CSVReader csvReader = new CSVReader(reader)) {
 
+            csvReader.skip(5); // Skips first 5 lines (headers/instructions)
             String[] nextRecord;
-            csvReader.skip(5);
+            int rowNumber = 6;
 
             while ((nextRecord = csvReader.readNext()) != null) {
-                if (nextRecord.length < 5) {
-                    throw new RuntimeException("Insufficient fields in CSV file. Expected at least 5 fields.");
-                }
-                String registrationNumber = nextRecord[0];
-                String name = nextRecord[1];
-                String department = nextRecord[2].toUpperCase();
-                byte sem = Byte.parseByte(nextRecord[3]);
-                Section section = Section.valueOf(nextRecord[4].toUpperCase());
+                try {
+                    if (nextRecord.length < 5) {
+                        throw new DataNotSavedException("Row " + rowNumber + " has insufficient fields. Expected at least 5.");
+                    }
+                    String registrationNumber = nextRecord[0].trim();
+                    String name = nextRecord[1].trim();
+                    String department = nextRecord[2].trim().toUpperCase();
+                    byte sem = Byte.parseByte(nextRecord[3].trim());
+                    Section section = Section.valueOf(nextRecord[4].trim().toUpperCase());
+                    
+                    // Optional parent details (columns 6 and 7)
+                    String parentPhone = (nextRecord.length > 5 && nextRecord[5] != null) ? nextRecord[5].trim() : "";
+                    String parentEmail = (nextRecord.length > 6 && nextRecord[6] != null) ? nextRecord[6].trim() : "";
 
-                Student student = new Student();
-                student.setRegistrationNumber(registrationNumber);
-                student.setName(name);
-                student.setDepartment(department);
-                student.setSem(sem);
-                student.setSection(section);
+                    Student student = new Student();
+                    student.setRegistrationNumber(registrationNumber);
+                    student.setName(name);
+                    student.setDepartment(department);
+                    student.setSem(sem);
+                    student.setSection(section);
+                    student.setParentPhone(parentPhone);
+                    student.setParentEmail(parentEmail);
 
-                Optional<Student> existingStudent = findByRegistrationNumber(registrationNumber);
-                if (existingStudent.isPresent()) {
-                    Student updateStudent = existingStudent.get();
-                    updateStudent.setName(name);
-                    updateStudent.setDepartment(department);
-                    updateStudent.setSem(sem);
-                    updateStudent.setSection(section);
-                    studentRepository.save(updateStudent);
-                } else {
-                    studentRepository.save(student);
+                    Optional<Student> existingStudent = findByRegistrationNumber(registrationNumber);
+                    if (existingStudent.isPresent()) {
+                        Student updateStudent = existingStudent.get();
+                        updateStudent.setName(name);
+                        updateStudent.setDepartment(department);
+                        updateStudent.setSem(sem);
+                        updateStudent.setSection(section);
+                        updateStudent.setParentPhone(parentPhone);
+                        updateStudent.setParentEmail(parentEmail);
+                        studentRepository.save(updateStudent);
+                    } else {
+                        studentRepository.save(student);
+                    }
+                } catch (Exception e) {
+                    throw new DataNotSavedException("Error at row " + rowNumber + ": " + (e.getMessage() != null ? e.getMessage() : "Invalid data format. Ensure your file is a CSV and sections are A, B, C, or D."));
                 }
+                rowNumber++;
             }
             return true;
         } catch (IOException | CsvValidationException e) {
-            throw new RuntimeException("Failed to process CSV file.");
+            throw new DataNotSavedException("Failed to process CSV file: " + e.getMessage());
         }
     }
+
 
     public Student update(String registrationNumber, Student student) {
         Optional<Student> existingStudent = studentRepository.findByRegistrationNumber(registrationNumber);

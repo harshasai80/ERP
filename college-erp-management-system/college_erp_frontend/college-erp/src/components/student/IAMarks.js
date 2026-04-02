@@ -74,7 +74,7 @@ function IAMarks({ student, isDark = false }) {
                 </div>
 
                 <div className="space-y-4 relative z-10">
-                  {Object.entries(marksData).map(([iaType, mark], idx) => (
+                  {Object.entries(marksData).filter(([key]) => !key.endsWith("_CO2") && !key.endsWith("_CO1")).map(([iaType, mark], idx) => (
                     <div key={idx} className={`flex justify-between items-center p-4 ${isDark ? "bg-white/[0.03] border border-white/5" : "bg-gray-50 border border-gray-100/50"} rounded-2xl hover:bg-white/[0.05] transition-colors`}>
                       <span className={`text-base font-bold ${isDark ? "text-gray-400" : "text-gray-500"} uppercase tracking-widest`}>{iaType}</span>
                       <div className="flex items-center gap-3">

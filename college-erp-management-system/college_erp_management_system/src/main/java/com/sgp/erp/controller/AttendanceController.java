@@ -63,4 +63,12 @@ public class AttendanceController {
         return attendanceService.getAttendanceByDateAndRegisterNos(date, regNos);
     }
 
+    @GetMapping("/class-attendance")
+    public ResponseEntity<ResponseStructure<List<Attendance>>> getAttendanceByClass(
+            @RequestParam(name = "department") String department,
+            @RequestParam(name = "semester") Byte semester,
+            @RequestParam(name = "section") String section) {
+        return attendanceService.getAttendanceByClass(department, semester, section);
+    }
+
 }

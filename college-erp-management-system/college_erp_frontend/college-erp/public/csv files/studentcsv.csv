@@ -1,5 +1,5 @@
-"This is example data, start adding your data from row 6.",,,,
-459cs22001,John,DCS,3,A
-459cs22002,Olivia,DME,4,B
-,,,,
-Registration Number,Name,Department,Sem,Section
+"This is example data, start adding your data from row 6.",,,,,,
+459cs22001,John,DCS,3,A,+919012345678,parent1@example.com
+459cs22002,Olivia,DME,4,B,+919022345678,parent2@example.com
+,,,,,,
+Registration Number,Name,Department,Sem,Section,Parent Phone,Parent Email

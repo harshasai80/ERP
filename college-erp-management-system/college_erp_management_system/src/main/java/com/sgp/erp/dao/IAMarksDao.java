@@ -29,4 +29,12 @@ public class IAMarksDao {
     public void deleteIAMarks(Long id) {
         iaMarksRepository.deleteById(id);
     }
+
+    public List<IAMarks> getByFilter(String dept, byte sem, com.sgp.erp.model.enums.Section section, Integer subjectId) {
+        return iaMarksRepository.findByFilter(dept, sem, section, subjectId);
+    }
+
+    public List<IAMarks> getByClass(String dept, byte sem, com.sgp.erp.model.enums.Section section) {
+        return iaMarksRepository.findByClass(dept, sem, section);
+    }
 }

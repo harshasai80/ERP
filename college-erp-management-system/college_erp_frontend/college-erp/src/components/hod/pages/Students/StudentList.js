@@ -654,8 +654,9 @@ const StudentList = ({ department }) => {
       });
       alert("CSV uploaded successfully!");
       fetchStudents();
-    } catch {
-      alert("Upload failed.");
+    } catch (error) {
+      const errMsg = error.response?.data?.message || "Upload failed. Please ensure you are using a CSV file and following the template.";
+      alert(errMsg);
     } finally {
       setUploading(false);
       setCsvFile(null);
@@ -932,7 +933,7 @@ const StudentList = ({ department }) => {
     <>
       <div className="p-3 sm:p-5 max-w-7xl mx-auto text-white">
         {showAddStudent ? (
-          <AddStudentsTab onClose={() => setShowAddStudent(false)} />
+          <AddStudentsTab department={department} onClose={() => setShowAddStudent(false)} />
         ) : (
           <>
             {/* Header */}

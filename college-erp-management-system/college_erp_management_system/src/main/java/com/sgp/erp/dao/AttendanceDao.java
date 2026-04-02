@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sgp.erp.exception.DuplicateDataEntryException;
 import com.sgp.erp.model.Attendance;
 import com.sgp.erp.model.Student;
 import com.sgp.erp.repository.AttendanceRepository;
@@ -112,4 +111,7 @@ public class AttendanceDao {
         return attendanceRepository.findAttendanceByDateAndRegistrationNumbers(date, regNos);
     }
 
+    public List<Attendance> getAttendanceByClass(String dept, Byte sem, com.sgp.erp.model.enums.Section section) {
+        return attendanceRepository.findAttendanceByClass(dept, sem, section);
+    }
 }

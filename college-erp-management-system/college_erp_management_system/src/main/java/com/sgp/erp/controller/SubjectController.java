@@ -53,4 +53,15 @@ public class SubjectController {
             @RequestParam(name = "facultyId") Long facultyId) {
         return facultySubjectService.findByFacultyId(facultyId);
     }
+    @GetMapping("/department/{department}")
+    public ResponseEntity<ResponseStructure<List<Subject>>> findByDepartment(
+            @PathVariable(name = "department") String department) {
+        return subjectService.findByDepartment(department);
+    }
+
+    @DeleteMapping("/delete/all")
+    public ResponseEntity<ResponseStructure<String>> deleteAllSubjectsByDepartment(
+            @RequestParam(name = "department") String department) {
+        return subjectService.deleteByDepartment(department);
+    }
 }
